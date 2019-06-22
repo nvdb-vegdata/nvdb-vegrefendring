@@ -73,6 +73,12 @@ def vegref2geojson( vegref):
     
     return geoj
 
+def sorterdato( resultatliste, dato ): 
+    """ 
+    Sorterer på fradato og markere den som stemmer overens 
+    """ 
+    pass 
+
 
 def henthistorikk( fylke=15, kommune=0, kat='E', stat='V', 
                   vegnr=39, hp=29, meter=7618, dato=''):
@@ -81,6 +87,7 @@ def henthistorikk( fylke=15, kommune=0, kat='E', stat='V',
             kat.upper() + stat.upper() + \
             str(vegnr).zfill(5) + str(hp).zfill(3) + str(meter).zfill(5)
     
+    resultatliste = []
 
     url = 'http://visveginfo-static.opentns.org/RoadInfoService3d/GetRoadReferenceHistoryForReference?roadReference=1500EV0003902907618'
     params = { 'roadReference' : vegref }
@@ -96,14 +103,16 @@ def henthistorikk( fylke=15, kommune=0, kat='E', stat='V',
         
         if   isinstance( data[p1][p2], dict  ): 
             
-            print( "En forekomst..." )
+            resultatliste.append( vegref2geojson( data[p1][p2]  ))
         
         elif isinstance( ['a', 'b'], list):
             
-            print( 'Liste med vegreferanser' )
+            for envegref in data[p1][p2]: 
+                
+                resultatliste.append( vegref2geojson( envegref  ))
             
 
-        return data
+        return resultatliste
         
     else:
         print( r.text)
