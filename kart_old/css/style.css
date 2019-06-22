@@ -1,0 +1,323 @@
+﻿@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,600,700);
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #444;
+  background: #fff;
+}
+
+
+.usynlig {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 0.5s, opacity 0.3s linear;
+}
+
+.synlig {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s linear;
+}
+
+button {
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 30px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+button:hover {
+  cursor: pointer!important;
+}
+
+button:disabled {
+  background: #bbb!important;
+}
+
+button:disabled:hover {
+  cursor: not-allowed!important;
+}
+
+button:active {
+  background: red!important;
+}
+
+button img {
+  height: 35px;
+}
+
+
+
+a {
+  color: #69D2E7;
+  text-decoration: none;
+}
+
+a img {
+  border: 0;
+}
+
+
+section {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+
+
+/* INFO */
+
+#container_info {
+  z-index: 1000;
+  overflow: auto; 
+  background-color: #444F55;
+  background-image: url(../gfx/background.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+h1 {
+  padding: 20px;
+  font-size: 48px;
+  font-weight: 300;
+  color: #fff;
+  text-shadow: 2px 2px rgba(0,0,0,0.6);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+h3 {
+  padding: 3px;
+  font-size: 18px;
+  font-weight: 300;
+  color: black;
+  text-align: center;
+ }
+
+
+p {
+  margin: 0 20px 20px 20px;
+  font-size: 16px;
+  color: rgba(255,255,255,1);
+  text-align: left;
+  font-weight: 300;
+  text-shadow: 2px 2px rgba(0,0,0,0.6);
+  line-height: 1.6;
+}
+
+p.omkartet{
+ font-size: 14px;
+ text-shadow: none;
+color: black;
+ text-align: center;
+ }
+
+
+
+.ingress {
+  font-size: 20px;
+}
+
+#feil {
+  color: #F5A2A2;
+}
+
+#svv {
+  margin: 40px 0 0 0;
+  text-align: center;
+}
+
+#finnVegreferanse {
+  display: block;
+  margin: 40px auto;
+  padding: 10px 15px;
+  background: #58b02c;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+  color: rgba(255,255,255,1);
+}
+
+
+
+
+/* BILDE */
+
+
+#container_bilde {
+  z-index: 500;
+  background-color: #444F55;
+}
+
+canvas {
+  width: 100%;
+}
+
+#avbryt_bilde {
+  position: absolute;
+  z-index: 501;
+  height: 60px;
+  width: 60px;
+  bottom: 20px;
+  left: 20px;
+  background: #ff9600;
+}
+
+#lagre_bilde {
+  position: absolute;
+  z-index: 501;
+  height: 60px;
+  width: 60px;
+  bottom: 20px;
+  right: 20px;
+  background: #58b02c;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 30px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+#lagre_bilde img {
+  margin: 10px 0 0 0;
+  height: 35px;
+}
+
+#lagre_bilde:active {
+  background: red;
+}
+
+
+
+/* VEGREFERANSE */
+
+#vegreferanse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  padding: 15px 0 0 0;
+  height: 60px;
+  margin: 0;
+  font-size: 30px;
+  font-weight: 300;
+  color: #fff;
+  text-shadow: 2px 2px rgba(0,0,0,0.6);
+  text-align: center;
+  text-transform: uppercase;
+  background-color: #444F55;
+}
+
+#myinfo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  padding: 15px 0 0 0;
+  height: 60px;
+  margin: 0;
+  font-size: 30px;
+  font-weight: 300;
+  color: black;
+  text-align: center;
+  background-color: white;
+}
+
+
+/* Vegreferanse - popup */ 
+
+
+/* KAMERA */
+
+video {
+  width: 100%;
+}
+
+#container_kamera {
+  z-index: 50;
+  background-color: #444F55;
+}
+
+#avbrytkamera {
+  position: absolute;
+  z-index: 51;
+  height: 60px;
+  width: 60px;
+  bottom: 20px;
+  left: 20px;
+  background: #ff9600;
+}
+
+#tabilde {
+  position: absolute;
+  z-index: 51;
+  height: 60px;
+  width: 60px;
+  bottom: 20px;
+  right: 20px;
+  background: #58b02c;
+}
+
+#tabilde img {
+  height: 40px;
+}
+
+#feil2 {
+  display: none;
+  margin: 150px 0 0 0;
+  color: #F5A2A2;
+}
+
+#videoSource {
+  position: absolute;
+  z-index: 51;
+  bottom: 20px;
+  left: 50%;
+  width: 150px; 
+  margin-left: -75px;
+  padding: 10px 15px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+}
+
+
+
+/* KART */
+
+#container_kart {
+  z-index: 10;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+
+
+#kamera {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  z-index: 11;
+  height: 60px;
+  width: 60px;
+  background: #008ec2;
+}
