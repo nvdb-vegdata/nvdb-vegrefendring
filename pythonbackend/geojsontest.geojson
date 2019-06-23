@@ -1,0 +1,172 @@
+[
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                34850.107390182304,
+                6925441.691064622,
+                65.259704751972
+            ]
+        },
+        "properties": {
+            "vegref": "1500 Evhp29 m7618",
+            "fradato": "2020-01-01",
+            "tildato": "9999-12-31",
+            "fremhev": "imorgen"
+        }
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                34450.107390182304,
+                6925241.691064622,
+                65.259704751972
+            ]
+        },
+        "properties": {
+            "vegref": "1500 Evhp29 m7618",
+            "fradato": "2019-05-23",
+            "tildato": "2020-01-01",
+            "fremhev": "idag"
+        }
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                151897.8082931634,
+                7009976.746251811,
+                32.54148053249399
+            ]
+        },
+        "properties": {
+            "vegref": "1500 Evhp29 m7618",
+            "fradato": "2016-03-31",
+            "tildato": "2019-05-23",
+            "fremhev": "gammalt"
+        }
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                151899.72208496087,
+                7009977.510238371,
+                32.47590228663993
+            ]
+        },
+        "properties": {
+            "vegref": "1500 Evhp29 m7618",
+            "fradato": "2016-03-22",
+            "tildato": "2016-03-31",
+            "fremhev": "gammalt"
+        }
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                151899.72208496087,
+                7009977.510238371,
+                32.47590228663993
+            ]
+        },
+        "properties": {
+            "vegref": "1500 Evhp29 m7618",
+            "fradato": "2015-12-07",
+            "tildato": "2016-03-22",
+            "fremhev": "gammalt"
+        }
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                151898.16675423473,
+                7009976.889349635,
+                32.52919745745107
+            ]
+        },
+        "properties": {
+            "vegref": "1500 Evhp29 m7618",
+            "fradato": "2015-10-20",
+            "tildato": "2015-12-07",
+            "fremhev": "gammalt"
+        }
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                151893.52394255906,
+                7009975.035937092,
+                32.68828866367394
+            ]
+        },
+        "properties": {
+            "vegref": "1500 Evhp29 m7618",
+            "fradato": "2013-09-22",
+            "tildato": "2015-10-20",
+            "fremhev": "fremhev"
+        }
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                151893.52394255906,
+                7009975.035937092,
+                32.68828866367394
+            ]
+        },
+        "properties": {
+            "vegref": "1500 Evhp29 m7618",
+            "fradato": "2013-01-01",
+            "tildato": "2013-09-22",
+            "fremhev": "gammalt"
+        }
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                151897.3088324964,
+                7009976.546866884,
+                32.55859511855166
+            ]
+        },
+        "properties": {
+            "vegref": "1500 Evhp29 m7618",
+            "fradato": "2012-01-01",
+            "tildato": "2013-01-01",
+            "fremhev": "gammalt"
+        }
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                151903.41964584103,
+                7009978.986306364,
+                32.34920117067775
+            ]
+        },
+        "properties": {
+            "vegref": "1500 Evhp29 m7618",
+            "fradato": "1997-05-27",
+            "tildato": "2012-01-01",
+            "fremhev": "gammalt"
+        }
+    }
+]
