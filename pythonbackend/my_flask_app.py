@@ -1,11 +1,6 @@
 from flask import Flask, request, jsonify
 import hentvegref
 
-app = Flask(__name__)
-@app.route("/")
-def hello():
-    return "Hello world!"
-
 @app.route("/vegreferanse")
 def sjekkvegreferanser(): 
     fylke = request.args.get('fylke', default='')
@@ -67,6 +62,5 @@ def posisjon():
 
 if __name__ == "__main__":
     app.run()
-    
     
 
