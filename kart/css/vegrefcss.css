@@ -1,0 +1,45 @@
+
+
+td {
+    padding:0 15px 15px 15px;
+}
+
+tr.idag_FUBAR { 
+ color : #dd42f5; 
+ font-weight : bold; 
+} 
+
+tr.idag {  
+ font-weight : bold; 
+ font-size : 120%; 
+} 
+
+
+tr.fremhev { 
+
+  color : red;
+  font-weight : bold; 
+  font-size : 120%; 
+  
+
+} 
+
+tr.forrige { 
+    font-weight : normal; 
+    font-style : italic; 
+    color: #7c747d; 
+}
+
+tr.gammalt { 
+    font-weight : normal; 
+    font-style : italic; 
+    color: #7c747d; 
+}
+
+
+tr.fremhevidag { 
+  color : red;
+  font-weight : bold; 
+  font-size : 120%; 
+
+} 

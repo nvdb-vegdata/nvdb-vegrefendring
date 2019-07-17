@@ -4,7 +4,15 @@
 
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous">
+</script>
  <link rel="stylesheet" href="lib/leaflet/leaflet.css">
+ <link rel="stylesheet" href="css/vegrefcss.css">
+ 
  <script src="lib/leaflet/leaflet.js" ></script>
  <script src="lib/proj4-compressed.js"></script>
  <script src="lib/proj4leaflet.js"></script>
@@ -18,7 +26,18 @@
 
 <div id="map" class="map map-home" style="height: 50%; width=100%;"></div>
 
-<p>Og her kommer resultatene under kartflaten</p>
+<div id="resultater">
+      <table id="vegreferanseTabell"
+              class="table table-bordered
+                     table-condensed">
+
+</div> 
+
+<p id="bruksanvisning1">Klikk på en veg i kartet for å se historikken akkurat der</p>. 
+
+<!--
+<p>Vi fremhever den vegreferansen gyldig i dag, og eventuelt for den datoen du har valgt.</p>
+-->
 
 <script>
 
@@ -47,6 +66,8 @@ var crs = new L.Proj.CRS('EPSG:25833',
         ]
     });
 
+
+
 var nvdbcache = 'https://nvdbcache.geodataonline.no/arcgis/rest/services/Trafikkportalen/GeocacheTrafikkJPG/MapServer/tile/{z}/{y}/{x}'
 
 var bakgrunnskart = new L.tileLayer(nvdbcache, {
@@ -73,6 +94,216 @@ L.control.zoom({
      position:'topleft'
 }).addTo(map);
 
+var mySampleData = {
+"features": [
+{
+"geometry": {
+"coordinates": [
+259491.89332002573,
+7030393.644699417,
+5.263657462667707
+],
+"type": "Point"
+},
+"properties": {
+"fradato": "2019-04-07",
+"fremhev": "fremhevidag",
+"tildato": "9999-12-31",
+"vegref": "5000 Fvhp1 m1066"
+},
+"type": "Feature"
+},
+{
+"geometry": {
+"coordinates": [
+259491.89332002573,
+7030393.644699417,
+5.263657462667707
+],
+"type": "Point"
+},
+"properties": {
+"fradato": "2018-01-31",
+"fremhev": "forrige",
+"tildato": "2019-04-07",
+"vegref": "5000 Fvhp2 m730"
+},
+"type": "Feature"
+},
+{
+"geometry": {
+"coordinates": [
+259491.8933200264,
+7030393.644699417,
+5.263657462668832
+],
+"type": "Point"
+},
+"properties": {
+"fradato": "2018-01-01",
+"fremhev": "gammalt",
+"tildato": "2018-01-31",
+"vegref": "5000 Fvhp2 m728"
+},
+"type": "Feature"
+},
+{
+"geometry": {
+"coordinates": [
+259491.8933200264,
+7030393.644699417,
+5.263657462668832
+],
+"type": "Point"
+},
+"properties": {
+"fradato": "2005-06-30",
+"fremhev": "gammalt",
+"tildato": "2018-01-01",
+"vegref": "5000 Fvhp2 m728"
+},
+"type": "Feature"
+},
+{
+"geometry": {
+"coordinates": [
+259491.89332002573,
+7030393.644699417,
+5.263657462667707
+],
+"type": "Point"
+},
+"properties": {
+"fradato": "1997-05-27",
+"fremhev": "gammalt",
+"tildato": "2005-06-30",
+"vegref": "5000 Evhp1 m5794"
+},
+"type": "Feature"
+},
+{
+"geometry": {
+"coordinates": [
+259491.89332002573,
+7030393.644699417,
+5.263657462667707
+],
+"type": "Point"
+},
+"properties": {
+"fradato": "1988-10-19",
+"fremhev": "gammalt",
+"tildato": "1997-05-27",
+"vegref": "5000 Rvhp1 m5794"
+},
+"type": "Feature"
+},
+{
+"geometry": {
+"coordinates": [
+259491.89332002573,
+7030393.644699417,
+5.263657462667707
+],
+"type": "Point"
+},
+"properties": {
+"fradato": "1987-10-21",
+"fremhev": "fremhev",
+"tildato": "1988-10-19",
+"vegref": "5000 Rvhp1 m6099"
+},
+"type": "Feature"
+},
+{
+"geometry": {
+"coordinates": [
+259491.89332002573,
+7030393.644699417,
+5.263657462667707
+],
+"type": "Point"
+},
+"properties": {
+"fradato": "1950-01-01",
+"fremhev": "gammalt",
+"tildato": "1987-10-21",
+"vegref": "5000 Rvhp1 m6099"
+},
+"type": "Feature"
+}
+],
+"type": "FeatureCollection"
+}; 
+
+
+function lagPunktHistorikkTabell( jsondata) {
+
+    $("#vegreferanseTabell").empty(); 
+    
+    var arrayLength = jsondata['features'].length;
+    for (var i = 0; i < arrayLength; i++) {
+
+        if ($("#vegreferanseTabell tbody").length == 0) {
+          $("#vegreferanseTabell").append("<thead>" + 
+          "<th>Vegreferanse</th>" + 
+          "<th>Gyldig fra</th>" + 
+          "<th>Gyldig til</th></tr></thead><tbody></tbody>");
+        }
+          
+        $("#bruksanvisning1").remove();
+        // Append product to the table
+        var myTableRow = "<tr " + 'class="'  + jsondata['features'][i]['properties']['fremhev'] +  '">' +
+            "<td>" + jsondata['features'][i]['properties']['vegref'] + "</td>" +
+            "<td>" + jsondata['features'][i]['properties']['fradato'] + "</td>" +
+            "<td>" + jsondata['features'][i]['properties']['tildato'] + "</td>" +
+          "</tr>"; 
+        $("#vegreferanseTabell tbody").append(myTableRow);
+    }
+    
+}    
+
+var testproj = proj4('+proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs ', [60, 10] );
+
+
+function onMapClick(e) {
+
+    var latlon = e.latlng;
+    utm33 = crs.projection.project( latlon );  
+        
+    historikkApi = 'https://python.ltglahn.no/posisjon?ost='+utm33.x +
+    '&nord='+utm33.y;
+    // console.log(historikkApi);
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", historikkApi, true);
+    xhr.send();
+	xhr.onreadystatechange = function () {
+    
+         if (xhr.readyState == 4 && xhr.status == 200) {
+            var respons = JSON.parse(xhr.responseText);
+            lagPunktHistorikkTabell( respons); 
+
+            if (respons['features'].length === 0) {
+                console.log( "Ingen veger her" + latlon + " " + utm33 ); 
+            } else { 
+            
+                var coords = respons['features'][0]['geometry']['coordinates']
+                props = respons['features'][0]['properties']
+            
+                var mittPunkt =  crs.projection.unproject( L.point( coords[0], coords[1] ));                
+                var kartklikkMarker =  L.popup();
+                kartklikkMarker
+                               .setLatLng( mittPunkt)
+                               .setContent( props['vegref'] ) 
+                               .openOn(map); 
+            
+            } 
+        }
+    }
+
+}
+
+map.on( 'click', onMapClick); 
 
 </script>
 </body>
