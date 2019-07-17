@@ -1,0 +1,79 @@
+﻿<html>
+<head>
+ <title>Historiske vegreferanser</title>
+
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="lib/leaflet/leaflet.css">
+ <script src="lib/leaflet/leaflet.js" ></script>
+ <script src="lib/proj4-compressed.js"></script>
+ <script src="lib/proj4leaflet.js"></script>
+
+</head>
+<body>
+
+<p>Bittelitt tekst som lærer deg om bruk av dette verktøyet</p>
+
+<p>Diverse verktøy for å velge fylke, kommune etc</p>
+
+<div id="map" class="map map-home" style="height: 50%; width=100%;"></div>
+
+<p>Og her kommer resultatene under kartflaten</p>
+
+<script>
+
+var crs = new L.Proj.CRS('EPSG:25833',
+    '+proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs ',
+    {
+        origin: [-2500000.0, 9045984.0],
+        resolutions: [
+            21674.7100160867, 
+            10837.35500804335, 
+            5418.677504021675, 
+            2709.3387520108377, 
+            1354.6693760054188, 
+            677.3346880027094, 
+            338.6673440013547, 
+            169.33367200067735, 
+            84.66683600033868, 
+            42.33341800016934, 
+            21.16670900008467, 
+            10.583354500042335, 
+            5.291677250021167, 
+            2.6458386250105836, 
+            1.3229193125052918, 
+            0.6614596562526459, 
+            0.33072982812632296
+        ]
+    });
+
+var nvdbcache = 'https://nvdbcache.geodataonline.no/arcgis/rest/services/Trafikkportalen/GeocacheTrafikkJPG/MapServer/tile/{z}/{y}/{x}'
+
+var bakgrunnskart = new L.tileLayer(nvdbcache, {
+    maxZoom: 16,
+    minZoom: 0,	
+    subdomains: '123456789',
+    continuousWorld: true,
+    detectRetina: false, 
+	attribution: '&copy; NVDB, Geovekst, kommmuene. Kartbakgrunn utenfor Norge: Open street map contributors'
+});
+
+var map = new L.map('map', {
+    zoom: 6,
+    center: [63.43, 10.40],
+    crs: crs, 
+    continuousWorld: true,
+    worldCopyJump: false,
+    zoomControl: false,
+    attributionControl: true,
+   layers: [bakgrunnskart]
+})
+
+L.control.zoom({
+     position:'topleft'
+}).addTo(map);
+
+
+</script>
+</body>
+</html>
