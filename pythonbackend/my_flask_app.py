@@ -1,9 +1,11 @@
 ﻿from flask import Flask, request, jsonify
 import hentvegref
+app = Flask(__name__)
 
 @app.route("/")
 def bruksanvisning():
-    with open( 'infotekst.html') as f: 
+    mappe = '/home/jan/vegrefhistorikkproxy/vegrefendring/pythonbackend/'
+    with open( mappe + 'infotekst.html', encoding='utf-8') as f: 
         myTekst = f.read()
     
     return myTekst
