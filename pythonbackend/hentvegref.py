@@ -50,6 +50,7 @@ def vegref2geojson( vegref):
     
     vegstr = vegref['TextualRoadReference'][0:4] + ' ' + \
              vegref['RoadCategory'] + vegref['RoadStatus'].lower() + \
+             vegref['RoadNumber'] + ' ' + \
               'hp' + str( vegref['RoadNumberSegment'] ) + \
               ' m' + str( vegref['RoadNumberSegmentDistance'])
         

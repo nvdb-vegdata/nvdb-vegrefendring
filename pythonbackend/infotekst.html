@@ -1,0 +1,267 @@
+﻿<html>
+<head>
+<title>Historiske vegreferanser</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+td { 
+    align="left"
+    padding="0 25px 25px 25px";
+} 
+
+tr {
+    align="left"
+}
+</style> 
+</head>
+<body>
+
+<p>Wrapper rundt <a href="http://visveginfo-static.opentns.org/help.htm" >visveginfo</a>-tjenesten. Returnere tidsutvikling for vegreferanse som geojson featureCollection. Hvis det du ber om ikke finnes så er listen over features tom. Merk at koordinatene er UTM-koordinater for sone 33 (EPSG:25833). Dette er strengt tatt ikke gyldig geojson (som skal ha lengde/breddegrad), men vi ser gjennom fingrene med det akkurat nå.</p> 
+
+<p>Om du er interessert i vegreferansen som var gyldig på en gitt dato kan du angi det i spørringen. Svaret vil da utheve den verdien som var gyldig på det tidspunktet med egenskapverdien <em>fremhev=fremhev</em>, alternativt <em>fremhev=fremhevidag</em> hvis vegreferansen for angitt dato fremdeles er gyldig i dag. 
+
+<h1>Endepunkt <a href="https://python.ltglahn.no/posisjon?ost=259491.89&nord=7030393" >/posisjon</a></h1>
+
+<p>Oppslag på geografisk koordinat. Viser tidsutvikling av vegreferanse i et punkt i vegnettet. 
+
+
+<table cellpadding="10">
+  <thead align="left">
+    <th>Parameter</th>
+    <th>beskrivelse</th>
+  </thead>
+  <tr>
+    <td>ost, nord</td>
+    <td>Påkrevd. Koordinater for spørringen, i UTM sone 33 (EPSG:25833).</td>
+  </tr>
+  <tr>
+    <td>dato</td>
+    <td>Valgfri, kan sløyfes. Uthever den vegreferanse-verdien som er på den datoen som er mest interessant for deg</td>
+  </tr>
+
+</table>
+
+<h4>Eksempler</h4>
+
+<p><a href="https://python.ltglahn.no/posisjon?ost=259491.89&nord=7030393">
+https://python.ltglahn.no/posisjon?ost=259491.89&nord=7030393</a>
+
+<p><a href="https://python.ltglahn.no/posisjon?ost=259491.89&nord=7030393&dato=2004-05-01">
+https://python.ltglahn.no/posisjon?ost=259491.89&nord=7030393&dato=2004-05-01</a>
+
+<h1>Endepunkt /sjekkvegreferanser</h1>
+
+Slår opp på angitt vegreferanse og finner tidsutvikling. 
+
+<table cellpadding="10">
+  <thead align="left">
+    <th>Parameter</th>
+    <th>defaultverdi</th> 
+    <th>beskrivelse</th>
+  </thead>
+  <tr>
+    <td>fylke</td>
+    <td></td> 
+    <td>Påkrevd. Fylkesnummer.</td>
+  </tr>
+  <tr>
+    <td>kommune</td>
+    <td>00</td> 
+    <td>Valgfri. Kommunenummer.</td>
+  </tr>
+
+  <tr>
+    <td>kat</td>
+    <td></td> 
+    <td>Påkrevd. Vegkategori kortform, f.eks. E for Europaveg, P for privat veg.</td>
+  </tr>
+
+  <tr>
+    <td>stat</td>
+    <td>V</td> 
+    <td>Valgfri. Vegstatus kortform, for eksempel V (XXXXXXXXX ) eller G (gang/sykkelsti)</td>
+  </tr>
+
+  <tr>
+    <td>vegnr</td>
+    <td></td> 
+    <td>Påkrevd. Vegnummer</td>
+  </tr>
+
+  <tr>
+    <td>hp</td>
+    <td>1</td> 
+    <td>Valgfri. Hovedparsellnummer</td>
+  </tr>
+
+  <tr>
+    <td>meter</td>
+    <td>1</td> 
+    <td>Valgfri. Meterverdi.</td>
+  </tr>
+
+  <tr>
+    <td>dato</td>
+    <td></td> 
+    <td>Valgfri. Uthever den vegreferanse-verdien som er på den datoen som er mest interessant for deg</td>
+  </tr>
+
+</table>
+
+<h4>Eksempler</h4>
+
+<p>Kun påkrevde parametre: <a href="https://python.ltglahn.no/sjekkvegreferanser?fylke=50&kat=E&vegnr=6">
+https://python.ltglahn.no/sjekkvegreferanser?fylke=50&kat=E&vegnr=6</a>
+
+<p>Alle parametre: <a href="https://python.ltglahn.no/sjekkvegreferanser?fylke=50&kat=E&stat=V&vegnr=6&hp=2&m234&dato=2017-05-01">
+https://python.ltglahn.no/sjekkvegreferanser?fylke=50&kat=E&stat=V&vegnr=6&hp=2&m234&dato=2017-05-01</a>
+</p>
+
+<h1>Eksempel på returnert geojson</h1>
+
+<pre>
+{
+    "features": [
+        {
+            "geometry": {
+                "coordinates": [
+                    259491.89332002574,
+                    7030393.644699417,
+                    5.263657462667707
+                ],
+                "type": "Point"
+            },
+            "properties": {
+                "fradato": "2019-04-07",
+                "fremhev": "fremhevidag",
+                "tildato": "9999-12-31",
+                "vegref": "5000 Fvhp1 m1066"
+            },
+            "type": "Feature"
+        },
+        {
+            "geometry": {
+                "coordinates": [
+                    259491.89332002574,
+                    7030393.644699417,
+                    5.263657462667707
+                ],
+                "type": "Point"
+            },
+            "properties": {
+                "fradato": "2018-01-31",
+                "fremhev": "forrige",
+                "tildato": "2019-04-07",
+                "vegref": "5000 Fvhp2 m730"
+            },
+            "type": "Feature"
+        },
+        {
+            "geometry": {
+                "coordinates": [
+                    259491.8933200264,
+                    7030393.644699417,
+                    5.263657462668832
+                ],
+                "type": "Point"
+            },
+            "properties": {
+                "fradato": "2018-01-01",
+                "fremhev": "gammalt",
+                "tildato": "2018-01-31",
+                "vegref": "5000 Fvhp2 m728"
+            },
+            "type": "Feature"
+        },
+        {
+            "geometry": {
+                "coordinates": [
+                    259491.8933200264,
+                    7030393.644699417,
+                    5.263657462668832
+                ],
+                "type": "Point"
+            },
+            "properties": {
+                "fradato": "2005-06-30",
+                "fremhev": "gammalt",
+                "tildato": "2018-01-01",
+                "vegref": "5000 Fvhp2 m728"
+            },
+            "type": "Feature"
+        },
+        {
+            "geometry": {
+                "coordinates": [
+                    259491.89332002574,
+                    7030393.644699417,
+                    5.263657462667707
+                ],
+                "type": "Point"
+            },
+            "properties": {
+                "fradato": "1997-05-27",
+                "fremhev": "gammalt",
+                "tildato": "2005-06-30",
+                "vegref": "5000 Evhp1 m5794"
+            },
+            "type": "Feature"
+        },
+        {
+            "geometry": {
+                "coordinates": [
+                    259491.89332002574,
+                    7030393.644699417,
+                    5.263657462667707
+                ],
+                "type": "Point"
+            },
+            "properties": {
+                "fradato": "1988-10-19",
+                "fremhev": "gammalt",
+                "tildato": "1997-05-27",
+                "vegref": "5000 Rvhp1 m5794"
+            },
+            "type": "Feature"
+        },
+        {
+            "geometry": {
+                "coordinates": [
+                    259491.89332002574,
+                    7030393.644699417,
+                    5.263657462667707
+                ],
+                "type": "Point"
+            },
+            "properties": {
+                "fradato": "1987-10-21",
+                "fremhev": "fremhev",
+                "tildato": "1988-10-19",
+                "vegref": "5000 Rvhp1 m6099"
+            },
+            "type": "Feature"
+        },
+        {
+            "geometry": {
+                "coordinates": [
+                    259491.89332002574,
+                    7030393.644699417,
+                    5.263657462667707
+                ],
+                "type": "Point"
+            },
+            "properties": {
+                "fradato": "1950-01-01",
+                "fremhev": "gammalt",
+                "tildato": "1987-10-21",
+                "vegref": "5000 Rvhp1 m6099"
+            },
+            "type": "Feature"
+        }
+    ],
+    "type": "FeatureCollection"
+}
+</pre>
+
+
+</body>
+</html>

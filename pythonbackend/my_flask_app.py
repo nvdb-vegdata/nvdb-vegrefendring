@@ -1,5 +1,12 @@
-from flask import Flask, request, jsonify
+﻿from flask import Flask, request, jsonify
 import hentvegref
+
+@app.route("/")
+def bruksanvisning():
+    with open( 'infotekst.html') as f: 
+        myTekst = f.read()
+    
+    return myTekst
 
 @app.route("/vegreferanse")
 def sjekkvegreferanser(): 
@@ -48,14 +55,7 @@ def posisjon():
                               northing=northing, valgtdato=valgtdato) 
                                                 
     else: 
-        vegref =  {'type': 'FeatureCollection', 'features': [
-                        {   'type' : 'feature',
-                            'properties' : { 'navn' : 'FEIL' },
-                            'geometry' : { 'coordinates' : [], 
-                                    'type' : 'point' 
-                                    }
-                        }
-                    ]}
+        vegref =  {'type': 'FeatureCollection', 'features': [] }
         
     return jsonify(**vegref) 
 
