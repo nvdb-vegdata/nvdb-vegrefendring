@@ -20,9 +20,8 @@
 </head>
 <body>
 
-<p>Bittelitt tekst som lærer deg om bruk av dette verktøyet</p>
+<p>Klikk på en veg i kartet for å se tidsutvikling av vegreferanse</p>
 
-<p>Diverse verktøy for å velge fylke, kommune etc</p>
 
 <div id="map" class="map map-home" style="height: 50%; width=100%;"></div>
 
@@ -94,149 +93,6 @@ L.control.zoom({
      position:'topleft'
 }).addTo(map);
 
-var mySampleData = {
-"features": [
-{
-"geometry": {
-"coordinates": [
-259491.89332002573,
-7030393.644699417,
-5.263657462667707
-],
-"type": "Point"
-},
-"properties": {
-"fradato": "2019-04-07",
-"fremhev": "fremhevidag",
-"tildato": "9999-12-31",
-"vegref": "5000 Fvhp1 m1066"
-},
-"type": "Feature"
-},
-{
-"geometry": {
-"coordinates": [
-259491.89332002573,
-7030393.644699417,
-5.263657462667707
-],
-"type": "Point"
-},
-"properties": {
-"fradato": "2018-01-31",
-"fremhev": "forrige",
-"tildato": "2019-04-07",
-"vegref": "5000 Fvhp2 m730"
-},
-"type": "Feature"
-},
-{
-"geometry": {
-"coordinates": [
-259491.8933200264,
-7030393.644699417,
-5.263657462668832
-],
-"type": "Point"
-},
-"properties": {
-"fradato": "2018-01-01",
-"fremhev": "gammalt",
-"tildato": "2018-01-31",
-"vegref": "5000 Fvhp2 m728"
-},
-"type": "Feature"
-},
-{
-"geometry": {
-"coordinates": [
-259491.8933200264,
-7030393.644699417,
-5.263657462668832
-],
-"type": "Point"
-},
-"properties": {
-"fradato": "2005-06-30",
-"fremhev": "gammalt",
-"tildato": "2018-01-01",
-"vegref": "5000 Fvhp2 m728"
-},
-"type": "Feature"
-},
-{
-"geometry": {
-"coordinates": [
-259491.89332002573,
-7030393.644699417,
-5.263657462667707
-],
-"type": "Point"
-},
-"properties": {
-"fradato": "1997-05-27",
-"fremhev": "gammalt",
-"tildato": "2005-06-30",
-"vegref": "5000 Evhp1 m5794"
-},
-"type": "Feature"
-},
-{
-"geometry": {
-"coordinates": [
-259491.89332002573,
-7030393.644699417,
-5.263657462667707
-],
-"type": "Point"
-},
-"properties": {
-"fradato": "1988-10-19",
-"fremhev": "gammalt",
-"tildato": "1997-05-27",
-"vegref": "5000 Rvhp1 m5794"
-},
-"type": "Feature"
-},
-{
-"geometry": {
-"coordinates": [
-259491.89332002573,
-7030393.644699417,
-5.263657462667707
-],
-"type": "Point"
-},
-"properties": {
-"fradato": "1987-10-21",
-"fremhev": "fremhev",
-"tildato": "1988-10-19",
-"vegref": "5000 Rvhp1 m6099"
-},
-"type": "Feature"
-},
-{
-"geometry": {
-"coordinates": [
-259491.89332002573,
-7030393.644699417,
-5.263657462667707
-],
-"type": "Point"
-},
-"properties": {
-"fradato": "1950-01-01",
-"fremhev": "gammalt",
-"tildato": "1987-10-21",
-"vegref": "5000 Rvhp1 m6099"
-},
-"type": "Feature"
-}
-],
-"type": "FeatureCollection"
-}; 
-
-
 function lagPunktHistorikkTabell( jsondata) {
 
     $("#vegreferanseTabell").empty(); 
@@ -246,9 +102,9 @@ function lagPunktHistorikkTabell( jsondata) {
 
         if ($("#vegreferanseTabell tbody").length == 0) {
           $("#vegreferanseTabell").append("<thead>" + 
-          "<th>Vegreferanse</th>" + 
-          "<th>Gyldig fra</th>" + 
-          "<th>Gyldig til</th></tr></thead><tbody></tbody>");
+          "<th><em>Vegreferanse/em></th>" + 
+          "<th><em>Gyldig fra/em></th>" + 
+          "<th><em>Gyldig til</em></th></tr></thead><tbody></tbody>");
         }
           
         $("#bruksanvisning1").remove();
@@ -263,7 +119,6 @@ function lagPunktHistorikkTabell( jsondata) {
     
 }    
 
-var testproj = proj4('+proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs ', [60, 10] );
 
 
 function onMapClick(e) {
@@ -304,6 +159,9 @@ function onMapClick(e) {
 }
 
 map.on( 'click', onMapClick); 
+$('.leaflet-container').css('cursor','crosshair');
+
+
 
 </script>
 </body>
