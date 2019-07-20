@@ -44,3 +44,7 @@ tr.fremhevidag {
   font-size : 120%; 
 
 } 
+
+.leaflet-container {
+     cursor: crosshair;
+   }
