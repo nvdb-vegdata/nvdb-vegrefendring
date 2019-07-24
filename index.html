@@ -13,6 +13,8 @@
 </script>
 --> 
  <script src="lib/jquery-3.4.1.min.js"></script>
+ <script src="lib/jquery-dropdown-datepicker.min.js"></script>
+
  <link rel="stylesheet" href="lib/leaflet/leaflet.css">
  <link rel="stylesheet" href="css/vegrefcss.css">
  
@@ -25,6 +27,22 @@
 
 <p>Klikk på en veg i kartet for å se tidsutvikling av vegreferanse</p>
 
+<div id="datovelger"><p>Dato som skal fremheves:<input type="text" id="date"></p></div>
+
+<div id="vegreferansevelger"><p>
+
+
+<form>
+
+  HP:
+  <input id="hp" type="number" name="quantity" min="1" max="999">
+  M:
+  <input id="meter" type="number" name="quantity" min="1" max="99999">
+
+</form>
+
+
+</p></div>
 
 <div id="map" class="map map-home" style="height: 50%; width=100%;"></div>
 
@@ -37,27 +55,80 @@
 
 <p id="bruksanvisning1">Klikk på en veg i kartet for å se historikken akkurat der</p>. 
 
+
+
 <!--
 <p>Vi fremhever den vegreferansen gyldig i dag, og eventuelt for den datoen du har valgt.</p>
 -->
 
 <script>
+/* Datovelger */
+$(function(){
+
+    myUrl = window.location.href; 
+    var dato = getUrlParameter(myUrl, "dato");
+    var godkjent = sjekkdato( dato); 
+    if (!godkjent) { 
+
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        dato = yyyy + '-' + mm + '-' + dd; 
+
+    }
+
+    $('#date').dropdownDatepicker({ 'defaultDate' : dato } );
+ 
+});
+
+function sjekkdato( mystring) {
+// Sjekker om dato er på format 2018-12-30 
+    
+    var godkjent = false; 
+    var myArr = mystring.split( '-'); 
+    if (myArr.length == 3) {
+        var yyyy = parseInt( myArr[0] ); 
+        var mm = parseInt( myArr[1] ); 
+        var dd = parseInt( myArr[2] ); 
+        
+        if (!isNaN( yyyy ) && !isNaN( mm ) && !isNaN( dd)  && 
+            yyyy > 1949 && yyyy < 1e4 && mm > 0 && mm < 13 && dd > 0 && dd < 32) {
+                godkjent = true; 
+        }
+        
+    }
+
+    return godkjent
+
+}
+
 /*
 Leser URL parametre ved oppstart 
 */
 function sjekkUrlParams() {
+  
     myUrl = window.location.href; 
     var visningstype = getUrlParameter(myUrl, "kartvisning"); 
+    var dato = getUrlParameter(myUrl, "dato");
+       
+    
     if (visningstype === "posisjon") { 
         console.log( "Viser tidsutvikling vegreferanse i fast posisjon" ); 
         var ost  = parseFloat( getUrlParameter( myUrl, "ost")) ;
         var nord = parseFloat( getUrlParameter( myUrl, "nord")); 
+        var minDato = getUrlParameter( myUrl, "dato"); 
+        
         if (!isNaN( ost) && !isNaN(nord)) {
             console.log( "Viser tidsutvikling i posisjon" + ost + "ost " + nord + "nord" )
-            vispunktdata( ost, nord, false, true); 
+            vispunktdata( ost, nord, false, true, minDato); 
             
         } else {
             console.log( "ikke happy ned nord/ost parametre"); 
+        }
+        
+        if (sjekkdato(minDato)) {
+            console.log( "Fremhever dato: " + minDato);
         }
         
     } else if (visningstype === "vegreferanse" ) {
@@ -84,19 +155,19 @@ function getUrlParameter(url, parameter) {
 
 
 function endreUrlParametre( params) {
+/* Oppdaterer URL parametre slik at den er a jour med de brukervalgene som er a jour
+    Legger også eksisterende URL til nettleser-historikken.
+*/ 
 
     // Dele URL i statisk del og eventuelle parametre-del
     var oldUrl = window.location.href.split('?'); 
     var myPathName = window.location.pathname; 
 
-    // Endre  URL via historikk-funksjon (kan føye til eller modifisere  
-    
+    // Endre  URL via html5 window.historikk-funksjon 
     var newUrl = oldUrl[0]; 
     const myParams = Object.entries(params);  
     for (const [myKey, myVal] of myParams) {
-        console.log( `Param: ${myKey} => ${myVal}` )
         newUrl = setUrlParameter( newUrl, myKey, myVal); 
-        console.log( newUrl ); 
     }
     var newUrlParams = newUrl.split('?')[1];
     window.history.pushState({}, document.title, myPathName + '?' + newUrlParams); 
@@ -226,7 +297,7 @@ function lagPunktHistorikkTabell( jsondata) {
 }    
 
 
-function vispunktdata( ost, nord, oppdaterUrl, sentrerKart) {
+function vispunktdata( ost, nord, oppdaterUrl, sentrerKart, valgtDato) {
 /*
 ost, nord = UTM koordinater, sone 33 (EPSG:25833
 oppdaterUrl : boolean. Angir om vi skal oppdatere nettleser-adressen og -historikken.
@@ -235,9 +306,27 @@ sentrerKart : boolean. Sentrerer kartet i angitt posisjon.
 
 */
 
-   historikkApi = 'https://python.ltglahn.no/posisjon?ost='+ost +
-    '&nord='+nord;
-    // console.log(historikkApi);
+    var mindato = "";
+    if (sjekkdato(valgtDato)) {
+        mindato = valgtDato; 
+    
+    } else {
+
+        mindato =  document.getElementById("date").value;
+        
+    }
+   if (sjekkdato(mindato)) {
+
+       historikkApi = 'https://python.ltglahn.no/posisjon?ost='+ost +
+        '&nord='+nord + '&dato=' + mindato;
+   
+   } else { 
+
+       historikkApi = 'https://python.ltglahn.no/posisjon?ost='+ost +
+        '&nord='+nord;
+    
+    }
+    console.log(historikkApi);
     var xhr = new XMLHttpRequest();
     xhr.open("GET", historikkApi, true);
     xhr.send();
@@ -267,12 +356,15 @@ sentrerKart : boolean. Sentrerer kartet i angitt posisjon.
                                .openOn(map); 
                 // Oppdaterer nettleser adressefelt og historikk? 
                 if (oppdaterUrl === true) {
-                    endreUrlParametre( { 'kartvisning' : 'posisjon', 
-                                        'ost' : coords[0], 'nord' : coords[1] }); 
                 
+                    if (sjekkdato(mindato)) { 
+                        endreUrlParametre( { 'kartvisning' : 'posisjon', 
+                                            'ost' : coords[0], 'nord' : coords[1], 'dato' : mindato }); 
+                    } else {
+                        endreUrlParametre( { 'kartvisning' : 'posisjon', 
+                                            'ost' : coords[0], 'nord' : coords[1] }); 
+                    }
                 }
-            
-            
             } 
         }
     }
