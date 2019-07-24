@@ -1,4 +1,5 @@
-﻿<html>
+﻿<!DOCTYPE html>
+<html>
 <head>
  <title>Historiske vegreferanser</title>
 
@@ -25,32 +26,95 @@
 </head>
 <body onload="sjekkUrlParams()" >
 
-<p>Klikk på en veg i kartet for å se tidsutvikling av vegreferanse</p>
+<p>Klikk på en veg i kartet for å se tidsutvikling av vegreferanse i det punktet, eller velg en vegreferanseverdi og se hvor den fantes til ulike tider. 
+Valgt dato blir fremhevet med rød skrift.</p>
 
 <div id="datovelger"><p>Dato som skal fremheves:<input type="text" id="date"></p></div>
 
-<div id="vegreferansevelger"><p>
+<div id="vegreferansevelger">
+
+<h2>Velg vegreferanseverdi</h2>
+
+<!-- <form> -->
+
+<p>
+fylke:
+  <select name="fylke" id="fylke" value="1">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+    <option value="14">14</option>
+    <option value="15">15</option>
+    <option value="18">18</option>
+    <option value="19">19</option>
+    <option value="20">20</option>
+    <option value="50">50</option>
+  </select>
+
+  Kommune:
+  <input id="hp" type="number" name="quantity" min="0" max="99" value="0">
 
 
-<form>
+Vegkategori:
+  <select name="vegkategori" id="vegkategori" value="E">
+    <option value="R">E</option>
+    <option value="R">R</option>
+    <option value="F">F</option>
+    <option value="K">K</option>
+    <option value="P">P</option>
+    <option value="S">S</option>
+  </select>
 
-  HP:
-  <input id="hp" type="number" name="quantity" min="1" max="999">
-  M:
-  <input id="meter" type="number" name="quantity" min="1" max="99999">
+Vegstatus:
+  <select name="vegstatus" id="vegstatus" value="V">
+    <option value="V">V</option>
+    <option value="W">W</option>
+    <option value="T">T</option>
+    <option value="S">S</option>
+    <option value="G">G</option>
+    <option value="U">U</option>
+    <option value="B">B</option>
+    <option value="M">M</option>
+    <option value="X">X</option>
+    <option value="A">A</option>
+    <option value="H">H</option>
+    <option value="P">P</option>
+    <option value="E">E</option>
+    <option value="Q">Q</option>
+  </select>
 
-</form>
+  Vegnr:
+  <input id="hp" type="number" name="quantity" min="1" max="999" value="1">
+  Hp:
+  <input id="hp" type="number" name="quantity" min="1" max="999" value="1">
+  Meter:
+  <input id="meter" type="number" name="quantity" min="0" max="99999" value="1">
+</p>
+<p>
+    <button onClick="hentVegreferanser()" >Hent vegreferanser</button> 
+</p>  
+
+<!-- </form> -->
 
 
-</p></div>
+</div>
 
-<div id="map" class="map map-home" style="height: 50%; width=100%;"></div>
+<div id="map" class="map map-home" style="height: 50vh; width=100%;"></div>
 
 <div id="resultater">
       <table id="vegreferanseTabell"
               class="table table-bordered
                      table-condensed">
-
+       </table>
 </div> 
 
 <p id="bruksanvisning1">Klikk på en veg i kartet for å se historikken akkurat der</p>. 
@@ -62,6 +126,12 @@
 -->
 
 <script>
+function hentVegreferanser() {
+
+
+
+}
+
 /* Datovelger */
 $(function(){
 
@@ -84,21 +154,26 @@ $(function(){
 
 function sjekkdato( mystring) {
 // Sjekker om dato er på format 2018-12-30 
-    
-    var godkjent = false; 
-    var myArr = mystring.split( '-'); 
-    if (myArr.length == 3) {
-        var yyyy = parseInt( myArr[0] ); 
-        var mm = parseInt( myArr[1] ); 
-        var dd = parseInt( myArr[2] ); 
-        
-        if (!isNaN( yyyy ) && !isNaN( mm ) && !isNaN( dd)  && 
-            yyyy > 1949 && yyyy < 1e4 && mm > 0 && mm < 13 && dd > 0 && dd < 32) {
-                godkjent = true; 
-        }
-        
-    }
 
+    var godkjent = false;     
+    if (mystring === undefined)  {
+        // Do nothing. Log to console? Nah... 
+    } else { 
+    
+
+        var myArr = mystring.split( '-'); 
+        if (myArr.length == 3) {
+            var yyyy = parseInt( myArr[0] ); 
+            var mm = parseInt( myArr[1] ); 
+            var dd = parseInt( myArr[2] ); 
+            
+            if (!isNaN( yyyy ) && !isNaN( mm ) && !isNaN( dd)  && 
+                yyyy > 1949 && yyyy < 1e4 && mm > 0 && mm < 13 && dd > 0 && dd < 32) {
+                    godkjent = true; 
+            }
+            
+        }
+    }
     return godkjent
 
 }
@@ -133,6 +208,11 @@ function sjekkUrlParams() {
         
     } else if (visningstype === "vegreferanse" ) {
         console.log( "Viser ulike posisjoner for en gitt vegreferanse") ;
+        
+        
+        hentVegreferanser(); 
+        
+        
     } else {
         console.log( "Parameter kartvisning ikke (korrekt) angitt, posisjon eller vegreferanse") ;
     }
