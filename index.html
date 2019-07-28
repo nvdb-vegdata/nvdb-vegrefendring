@@ -26,10 +26,9 @@
 </head>
 <body onload="sjekkUrlParams()" >
 
-<p>Klikk på en veg i kartet for å se tidsutvikling av vegreferanse i det punktet, eller velg en vegreferanseverdi og se hvor den fantes til ulike tider. 
-Valgt dato blir fremhevet med rød skrift.</p>
+<p>Velg en vegreferanse og se hvor den har vært til ulike tider, <em>eller</em> klikk på en veg i kartet for å se hvilke vegreferanser som har vært i bruk akkurat der</p>
 
-<div id="datovelger"><p>Dato som skal fremheves:<input type="text" id="date"></p></div>
+<div id="datovelger"><p>Du kan velge hvilken dato som skal fremheves spesielt:<input type="text" id="dato"></p></div>
 
 <div id="vegreferansevelger">
 
@@ -61,12 +60,12 @@ fylke:
   </select>
 
   Kommune:
-  <input id="hp" type="number" name="quantity" min="0" max="99" value="0">
+  <input id="kommune" type="number" name="quantity" min="0" max="99" value="0">
 
 
 Vegkategori:
   <select name="vegkategori" id="vegkategori" value="E">
-    <option value="R">E</option>
+    <option value="E">E</option>
     <option value="R">R</option>
     <option value="F">F</option>
     <option value="K">K</option>
@@ -93,14 +92,14 @@ Vegstatus:
   </select>
 
   Vegnr:
-  <input id="hp" type="number" name="quantity" min="1" max="999" value="1">
+  <input id="vegnr" type="number" name="quantity" min="1" max="999" value="6">
   Hp:
   <input id="hp" type="number" name="quantity" min="1" max="999" value="1">
   Meter:
-  <input id="meter" type="number" name="quantity" min="0" max="99999" value="1">
+  <input id="meter" type="number" name="quantity" min="0" max="99999" value="0">
 </p>
 <p>
-    <button onClick="hentVegreferanser()" >Hent vegreferanser</button> 
+    <button onClick="hentVegreferanser('knappeklikk')" >Hent vegreferanser</button> 
 </p>  
 
 <!-- </form> -->
@@ -126,10 +125,93 @@ Vegstatus:
 -->
 
 <script>
-function hentVegreferanser() {
+function hentVegreferanser(hvaslags) {
+    /* Hvaslags - er vi kalt opp via URL parametre når siden lastes, eller klikk på knappen?
+    */
+    var fylke = null;
+    var kommune = null;
+    var vegkat = null; 
+    var vegstatus = null; 
+    var vegnr = null; 
+    var hp = null;
+    var meter = null; 
+    var dato = null; 
+    
+    var oppdaterUrlParams = false; 
+    if (hvaslags == 'knappeklikk') {
+
+        fylke       = document.getElementById("fylke").value; 
+        kommune     = document.getElementById("kommune").value;
+        vegkat      = document.getElementById("vegkategori").value;
+        vegstatus   = document.getElementById("vegstatus").value;
+        vegnr       = document.getElementById("vegnr").value;
+        hp          = document.getElementById("hp").value;
+        meter       = document.getElementById("meter").value;
+        dato       = document.getElementById("dato").value;
+    
+        oppdaterUrlParams = true;
+    } else if (hvaslags == 'urlparams') {
+        var myUrl = window.location.href;
+        fylke       = parseFloat( getUrlParameter( myUrl, "fylke")); 
+        kommune     = parseFloat( getUrlParameter( myUrl, "kommune"));
+        vegkat      = parseFloat( getUrlParameter( myUrl, "vegkat"));
+        vegstatus   = parseFloat( getUrlParameter( myUrl, "vegstatus"));
+        vegnr       = parseFloat( getUrlParameter( myUrl, "vegnr"));
+        hp          = parseFloat( getUrlParameter( myUrl, "hp"));
+        meter       = parseFloat( getUrlParameter( myUrl, "meter"));
+        dato        = parseFloat( getUrlParameter( myUrl, "dato"));
+
+       oppdaterUrlParams = false;
+
+    }
+    
+    // Her kommer kvalitettsjekk av verdiene... Muligens med advarsel
+    
+    map.closePopup;
+    $("#vegreferanseTabell").empty();
+    
+    var vegrefApi = 'https://python.ltglahn.no/vegreferanse?fylke='+fylke +
+        '&kommune='+kommune + '&kat=' + vegkat + '&stat=' + vegstatus + 
+        '&vegnr=' + vegnr + '&hp=' + hp + '&meter=' + meter + '&dato=' + dato;
+    
+    console.log(vegrefApi); 
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", vegrefApi, true);
+    xhr.send();
+	xhr.onreadystatechange = function () {
+    
+         if (xhr.readyState == 4 && xhr.status == 200) {
+            var respons = JSON.parse(xhr.responseText);
+ 
+            if (respons['features'].length === 0) {
+                console.log( "Ingen vegreferanse(r) funnet for " + vegrefApi); 
+            } else { 
+            
+                // Slår sammen features som har (tilnærmet) identisk posisjon:  
+                var myGeo = []; 
+
+                for (index = 0; index < respons['features'].length; ++index) {
+                    var coords = respons['features'][index]['geometry']['coordinates'];
+                    var props = respons['features'][index]['properties'] ;
+
+/*
+
+if (map.hasLayer(minLayerGroup)) { map.removeLayer( asdf)}
+var myMarker = new L.Marker([63, 10]).bindTooltip("1,2",{ 'permanent' : true, 'direction' : 'right' });  
+var myLayer = new L.LayerGroup( [ myMarker] ).addTo(map);
 
 
+Evt featureGroup?? 
 
+
+*/
+
+                    
+                    
+                }
+            }
+        }
+     }
 }
 
 /* Datovelger */
@@ -148,7 +230,7 @@ $(function(){
 
     }
 
-    $('#date').dropdownDatepicker({ 'defaultDate' : dato } );
+    $('#dato').dropdownDatepicker({ 'defaultDate' : dato, maxYear: 2021, minYear: 1950 } );
  
 });
 
@@ -183,7 +265,7 @@ Leser URL parametre ved oppstart
 */
 function sjekkUrlParams() {
   
-    myUrl = window.location.href; 
+    var myUrl = window.location.href; 
     var visningstype = getUrlParameter(myUrl, "kartvisning"); 
     var dato = getUrlParameter(myUrl, "dato");
        
@@ -208,11 +290,8 @@ function sjekkUrlParams() {
         
     } else if (visningstype === "vegreferanse" ) {
         console.log( "Viser ulike posisjoner for en gitt vegreferanse") ;
-        
-        
-        hentVegreferanser(); 
-        
-        
+        hentVegreferanser('urlparams'); 
+                
     } else {
         console.log( "Parameter kartvisning ikke (korrekt) angitt, posisjon eller vegreferanse") ;
     }
@@ -392,7 +471,7 @@ sentrerKart : boolean. Sentrerer kartet i angitt posisjon.
     
     } else {
 
-        mindato =  document.getElementById("date").value;
+        mindato =  document.getElementById("dato").value;
         
     }
    if (sjekkdato(mindato)) {
