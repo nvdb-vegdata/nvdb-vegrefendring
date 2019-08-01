@@ -146,34 +146,43 @@ function hentVegreferanser(hvaslags) {
     var oppdaterUrlParams = false; 
     if (hvaslags == 'knappeklikk') {
 
-        fylke       = document.getElementById("fylke").value; 
-        kommune     = document.getElementById("kommune").value;
+        fylke       = parseInt(document.getElementById("fylke").value); 
+        kommune     = parseInt(document.getElementById("kommune").value);
         vegkat      = document.getElementById("vegkategori").value;
         vegstatus   = document.getElementById("vegstatus").value;
-        vegnr       = document.getElementById("vegnr").value;
-        hp          = document.getElementById("hp").value;
-        meter       = document.getElementById("meter").value;
+        vegnr       = parseInt(document.getElementById("vegnr").value);
+        hp          = parseInt(document.getElementById("hp").value);
+        meter       = parseInt(document.getElementById("meter").value);
         dato       = document.getElementById("dato").value;
     
         oppdaterUrlParams = true;
     } else if (hvaslags == 'urlparams') {
         var myUrl = window.location.href;
-        fylke       = parseFloat( getUrlParameter( myUrl, "fylke")); 
-        kommune     = parseFloat( getUrlParameter( myUrl, "kommune"));
-        vegkat      = parseFloat( getUrlParameter( myUrl, "vegkat"));
-        vegstatus   = parseFloat( getUrlParameter( myUrl, "vegstatus"));
-        vegnr       = parseFloat( getUrlParameter( myUrl, "vegnr"));
-        hp          = parseFloat( getUrlParameter( myUrl, "hp"));
-        meter       = parseFloat( getUrlParameter( myUrl, "meter"));
-        dato        = parseFloat( getUrlParameter( myUrl, "dato"));
+        fylke       = parseInt( getUrlParameter( myUrl, "fylke")); 
+        kommune     = parseInt( getUrlParameter( myUrl, "kommune"));
+        vegkat      = getUrlParameter( myUrl, "vegkat");
+        vegstatus   = getUrlParameter( myUrl, "vegstatus");
+        vegnr       = parseInt( getUrlParameter( myUrl, "vegnr"));
+        hp          = parseInt( getUrlParameter( myUrl, "hp"));
+        meter       = parseInt( getUrlParameter( myUrl, "meter"));
+        dato        = getUrlParameter( myUrl, "dato");
 
        oppdaterUrlParams = false;
 
     }
     
-    // Her kommer kvalitettsjekk av verdiene... Muligens med advarsel
+    // Her kommer kvalitettsjekk av verdiene... Muligens med advarsel?
+    
+    // Sammendrag-tekst
+    var vegreftekst = fylke.toString().padStart(2,'0') + kommune.toString().padStart(2,'0') + ' ' +  
+                        vegkat.toUpperCase() + vegstatus.toLowerCase() + vegnr.toString() + 
+                        ' hp' + hp.toString() + ' m' + meter.toString(); 
+                        
+    console.log( 'Henter data for ' + vegreftekst) 
+    
     
     map.closePopup;
+    $("#bruksanvisning1").empty();
     $("#vegreferanseTabell").empty();
     
     var vegrefApi = 'https://python.ltglahn.no/vegreferanse?fylke='+fylke +
@@ -190,8 +199,13 @@ function hentVegreferanser(hvaslags) {
             var respons = JSON.parse(xhr.responseText);
  
             if (respons['features'].length === 0) {
-                console.log( "Ingen vegreferanse(r) funnet for " + vegrefApi); 
+                console.log( "Ingen vegreferanse(r) funnet for " + vegreftekst ); 
+                $("#bruksanvisning1").append('<h2>Ugyldig vegreferanse: ' + vegreftekst +  '</h2>' );
             } else { 
+
+                $("#bruksanvisning1").empty();
+                $("#bruksanvisning1").append('<h2>Resultater for ' + vegreftekst +  '</h2>' );
+
             
                 // Slår sammen features som har (tilnærmet) identisk posisjon:  
                 var myGeo = []; 
@@ -202,6 +216,22 @@ function hentVegreferanser(hvaslags) {
                     var props  = JSON.parse( JSON.stringify( respons['features'][index]['properties'] )) ;
                     var mittNummer = index + 1; 
                     props['visningsnummer'] = mittNummer.toString(); 
+                    
+                    // Legger resultatene i tabell 
+                    // Lag table header 
+                    if ($("#vegreferanseTabell tbody").length == 0) {
+                      $("#vegreferanseTabell").append("<thead>" + 
+                      "<th><em>Nummer</em></th>" + 
+                      "<th><em>Gyldig fra</em></th>" + 
+                      "<th><em>Gyldig til</em></th></tr></thead><tbody></tbody>");
+                    }
+                    // Append product to the table
+                    var myTableRow = "<tr " + 'class="'  + props['fremhev'] +  '">' +
+                        "<td>" + props['visningsnummer'] + "</td>" +
+                        "<td>" + props['fradato'] + "</td>" +
+                        "<td>" + props['tildato'] + "</td>" +
+                      "</tr>"; 
+                    $("#vegreferanseTabell tbody").append(myTableRow);
 
                     // Unngår å modifisere det elementet vi itererer over. I stedet kopierer vi 
                     // over til tempGeo, med eller uten endringer 
@@ -229,6 +259,7 @@ function hentVegreferanser(hvaslags) {
                     myGeo = JSON.parse( JSON.stringify( tempGeo)); 
                     
                 }
+                
                 
             }
                 
@@ -468,7 +499,8 @@ L.control.zoom({
 function lagPunktHistorikkTabell( jsondata) {
 
     $("#vegreferanseTabell").empty(); 
-    
+    $("#bruksanvisning1").empty();
+    var coordstring = ''; 
     var arrayLength = jsondata['features'].length;
     for (var i = 0; i < arrayLength; i++) {
 
@@ -478,11 +510,10 @@ function lagPunktHistorikkTabell( jsondata) {
           "<th><em>Gyldig fra</em></th>" + 
           "<th><em>Gyldig til</em></th></tr></thead><tbody></tbody>");
         }
-          
-        $("#bruksanvisning1").empty();
-        var coordstring = Math.round(jsondata['features'][0]['geometry']['coordinates'][0]).toString() + ', ' +
+
+        coordstring = Math.round(jsondata['features'][0]['geometry']['coordinates'][0]).toString() + ', ' +
                           Math.round(jsondata['features'][0]['geometry']['coordinates'][1]).toString() ; 
-        $("#bruksanvisning1").append('<h2>Vegreferanseverdier i punkt (' + coordstring + ')</h2>');
+        
         // Append product to the table
         var myTableRow = "<tr " + 'class="'  + jsondata['features'][i]['properties']['fremhev'] +  '">' +
             "<td>" + jsondata['features'][i]['properties']['vegref'] + "</td>" +
@@ -491,7 +522,7 @@ function lagPunktHistorikkTabell( jsondata) {
           "</tr>"; 
         $("#vegreferanseTabell tbody").append(myTableRow);
     }
-    
+    $("#bruksanvisning1").append('<h2>Vegreferanseverdier i punkt (' + coordstring + ')</h2>');
 }    
 
 
