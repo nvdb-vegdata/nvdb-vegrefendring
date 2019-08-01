@@ -133,7 +133,7 @@ Vegstatus:
 
 <script>
 
-var posisjonToleranse = 3 // Hvor mye avvik vi tolererer, i meter, før vi sier at to posisjoner er like
+var posisjonToleranse = 5 // Hvor mye avvik vi tolererer, i meter, før vi sier at to posisjoner er like
 
 var myMarkers = L.featureGroup(); 
 var myCircles = L.featureGroup(); 
@@ -198,7 +198,10 @@ function hentVegreferanser(hvaslags) {
     // console.log( vegreftekst2) 
     
     map.closePopup();
-    if (map.hasLayer(myMarkers)){ myMarkers.eachLayer(function(l){ myMarkers.removeLayer(l)  } ) }
+    if (map.hasLayer(myMarkers)){ 
+        myMarkers.eachLayer(function(l){ myMarkers.removeLayer(l) } );
+        myMarkers.clearLayers(); 
+   }
     if (map.hasLayer(myCircles)){ myMarkers.eachLayer(function(l){ myCircles.removeLayer(l)  } ) }
 //    if (map.hasLayer(myCircles)){ map.removeLayer(myCircles) }
 
