@@ -109,6 +109,9 @@ Vegstatus:
 
 <div id="map" class="map map-home" style="height: 50vh; width=100%;"></div>
 
+<div id="bruksanvisning1"><h2>Klikk på en veg i kartet for å se historikken akkurat der</h2></div>. 
+
+
 <div id="resultater">
       <table id="vegreferanseTabell"
               class="table table-bordered
@@ -116,7 +119,7 @@ Vegstatus:
        </table>
 </div> 
 
-<p id="bruksanvisning1">Klikk på en veg i kartet for å se historikken akkurat der</p>. 
+
 
 
 
@@ -125,6 +128,9 @@ Vegstatus:
 -->
 
 <script>
+
+var posisjonToleranse = 0.1 // Hvor mye avvik vi tolererer, i meter, før vi sier at to posisjoner er like
+
 function hentVegreferanser(hvaslags) {
     /* Hvaslags - er vi kalt opp via URL parametre når siden lastes, eller klikk på knappen?
     */
@@ -189,11 +195,43 @@ function hentVegreferanser(hvaslags) {
             
                 // Slår sammen features som har (tilnærmet) identisk posisjon:  
                 var myGeo = []; 
+                var tempGeo = []; 
 
                 for (index = 0; index < respons['features'].length; ++index) {
-                    var coords = respons['features'][index]['geometry']['coordinates'];
-                    var props = respons['features'][index]['properties'] ;
+                    var coords = JSON.parse( JSON.stringify( respons['features'][index]['geometry']['coordinates'] ));
+                    var props  = JSON.parse( JSON.stringify( respons['features'][index]['properties'] )) ;
+                    var mittNummer = index + 1; 
+                    props['visningsnummer'] = mittNummer.toString(); 
 
+                    // Unngår å modifisere det elementet vi itererer over. I stedet kopierer vi 
+                    // over til tempGeo, med eller uten endringer 
+                    // bruker JSON.parse(JSON.stringify( object)) for å få "deepCopy" 
+                    var match = false; 
+                    
+                    tempGeo = []
+                    for (jj = 0; jj < myGeo.length; ++jj) {
+                        var tempResultat = JSON.parse( JSON.stringify( myGeo[jj])); 
+                        var dx = coords[0] - tempResultat['coords'][0]; 
+                        var dy = coords[1] - tempResultat['coords'][1]; 
+                        if (Math.abs(dx) < posisjonToleranse && Math.abs(dy) < posisjonToleranse) { 
+                                
+                            match = true; 
+                            tempResultat['props']['visningsnummer'] = tempResultat['props']['visningsnummer'].concat( ', ' +  mittNummer.toString()); 
+                               
+                        } 
+                        tempGeo.push( tempResultat ); 
+                    
+                    }
+                    // Ingen match mot gamle elementer? Føyer nye elementer til tempGeo - array 
+                    if (!match) { 
+                        tempGeo.push( { 'coords' : coords, 'props' : props } );
+                    }
+                    myGeo = JSON.parse( JSON.stringify( tempGeo)); 
+                    
+                }
+                
+            }
+                
 /*
 
 if (map.hasLayer(minLayerGroup)) { map.removeLayer( asdf)}
@@ -205,11 +243,9 @@ Evt featureGroup??
 
 
 */
-
-                    
-                    
-                }
-            }
+                
+                
+            
         }
      }
 }
@@ -443,7 +479,10 @@ function lagPunktHistorikkTabell( jsondata) {
           "<th><em>Gyldig til</em></th></tr></thead><tbody></tbody>");
         }
           
-        $("#bruksanvisning1").remove();
+        $("#bruksanvisning1").empty();
+        var coordstring = Math.round(jsondata['features'][0]['geometry']['coordinates'][0]).toString() + ', ' +
+                          Math.round(jsondata['features'][0]['geometry']['coordinates'][1]).toString() ; 
+        $("#bruksanvisning1").append('<h2>Vegreferanseverdier i punkt (' + coordstring + ')</h2>');
         // Append product to the table
         var myTableRow = "<tr " + 'class="'  + jsondata['features'][i]['properties']['fremhev'] +  '">' +
             "<td>" + jsondata['features'][i]['properties']['vegref'] + "</td>" +
