@@ -418,7 +418,8 @@ function sjekkUrlParams() {
     var myUrl = window.location.href; 
     var visningstype = getUrlParameter(myUrl, "kartvisning"); 
     var dato = getUrlParameter(myUrl, "dato");
-       
+      
+    $('#fylke').val(8); 
     
     if (visningstype === "posisjon") { 
         console.log( "Viser tidsutvikling vegreferanse i fast posisjon" ); 
