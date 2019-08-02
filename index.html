@@ -109,16 +109,15 @@ Vegstatus:
 
 
 
-<div id="bruksanvisning1"><h2><a href="tutorial.html">Brukerveiledning</a> - Kom i gang:</h2>
+<div id="bruksanvisning1"><h2>Kom i gang:</h2>
     <ul>
       <li>Knappen <em>Hent denne vegreferansen</em> viser hvordan den valgte vegreferansen har flyttet seg i tid og rom.</li>
-      <li>Klikk på en veg i kartet for å se hvilke vegreferanseverdier som har vært brukt akkurat der</li>
+      <li><em>Klikk på en veg i kartet</em> for å se hvilke vegreferanseverdier som har vært brukt akkurat der</li>
       <li>Hvis du er ute på vegen og vil se endringer akkurat der du står kan du bruke knappen <em>Hent vegreferanse i min posisjon</em></li>
     </ul>
 
     <p>Du kan også velge hvilken dato som skal <span class="fremhev">fremheves</span> spesielt</p>
 </div>. 
-
 
 <div id="resultater">
       <table id="vegreferanseTabell"
@@ -133,7 +132,9 @@ Vegstatus:
     </p>
 </div> 
 
-
+<div>
+<h2><a href="tutorial.html">Brukerveiledning</a></h2>
+</div>
 <!--
 <p>Vi fremhever den vegreferansen gyldig i dag, og eventuelt for den datoen du har valgt.</p>
 -->
@@ -141,6 +142,8 @@ Vegstatus:
 <script>
 
 var posisjonToleranse = 5 // Hvor mye avvik vi tolererer, i meter, før vi sier at to posisjoner er like
+var posisjonToleranseX = 5 // Skiller på X og Y, finjusteres etter hvert som vi får erfaring
+var posisjonToleranseY = 5 // 
 
 var myMarkers = L.featureGroup(); 
 var myCircles = L.featureGroup(); 
@@ -307,7 +310,7 @@ function hentVegreferanser(hvaslags) {
                         var tempResultat = JSON.parse( JSON.stringify( myGeo[jj])); 
                         var dx = coords[0] - tempResultat['coords'][0]; 
                         var dy = coords[1] - tempResultat['coords'][1]; 
-                        if (Math.abs(dx) < posisjonToleranse && Math.abs(dy) < posisjonToleranse) { 
+                        if (Math.abs(dx) < posisjonToleranseX && Math.abs(dy) < posisjonToleranseY) { 
                                 
                             match = true; 
                             tempResultat['props']['visningsnummer'] = tempResultat['props']['visningsnummer'].concat( ', ' +  mittNummer.toString()); 
@@ -382,8 +385,20 @@ $(function(){
 
     }
 
-    $('#dato').dropdownDatepicker({ 'defaultDate' : dato, maxYear: 2021, minYear: 1950 } );
- 
+    $('#dato').dropdownDatepicker({ 'defaultDate' : dato, 
+                                    maxYear: 2021, 
+                                    minYear: 1950, 
+                                    dayLabel: 'Dag',
+                                    monthLabel: 'Måned',
+                                    yearLabel: 'År',
+                                    monthLongValues: ['Januar', 'Februar', 'Mars', 
+                                        'April', 'Mai', 'Juni', 'Juli', 'August', 
+                                        'September', 'Oktober', 'November', 'Desember'],
+                                    monthShortValues: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 
+                                            'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
+//                                    initialDayMonthYearValues: ['Day', 'Month', 'Year'],
+                                    daySuffixValues: ['ste', 'de', 'dje', 'de']
+                                    } ); 
 });
 
 function sjekkdato( mystring) {
@@ -737,7 +752,7 @@ function onMapClick(e) {
 map.on( 'click', onMapClick); 
 $('.leaflet-container').css('cursor','crosshair');
 
-
+L.control.scale({ imperial : false }  ).addTo(map);
 
 </script>
 </body>
