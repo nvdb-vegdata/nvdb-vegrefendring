@@ -97,7 +97,7 @@ Vegstatus:
   <input id="meter" type="number" name="quantity" min="0" max="99999" value="0">
 </p>
 <p>
-    <button onClick="hentVegreferanser('knappeklikk')" >Hent vegreferanser</button> 
+    <button onClick="hentVegreferanser('knappeklikk')" >Hent denne vegreferansen</button> 
 </p>  
 
 <!-- </form> -->
@@ -107,23 +107,16 @@ Vegstatus:
 
 <div id="map" class="map map-home" style="height: 50vh; width=100%;"></div>
 
-<div id="egenposisjon">
-<p>
-<button onClick="map.locate( { setView : true, maxZoom: 14 } )">Hent vegreferanse i min posisjon</button>
-</p>
-</div> 
 
 
-<div id="bruksanvisning1"><h2>Kom i gang:</h2>
+<div id="bruksanvisning1"><h2><a href="tutorial.html">Brukerveiledning</a> - Kom i gang:</h2>
+    <ul>
+      <li>Knappen <em>Hent denne vegreferansen</em> viser hvordan den valgte vegreferansen har flyttet seg i tid og rom.</li>
+      <li>Klikk på en veg i kartet for å se hvilke vegreferanseverdier som har vært brukt akkurat der</li>
+      <li>Hvis du er ute på vegen og vil se endringer akkurat der du står kan du bruke knappen <em>Hent vegreferanse i min posisjon</em></li>
+    </ul>
 
-<ul>
-  <li>Klikk i kartet for å se hvilke vegreferanseverdier som har vært i akkurat det punktet</li>
-  <li>Knappen <em>Hent vegreferanse i min posisjon</em> gir tidsutvikling der du står.</li>
-  <li>Eller angi en vegreferanse og se hvordan den har flyttet seg i tid og rom</li>
-</ul>
-
-<p>Du kan også velge en dato som skal <span class="fremhev">fremheves</span> spesielt</p>
-
+    <p>Du kan også velge hvilken dato som skal <span class="fremhev">fremheves</span> spesielt</p>
 </div>. 
 
 
@@ -132,6 +125,12 @@ Vegstatus:
               class="table table-bordered
                      table-condensed">
        </table>
+</div> 
+
+<div id="egenposisjon">
+    <p>
+    <button onClick="map.locate( { setView : true, maxZoom: 14 } )">Hent vegreferanse i min posisjon</button>
+    </p>
 </div> 
 
 
