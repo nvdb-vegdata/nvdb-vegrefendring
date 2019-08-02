@@ -107,11 +107,22 @@ Vegstatus:
 
 <div id="map" class="map map-home" style="height: 50vh; width=100%;"></div>
 
-<div id="bruksanvisning1"><h2>Klikk på en veg i kartet for å se historikken akkurat der</h2>
+<div id="egenposisjon">
+<p>
+<button onClick="map.locate( { setView : true, maxZoom: 14 } )">Hent vegreferanse i min posisjon</button>
+</p>
+</div> 
 
-<p>Velg en vegreferanse og se hvor den har vært til ulike tider, <em>eller</em> klikk på en veg i kartet for å se hvilke vegreferanser som har vært i bruk akkurat der</p>
 
-<p>Du kan også velge en dato som skal fremheves spesielt</p>
+<div id="bruksanvisning1"><h2>Kom i gang:</h2>
+
+<ul>
+  <li>Klikk i kartet for å se hvilke vegreferanseverdier som har vært i akkurat det punktet</li>
+  <li>Knappen <em>Hent vegreferanse i min posisjon</em> gir tidsutvikling der du står.</li>
+  <li>Eller angi en vegreferanse og se hvordan den har flyttet seg i tid og rom</li>
+</ul>
+
+<p>Du kan også velge en dato som skal <span class="fremhev">fremheves</span> spesielt</p>
 
 </div>. 
 
@@ -122,9 +133,6 @@ Vegstatus:
                      table-condensed">
        </table>
 </div> 
-
-
-
 
 
 <!--
@@ -270,11 +278,11 @@ function hentVegreferanser(hvaslags) {
                     // Lag table header 
                     if ($("#vegreferanseTabell tbody").length == 0) {
                       $("#vegreferanseTabell").append("<thead>" + 
-                      "<th><em>Nummer</em></th>" + 
-                      "<th><em>Gyldig fra</em></th>" + 
-                      "<th><em>Gyldig til</em></th>"  + 
-                      "<th><em>X</em></th>"  + 
-                      "<th><em>Y</em></th>"  + 
+                      "<tr><th><em>Nummer</em></th>" + 
+                          "<th><em>Gyldig fra</em></th>" + 
+                          "<th><em>Gyldig til</em></th>"  + 
+                          "<th><em>X</em></th>"  + 
+                          "<th><em>Y</em></th>"  + 
                       "</tr></thead><tbody></tbody>");
                     }
 
@@ -354,12 +362,7 @@ function hentVegreferanser(hvaslags) {
                 map.fitBounds( myMarkers.getBounds());
                 map.zoomOut(); 
                 
-            }
-                
-
-                
-                
-            
+            }            
         }
      }
 }
@@ -443,10 +446,7 @@ function sjekkUrlParams() {
         console.log( "Viser ulike posisjoner for en gitt vegreferanse") ;
         hentVegreferanser('urlparams'); 
                 
-    } else {
-        console.log( "Parameter kartvisning ikke (korrekt) angitt, posisjon eller vegreferanse") ;
-    }
-
+    } 
 }
 
 
@@ -610,12 +610,44 @@ function lagPunktHistorikkTabell( jsondata) {
 }    
 
 
+
+function onLocationFound(e) {
+    var radius = e.accuracy;
+    map.closePopup();
+
+    var kartklikkMarker =  L.popup();
+    kartklikkMarker
+                   .setLatLng( e.latlng)
+                   .setContent( "Din posisjon med " + radius + "m usikkerhet" ) 
+                   .openOn(map); 
+
+
+    var latlon = e.latlng;
+    utm33 = crs.projection.project( latlon );  
+        
+    vispunktdata( utm33.x, utm33.y, true, false); 
+
+//    L.marker(e.latlng).addTo(map)
+//        .bindPopup("Din posisjon med " + radius + "m usikkerhet").openPopup();
+
+ //    L.circle(e.latlng, radius).addTo(map);
+}
+
+map.on('locationfound', onLocationFound);
+
+
+function onLocationError(e) {
+    alert(e.message);
+}
+
+map.on('locationerror', onLocationError);
+
 function vispunktdata( ost, nord, oppdaterUrl, sentrerKart, valgtDato) {
 /*
 ost, nord = UTM koordinater, sone 33 (EPSG:25833
 oppdaterUrl : boolean. Angir om vi skal oppdatere nettleser-adressen og -historikken.
 sentrerKart : boolean. Sentrerer kartet i angitt posisjon. 
-    Brukes når posisjon angis i URL, men du sentrerer IKKE ved klikk i kartet. 
+    Brukes når posisjon angis i URL. Men ved klikk-i-kartet skal du IKKE sentrere kartet. 
 
 */
 
@@ -699,6 +731,9 @@ function onMapClick(e) {
     vispunktdata( utm33.x, utm33.y, true, false); 
  
 }
+
+
+
 
 map.on( 'click', onMapClick); 
 $('.leaflet-container').css('cursor','crosshair');

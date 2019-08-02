@@ -84,7 +84,10 @@ def vegrefkoordinat( easting=214858, northing=6687762, valgtdato=''):
                             }
 
     url = 'http://visveginfo-static.opentns.org/RoadInfoService3d/GetRoadReferenceHistoryForLocation'
-    params = { 'easting' : easting, 'northing' : northing }
+    params = { 'easting' : easting, 'northing' : northing, 
+                'TopologyLevel' : 'Overview', 
+                'searchRoadStatus' : 'V,W,T,G,A,B,H,S,M,P,X,E,U,Q' }
+                
     r = requests.get( url, params=params)
     if r.ok and '<RoadPointReferenceWithTimePeriod>' in r.text: 
 

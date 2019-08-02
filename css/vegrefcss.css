@@ -15,8 +15,16 @@ tr.idag {
  font-size : 120%; 
 } 
 
+.kommentar { 
 
-tr.fremhev { 
+  color : blue;
+  font-weight : bold; 
+  font-style : italic;
+    
+
+}
+
+.fremhev { 
 
   color : red;
   font-weight : bold; 

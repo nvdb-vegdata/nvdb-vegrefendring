@@ -1,0 +1,263 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+ <title>Historiske vegreferanser</title>
+
+ <script src="lib/jquery-3.4.1.min.js"></script>
+ <script src="lib/jquery-dropdown-datepicker.min.js"></script>
+
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="lib/leaflet/leaflet.css">
+ <link rel="stylesheet" href="css/vegrefcss.css">
+ 
+</head>
+<body>
+
+
+
+<p>Vegreferansen for et punkt på vegnettet kan endres flere ganger i vegens levetid. 
+Og en konkret vegreferanse - for eksempel 0800 Ev 18 hp1 m0 - kan finnes flere steder, til ulike tider.</p>
+
+<p>Vi på NVDB- og Geodataseksjonen i Vegdirektoratet har laget <a href="./" target="blank">dette kartverktøyet</a> for å 
+vise hvordan vegreferansene har endret seg i tid og rom. Kartet er fremdeles noe eksperimentelt.</p>
+
+<h1>Velg dato</h1>
+
+<div id="datovelger"><input type="text" id="dato"></div>
+
+<p>Datovelgeren angir hvilken dato som skal <span class="fremhev">fremheves</span> spesielt, i kart og tabell.
+
+
+<h1>Velg en bestemt vegreferanse</h1>
+
+<p>
+fylke:
+  <select name="fylke" id="fylke" value="8">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+    <option value="14">14</option>
+    <option value="15">15</option>
+    <option value="18">18</option>
+    <option value="19">19</option>
+    <option value="20">20</option>
+    <option value="50">50</option>
+  </select>
+
+  Kommune:
+  <input id="kommune" type="number" name="quantity" min="0" max="99" value="0">
+
+
+Vegkategori:
+  <select name="vegkategori" id="vegkategori" value="E">
+    <option value="E">E</option>
+    <option value="R">R</option>
+    <option value="F">F</option>
+    <option value="K">K</option>
+    <option value="P">P</option>
+    <option value="S">S</option>
+  </select>
+
+Vegstatus:
+  <select name="vegstatus" id="vegstatus" value="V">
+    <option value="V">V</option>
+    <option value="W">W</option>
+    <option value="T">T</option>
+    <option value="S">S</option>
+    <option value="G">G</option>
+    <option value="U">U</option>
+    <option value="B">B</option>
+    <option value="M">M</option>
+    <option value="X">X</option>
+    <option value="A">A</option>
+    <option value="H">H</option>
+    <option value="P">P</option>
+    <option value="E">E</option>
+    <option value="Q">Q</option>
+  </select>
+
+  Vegnr:
+  <input id="vegnr" type="number" name="quantity" min="1" max="999" value="18">
+  Hp:
+  <input id="hp" type="number" name="quantity" min="1" max="999" value="1">
+  Meter:
+  <input id="meter" type="number" name="quantity" min="0" max="99999" value="0">
+</p>
+
+<p>Med disse valgene angir du den vegreferansen som er interessant for deg, og se hvordan den har flyttet seg i tid og rom.</p>
+
+<img src="img/eks0800ev18h1m0.png" alt="Tidsutvikling for vegreferansen 0800 Ev 18 hp1 m0" >
+
+<table>
+<thead>
+<tr>
+    <th><em>Nummer</em></th>
+    <th><em>Gyldig fra</em></th>
+    <th><em>Gyldig til</em></th>
+    <th><em>X</em></th>
+    <th><em>Y</em></th>
+</tr>
+</thead>
+<tbody>
+
+    <tr class="fremhevidag">
+      <td>1</td>
+      <td>2012-06-06</td>
+      <td>9999-12-31</td>
+      <td>205102.57</td>
+      <td>6560292.99</td>
+    </tr>
+
+    <tr class="gammalt">
+      <td>2</td>
+      <td>1950-01-01</td>
+      <td>2012-06-06</td>
+      <td>205060.17</td>
+      <td>6560102.44</td>
+    </tr>
+
+</tbody>
+</table>
+
+<p>I eksemplet over ser vi hvordan <em>hp1 meter 0</em> på E18 i Telemark flyttet seg da 
+<a href="https://www.vegvesen.no/Europaveg/e18skylangangen" target="blank">E18 motorvegen 
+Sky-Langangen åpnet i 2012</a>. Den gamle E18-traséen, markert med tallet 2 i kart og tabell, 
+er i dag blitt til Fv 2962.</p>
+
+<h1>Klikk i kartet</h1>
+
+Ved å klikke på en veg i kartet kan du se hvordan vegreferansen har endret seg i dette punktet. 
+
+<p>
+<img src="img/eks0800fv2962h2m0.png" alt="Tidsutvikling av vegreferanse for et punkt i vegnettet" >
+</p>
+
+<p>
+<table>
+<thead>
+<tr>
+    <th><em>Vegreferanse</em></th>
+    <th><em>Gyldig fra</em></th>
+    <th><em>Gyldig til</em></th>
+    <th><em><span class="kommentar">Kommentar</span></em></th>
+</tr>
+</thead>
+<tbody>
+
+    <tr class="fremhevidag">
+      <td>0800 Fv2962 hp2 m0</td>
+      <td>2019-05-08</td>
+      <td>9999-12-31</td>
+      <td ><span class="kommentar">Dagens verdi</span></td>
+    </tr>
+    
+    <tr class="gammalt">
+      <td>0800 Fv30 hp1 m0</td>
+      <td>2013-11-19</td>
+      <td>2019-05-08</td>
+      <td ><span class="kommentar"></span></td>
+    </tr>
+
+    <tr class="gammalt">
+      <td>0800 Fv30 hp1 m0</td>
+      <td>2013-10-28</td>
+      <td>2013-11-19</td>
+      <td ><span class="kommentar"></span></td>
+    </tr>
+
+    <tr class="gammalt">
+      <td>0800 Et18 hp1 m0</td>
+      <td>2012-06-06</td>
+      <td>2013-10-28</td>
+      <td ><span class="kommentar">Midlertidig vegstatus</span></td>
+    </tr>
+
+    <tr class="gammalt">
+      <td>0800 Ev18 hp1 m0</td>
+      <td>1950-01-01</td>
+      <td>2012-06-06</td>
+      <td ><span class="kommentar">Gammel E18 trasé</span></td>
+    </tr>
+
+</tbody>
+</table>
+</p>
+
+<p>Av tabellen ser vi at Fv2962 het Fv30 før 8. mai 2019. Videre har vi to 
+oppføringer for <em>Fv30 hp1 m0</em>. Dette er ganske vanlig. 
+<em>(Det skjer en del vegnettsendringer uten at det påvirker vegreferanseverdiene)</em>. 
+
+<p>Til sist ser vi at vegen var Ev18 fram til 2012-06-06, men det tok over ett 
+år (fram til 2013-10-28) før vegen fikk fylkesveg-nummeret Fv30. I mellomtiden het vegen <em>Et18</em>, 
+hvor bokstaven "t" betyr <em>midlertidig status bilveg</em>. Denne verdien bruker vi blant annet 
+når tildeling av vegnummer krever avklaring mot f.eks. fylkeskommunen.</p>
+</p>
+
+<!--
+<h2>Hvorfor endrer vi vegreferanser?</h2>
+
+Det er mange grunner til å at vegreferanser endres i vegens levetid:
+
+<ul>
+  <li>Vegen utbedres, med annen linjeføring og mindre svinger. (Typisk konsekvens: Gamle meterverdier blir feil)</li>
+  <li>Nye veger "overtar" vegnummeret, mens den gamle europavegen blir fylkesveg eller kommunal veg.</li>
+  <li>Kommune- og fylkessammenslåing</li>
+  <li>Teknisk vedlikehold, f.eks. opprydding i hp-inndeling.</li>
+</ul>
+-->
+<script>
+/* Datovelger */
+$(function(){
+
+   
+
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    dato = yyyy + '-' + mm + '-' + dd; 
+
+   
+    $('#dato').dropdownDatepicker({ 'defaultDate' : dato, maxYear: 2021, minYear: 1950 } );
+ 
+});
+
+function sjekkdato( mystring) {
+// Sjekker om dato er på format 2018-12-30 
+
+    var godkjent = false;     
+    if (mystring === undefined)  {
+        // Do nothing. Log to console? Nah... 
+    } else { 
+    
+
+        var myArr = mystring.split( '-'); 
+        if (myArr.length == 3) {
+            var yyyy = parseInt( myArr[0] ); 
+            var mm = parseInt( myArr[1] ); 
+            var dd = parseInt( myArr[2] ); 
+            
+            if (!isNaN( yyyy ) && !isNaN( mm ) && !isNaN( dd)  && 
+                yyyy > 1949 && yyyy < 1e4 && mm > 0 && mm < 13 && dd > 0 && dd < 32) {
+                    godkjent = true; 
+            }
+            
+        }
+    }
+    return godkjent
+
+}
+
+</script>
+
+</body>
+</html>
