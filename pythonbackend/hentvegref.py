@@ -119,6 +119,81 @@ def vegrefkoordinat( easting=214858, northing=6687762, valgtdato=''):
         
     return gjcollection
 
+def sammenlign( kandidat, neste, koordinattoleranse = 1e-6): 
+    """
+    Regler for nå to oppføringer kan slås sammen: Samme koordinat, samme vegref-verdi og tilstøtende datoer
+    """
+    
+    dx = kandidat['geometry']['coordinates'][0] - neste['geometry']['coordinates'][0]
+    dy = kandidat['geometry']['coordinates'][1] - neste['geometry']['coordinates'][1]
+    
+    if abs( dx) < koordinattoleranse and abs( dy) < koordinattoleranse and \
+        kandidat['properties']['vegref'] == neste['properties']['vegref'] and \
+        kandidat['properties']['fradato'] == neste['properties']['tildato']: 
+        
+        return True
+        
+    else: 
+    
+        return False 
+
+def velgfremhev( A, B): 
+    """
+    Velger den 'fremhev'-teksten som har størst informasjonsverdi
+    
+    Ideen er at vi slår sammen to features til ett når de har identisk vegreferanse og posisjon
+    og tilstøtende datoer. Da må vi også overføre den "fremhev" - teksten som matcher best vårt problem
+    """ 
+    
+    AB = A + B 
+    if  'fremhev' in AB and 'idag' in AB: 
+        return 'fremhevidag'
+    elif 'fremhev' in AB: 
+        return 'fremhev'
+    elif 'idag' in AB: 
+        return 'idag' 
+    elif 'forrige' in AB: 
+        return 'forrige' 
+    else: 
+        return 'gammalt' 
+    
+    
+
+
+def fjerndubletter( vegrefliste ): 
+    """
+    Fjerner dubletter fra listen. Disse kommer sortert på dato i omvendt rekkefølge, 
+    dvs nyeste først. 
+    """
+    
+    
+    nyliste = deepcopy( vegrefliste )
+    nyliste['features'] = []
+    
+    antall = len( vegrefliste['features'] )
+    if antall == 0: 
+        return vegrefliste 
+        
+    kandidat = deepcopy( vegrefliste['features'][0] ) 
+    for index in range( 1, len( vegrefliste['features'])): 
+        neste = deepcopy( vegrefliste['features'][index] ) 
+            
+        if sammenlign( kandidat, neste): 
+            # Overfør relevante egenskaper og utvid dato-intervallet. 
+            # Kandidaten med utvidet datointervall gjenbrukes på neste "neste" - datasett. 
+            kandidat['properties']['fradato'] = neste['properties']['fradato']  
+            kandidat['properties']['fremhev'] = velgfremhev( kandidat['properties']['fremhev'], 
+                                                                neste['properties']['fremhev'] ) 
+            
+            
+        else: 
+            nyliste['features'].append( deepcopy ( kandidat ))
+            kandidat = deepcopy( neste) 
+            
+    nyliste['features'].append( neste) 
+    
+    return nyliste 
+    
 
 def sorterdato( vegrefliste, valgtdato='' ): 
     """ 
