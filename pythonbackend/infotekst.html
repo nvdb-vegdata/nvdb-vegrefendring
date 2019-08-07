@@ -15,11 +15,13 @@ tr {
 </head>
 <body>
 
+<h1>Hent historiske vegreferanser som geojson</h1>
+
 <p>Wrapper rundt <a href="http://visveginfo-static.opentns.org/help.htm" >visveginfo</a>-tjenesten. Returnere tidsutvikling for vegreferanse som geojson featureCollection. Hvis det du ber om ikke finnes så er listen over features tom. Merk at koordinatene er UTM-koordinater for sone 33 (EPSG:25833). Dette er strengt tatt ikke gyldig geojson (som skal ha lengde/breddegrad), men vi ser gjennom fingrene med det akkurat nå.</p> 
 
 <p>Om du er interessert i vegreferansen som var gyldig på en gitt dato kan du angi det i spørringen. Svaret vil da utheve den verdien som var gyldig på det tidspunktet med egenskapverdien <em>fremhev=fremhev</em>, alternativt <em>fremhev=fremhevidag</em> hvis vegreferansen for angitt dato fremdeles er gyldig i dag. 
 
-<h1>Endepunkt <a href="https://python.ltglahn.no/posisjon?ost=259491.89&nord=7030393" >/posisjon</a></h1>
+<h1>Endepunkt <a href="./posisjon?ost=259491.89&nord=7030393" >/posisjon</a></h1>
 
 <p>Oppslag på geografisk koordinat. Viser tidsutvikling av vegreferanse i et punkt i vegnettet. 
 
@@ -48,9 +50,8 @@ tr {
   -->
   <tr>
     <td>fjerndubletter</td>
-    <td>false</td>
-    <td>Valgfri. Slår sammen oppføringer som har samme posisjon og er naboer i tid (fradato på den ene = 
-    tildato på den andre). Gyldig syntaks er <em>fjerndubletter=true</em> </td>
+    <td>Valgfri, default=false. Slår sammen oppføringer som har samme posisjon og er naboer i tid (fradato på den ene = 
+    tildato på den andre). Gyldig syntaks for å bruke denne funksjonen er <em>fjerndubletter=true</em> </td>
   </tr>
 
 </table>
