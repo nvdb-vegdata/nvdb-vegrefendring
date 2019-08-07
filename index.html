@@ -97,7 +97,7 @@ Vegstatus:
   <input id="meter" type="number" name="quantity" min="0" max="99999" value="0">
 </p>
 <p>
-    <button onClick="hentVegreferanser('knappeklikk')" >Hent denne vegreferansen</button> 
+    <button class="myButton" onClick="hentVegreferanser('knappeklikk')" >Hent denne vegreferansen</button> 
 </p>  
 
 <!-- </form> -->
@@ -128,7 +128,7 @@ Vegstatus:
 
 <div id="egenposisjon">
     <p>
-    <button onClick="map.locate( { setView : true, maxZoom: 14 } )">Hent vegreferanse i min posisjon</button>
+    <button class="myButton"  onClick="map.locate( { setView : true, maxZoom: 14 } )">Hent vegreferanse i min posisjon</button>
     </p>
 </div> 
 
@@ -220,7 +220,7 @@ function hentVegreferanser(hvaslags) {
     
     var vegrefApi = 'https://python.ltglahn.no/vegreferanse?fylke='+fylke +
         '&kommune='+kommune + '&kat=' + vegkat + '&stat=' + vegstatus + 
-        '&vegnr=' + vegnr + '&hp=' + hp + '&meter=' + meter + '&dato=' + dato;
+        '&vegnr=' + vegnr + '&hp=' + hp + '&meter=' + meter + '&dato=' + dato + '&fjerndubletter=true';
     
     console.log(vegrefApi); 
     var xhr = new XMLHttpRequest();
@@ -677,12 +677,12 @@ sentrerKart : boolean. Sentrerer kartet i angitt posisjon.
    if (sjekkdato(mindato)) {
 
        historikkApi = 'https://python.ltglahn.no/posisjon?ost='+ost +
-        '&nord='+nord + '&dato=' + mindato;
+        '&nord='+nord + '&dato=' + mindato + '&fjerndubletter=true';
    
    } else { 
 
        historikkApi = 'https://python.ltglahn.no/posisjon?ost='+ost +
-        '&nord='+nord;
+        '&nord='+nord + '&fjerndubletter=true';
     
     }
     console.log(historikkApi);
