@@ -24,7 +24,7 @@ import re
 import datetime
 from copy import deepcopy 
 import pdb 
-from pyproj import Proj, transform
+# from pyproj import Proj, transform
 
 
 def sjekkdatoer( fra, til, dato): 
@@ -262,30 +262,32 @@ def reprojiser( gjcollection, crs1=25833, crs2=4326):
     """
     """ 
 
-    try: 
-        inProj = Proj(init= 'epsg:' + str(crs1))
-        outProj = Proj(init= 'epsg:' + str(crs2))
-    except RuntimeError: 
-        return gjcollection 
-    else: 
+    return gjcollection
+
+    # try: 
+        # inProj = Proj(init= 'epsg:' + str(crs1))
+        # outProj = Proj(init= 'epsg:' + str(crs2))
+    # except RuntimeError: 
+        # return gjcollection 
+    # else: 
     
-        retdata = deepcopy( gjcollection) 
-        retdata['features'] = []
-        for feat in gjcollection['features']: 
-            (x2,y2) = transform(inProj, outProj, feat['geometry']['coordinates'][0], feat['geometry']['coordinates'][1] )
-            nyfeat = deepcopy( feat) 
-            nyfeat['geometry']['coordinates'][0] = x2
-            nyfeat['geometry']['coordinates'][1] = y2
+        # retdata = deepcopy( gjcollection) 
+        # retdata['features'] = []
+        # for feat in gjcollection['features']: 
+            # (x2,y2) = transform(inProj, outProj, feat['geometry']['coordinates'][0], feat['geometry']['coordinates'][1] )
+            # nyfeat = deepcopy( feat) 
+            # nyfeat['geometry']['coordinates'][0] = x2
+            # nyfeat['geometry']['coordinates'][1] = y2
             
-            retdata['features'].append( nyfeat) 
+            # retdata['features'].append( nyfeat) 
         
-        if str( crs2 ) == '4326':
-            if 'crs' in retdata.keys(): 
-                junk = retdata.pop('crs') 
-        else: 
-            retdata['crs'] = { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::" + str( crs2 ) } } 
+        # if str( crs2 ) == '4326':
+            # if 'crs' in retdata.keys(): 
+                # junk = retdata.pop('crs') 
+        # else: 
+            # retdata['crs'] = { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::" + str( crs2 ) } } 
             
-        return retdata 
+        # return retdata 
 
 def henthistorikk( fylke=15, kommune=0, kat='E', stat='V', 
                   vegnr=39, hp=29, meter=7618, valgtdato='', fjerndubletter=False, crs=25833):
