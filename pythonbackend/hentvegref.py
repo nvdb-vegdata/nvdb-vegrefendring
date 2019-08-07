@@ -194,7 +194,7 @@ def fjerndobbelt( vegrefliste ):
     nyliste['features'] = []
     
     antall = len( vegrefliste['features'] )
-    if antall == 0: 
+    if antall < 2: 
         return vegrefliste 
         
     kandidat = deepcopy( vegrefliste['features'][0] ) 
