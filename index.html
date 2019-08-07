@@ -632,7 +632,7 @@ function onLocationFound(e) {
     var kartklikkMarker =  L.popup();
     kartklikkMarker
                    .setLatLng( e.latlng)
-                   .setContent( "Din posisjon med " + radius + "m usikkerhet" ) 
+                   .setContent( "Din posisjon med " + Math.round( radius ) + "m usikkerhet" ) 
                    .openOn(map); 
 
 
