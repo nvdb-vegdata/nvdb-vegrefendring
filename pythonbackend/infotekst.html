@@ -37,6 +37,17 @@ tr {
     <td>dato</td>
     <td>Valgfri, kan sløyfes. Uthever den vegreferanse-verdien som er på den datoen som er mest interessant for deg</td>
   </tr>
+  <tr>
+    <td>crs</td>
+    <td>Valgfri, kan sløyfes. Koordinatsystem for returdata. Standard er 25833 (utm sone 33). 
+    Bruk crs=4326 for å få standard lon, lat verdier. <em>Bruk av UTM-koordinater i geojson er 
+    strengt tatt ikke gyldig geojson.</em></td>
+  </tr>
+    <td>fjerndubletter</td>
+    <td>false</td>
+    <td>Valgfri. Slår sammen oppføringer som har samme posisjon og er naboer i tid (fradato på den ene = 
+    tildato på den andre). Gyldig syntaks er <em>fjerndubletter=true</em> </td>
+  </tr>
 
 </table>
 
@@ -105,6 +116,20 @@ Slår opp på angitt vegreferanse og finner tidsutvikling.
     <td>Valgfri. Uthever den vegreferanse-verdien som er på den datoen som er mest interessant for deg</td>
   </tr>
 
+    <td>crs</td>
+    <td>25833</td>
+    <td>Valgfri. Koordinatsystem for returdata. Standard er 25833 (utm sone 33). 
+    Bruk crs=4326 for å få standard lon, lat verdier. <em>Bruk av UTM-koordinater i geojson er 
+    strengt tatt ikke gyldig geojson.</em></td>
+  </tr>
+
+    <td>fjerndubletter</td>
+    <td>false</td>
+    <td>Valgfri. Slår sammen oppføringer som har samme posisjon og er naboer i tid (fradato på den ene = 
+    tildato på den andre). Gyldig syntaks er <em>fjerndubletter=true</em> </td>
+  </tr>
+
+
 </table>
 
 <h4>Eksempler</h4>
@@ -112,153 +137,137 @@ Slår opp på angitt vegreferanse og finner tidsutvikling.
 <p>Kun påkrevde parametre: <a href="https://python.ltglahn.no/vegreferanse?fylke=50&kat=E&vegnr=6">
 https://python.ltglahn.no/vegreferanse?fylke=50&kat=E&vegnr=6</a>
 
-<p>Alle parametre: <a href="https://python.ltglahn.no/vegreferanse?fylke=50&kat=E&stat=V&vegnr=6&hp=2&m234&dato=2017-05-01">
-https://python.ltglahn.no/vegreferanse?fylke=50&kat=E&stat=V&vegnr=6&hp=2&m234&dato=2017-05-01</a>
+<p>Alle parametre: <a href="https://python.ltglahn.no/vegreferanse?fylke=50&kat=E&stat=V&vegnr=6&hp=2&meter=234&dato=2017-05-01">
+https://python.ltglahn.no/vegreferanse?fylke=50&kat=E&stat=V&vegnr=6&hp=2&meter234&dato=2017-05-01</a>
 </p>
 
 <h1>Eksempel på returnert geojson</h1>
 
 <pre>
 {
+    "type": "FeatureCollection",
     "features": [
         {
+            "type": "Feature",
             "geometry": {
+                "type": "Point",
                 "coordinates": [
-                    259491.78625167733,
-                    7030393.626982558,
-                    5.2634747677005209
-                ],
-                "type": "Point"
+                    221607.72397662446,
+                    6922956.212648502,
+                    823.4351722825646
+                ]
             },
             "properties": {
-                "fradato": "2019-04-07",
-                "fremhev": "idag",
+                "vegref": "5000 Ev6 hp2 m234",
+                "fradato": "2019-05-02",
                 "tildato": "9999-12-31",
-                "vegref": "5000 Fv800 hp1 m1066"
-            },
-            "type": "Feature"
+                "veglenkeid": "72145",
+                "veglenkeposisjon": 0.14300579,
+                "fremhev": "idag"
+            }
         },
         {
+            "type": "Feature",
             "geometry": {
+                "type": "Point",
                 "coordinates": [
-                    259491.78625167733,
-                    7030393.626982558,
-                    5.2634747677005209
-                ],
-                "type": "Point"
+                    226214.84937318598,
+                    6950145.6252608765,
+                    534.4892329195023
+                ]
             },
             "properties": {
-                "fradato": "2018-01-31",
-                "fremhev": "forrige",
-                "tildato": "2019-04-07",
-                "vegref": "5000 Fv800 hp2 m730"
-            },
-            "type": "Feature"
+                "vegref": "5000 Ev6 hp2 m234",
+                "fradato": "2015-10-14",
+                "tildato": "2019-05-02",
+                "veglenkeid": "2438156",
+                "veglenkeposisjon": 0.14270796,
+                "fremhev": "fremhev"
+            }
         },
         {
+            "type": "Feature",
             "geometry": {
+                "type": "Point",
                 "coordinates": [
-                    259491.786251678,
-                    7030393.626982558,
-                    5.263474767701646
-                ],
-                "type": "Point"
+                    226115.0149675297,
+                    6950317.065347192,
+                    528.4610572504488
+                ]
             },
             "properties": {
-                "fradato": "2018-01-01",
-                "fremhev": "gammalt",
-                "tildato": "2018-01-31",
-                "vegref": "5000 Fv6642 hp2 m728"
-            },
-            "type": "Feature"
+                "vegref": "5000 Ev6 hp2 m234",
+                "fradato": "2014-02-13",
+                "tildato": "2015-10-14",
+                "veglenkeid": "72804",
+                "veglenkeposisjon": 0.34759146,
+                "fremhev": "gammalt"
+            }
         },
         {
+            "type": "Feature",
             "geometry": {
+                "type": "Point",
                 "coordinates": [
-                    259491.786251678,
-                    7030393.626982558,
-                    5.263474767701646
-                ],
-                "type": "Point"
+                    296230.0378108146,
+                    7041883.82635584,
+                    7.9422936819083185
+                ]
             },
             "properties": {
-                "fradato": "2005-06-30",
-                "fremhev": "gammalt",
-                "tildato": "2018-01-01",
-                "vegref": "5000 Fv800 hp2 m728"
-            },
-            "type": "Feature"
+                "vegref": "5000 Ev6 hp2 m234",
+                "fradato": "1990-06-07",
+                "tildato": "1995-10-18",
+                "veglenkeid": "578644",
+                "veglenkeposisjon": 0.0189592,
+                "fremhev": "gammalt"
+            }
         },
         {
+            "type": "Feature",
             "geometry": {
+                "type": "Point",
                 "coordinates": [
-                    259491.78625167733,
-                    7030393.626982558,
-                    5.2634747677005209
-                ],
-                "type": "Point"
+                    296178.3030646231,
+                    7041830.283672808,
+                    10.064210212813876
+                ]
             },
             "properties": {
-                "fradato": "1997-05-27",
-                "fremhev": "gammalt",
-                "tildato": "2005-06-30",
-                "vegref": "5000 Ev39 hp1 m5794"
-            },
-            "type": "Feature"
-        },
-        {
-            "geometry": {
-                "coordinates": [
-                    259491.78625167733,
-                    7030393.626982558,
-                    5.2634747677005209
-                ],
-                "type": "Point"
-            },
-            "properties": {
-                "fradato": "1988-10-19",
-                "fremhev": "gammalt",
-                "tildato": "1997-05-27",
-                "vegref": "5000 Rv65 hp1 m5794"
-            },
-            "type": "Feature"
-        },
-        {
-            "geometry": {
-                "coordinates": [
-                    259491.78625167733,
-                    7030393.626982558,
-                    5.2634747677005209
-                ],
-                "type": "Point"
-            },
-            "properties": {
-                "fradato": "1987-10-21",
-                "fremhev": "gammalt",
-                "tildato": "1988-10-19",
-                "vegref": "5000 Rv65 hp1 m6099"
-            },
-            "type": "Feature"
-        },
-        {
-            "geometry": {
-                "coordinates": [
-                    259491.78625167733,
-                    7030393.626982558,
-                    5.2634747677005209
-                ],
-                "type": "Point"
-            },
-            "properties": {
+                "vegref": "5000 Ev6 hp2 m234",
                 "fradato": "1950-01-01",
-                "fremhev": "gammalt",
-                "tildato": "1987-10-21",
-                "vegref": "5000 Rv65 hp1 m6099"
+                "tildato": "1990-06-07",
+                "veglenkeid": "578644",
+                "veglenkeposisjon": 0.02669658,
+                "fremhev": "gammalt"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    226114.75121219654,
+                    6950316.845476401,
+                    528.4597550219544
+                ]
             },
-            "type": "Feature"
+            "properties": {
+                "vegref": "5000 Ev6 hp2 m234",
+                "fradato": "1950-01-01",
+                "tildato": "2014-02-13",
+                "veglenkeid": "72804",
+                "veglenkeposisjon": 0.34755538,
+                "fremhev": "gammalt"
+            }
         }
     ],
-    "type": "FeatureCollection"
+    "crs": {
+        "type": "name",
+        "properties": {
+            "name": "urn:ogc:def:crs:EPSG::25833"
+        }
+    }
 }
 
 </pre>

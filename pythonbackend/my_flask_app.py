@@ -20,6 +20,13 @@ def sjekkvegreferanser():
     hp = request.args.get('hp', default=1)
     meter = request.args.get('meter', default=0)
     valgtdato = request.args.get('dato', default='')
+    fjerndubletter = request.args.get('fjerndubletter', default='')
+    crs = request.args.get('crs', default=25833)
+
+    if fjerndubletter.lower() == 'true':
+        fjerndubletter = True
+    else: 
+        fjerndubletter = False 
 
     try: 
         fylke = int( fylke) 
@@ -30,7 +37,7 @@ def sjekkvegreferanser():
     if fylke and kat and vegnr:
         vegref = hentvegref.henthistorikk( fylke=fylke, 
                 kommune=kommune, kat=kat, stat=stat, 
-                vegnr=vegnr, hp=hp, meter=meter, valgtdato=valgtdato) 
+                vegnr=vegnr, hp=hp, meter=meter, valgtdato=valgtdato, crs=crs, fjerndubletter=fjerndubletter) 
 
         return jsonify(**vegref)
 
@@ -44,6 +51,14 @@ def posisjon():
     easting = request.args.get( 'ost', default='')
     northing = request.args.get( 'nord', default='') 
     valgtdato = request.args.get( 'dato', default='')
+    fjerndubletter = request.args.get('fjerndubletter', default='')
+    crs = request.args.get('crs', default=25833)
+
+    if fjerndubletter.lower() == 'true':
+        fjerndubletter = True   
+    else: 
+        fjerndubletter = False 
+        
     
     try: 
         easting = float( easting) 
@@ -54,7 +69,7 @@ def posisjon():
     if easting and northing: 
         
         vegref = hentvegref.vegrefkoordinat( easting=easting, 
-                              northing=northing, valgtdato=valgtdato) 
+                              northing=northing, valgtdato=valgtdato, crs=crs, fjerndubletter=fjerndubletter) 
                                                 
     else: 
         vegref =  {'type': 'FeatureCollection', 'features': [] }

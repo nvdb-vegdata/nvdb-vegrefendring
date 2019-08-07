@@ -24,6 +24,7 @@ import re
 import datetime
 from copy import deepcopy 
 import pdb 
+from pyproj import Proj, transform
 
 
 def sjekkdatoer( fra, til, dato): 
@@ -41,7 +42,6 @@ def sjekkdatoer( fra, til, dato):
         return False 
     
     
-
 def vegref2geojson( vegref):
     """
     Konverterer et vegreferanse-element til geojson-struktur
@@ -56,6 +56,9 @@ def vegref2geojson( vegref):
         
     fradato = vegref['ValidFrom'][0:10]
     tildato = vegref['ValidTo'][0:10]
+    veglenkeid = vegref['ReflinkOID']
+    veglenkeposisjon = round( float( vegref['Measure'] ), 8) 
+    
     X = float( vegref['RoadNetPosition']['X'] ) 
     Y = float( vegref['RoadNetPosition']['Y'] ) 
     coordinates = [X, Y]
@@ -68,20 +71,21 @@ def vegref2geojson( vegref):
                 "coordinates": coordinates
               },
               "properties": {
-                "vegref": vegstr, 
-                "fradato" : fradato, 
-                "tildato" : tildato
-
+                "vegref"            : vegstr, 
+                "fradato"           : fradato, 
+                "tildato"           : tildato,
+                "veglenkeid"        : veglenkeid, 
+                "veglenkeposisjon" : veglenkeposisjon
               }
             }
     
     return geoj
     
-def vegrefkoordinat( easting=214858, northing=6687762, valgtdato=''): 
+def vegrefkoordinat( easting=214858, northing=6687762, valgtdato='', crs=25833, fjerndubletter=False): 
     resultatliste = []
     gjcollection = {    "type": "FeatureCollection",
-                            "features": [] 
-                            }
+                        "features": []
+                    }
 
     url = 'http://visveginfo-static.opentns.org/RoadInfoService3d/GetRoadReferenceHistoryForLocation'
     params = { 'easting' : easting, 'northing' : northing, 
@@ -116,7 +120,17 @@ def vegrefkoordinat( easting=214858, northing=6687762, valgtdato=''):
         pass 
         # print( r.text)
         # pdb.set_trace()
+
+
+    if fjerndubletter: 
+        gjcollection = fjerndobbelt( gjcollection) 
+
+    if str( crs ) == '25833':
+        gjcollection["crs"] = { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::25833" } }    
+    else: 
+        gjcollection = reprojiser( gjcollection, crs2=crs) 
         
+    
     return gjcollection
 
 def sammenlign( kandidat, neste, koordinattoleranse = 1e-6): 
@@ -131,7 +145,18 @@ def sammenlign( kandidat, neste, koordinattoleranse = 1e-6):
         kandidat['properties']['vegref'] == neste['properties']['vegref'] and \
         kandidat['properties']['fradato'] == neste['properties']['tildato']: 
         
-        return True
+            # Sjekker veglenkeID og posisjon, om de finnes
+            if 'veglenkeid' in kandidat['properties'].keys(): 
+                if kandidat['properties']['veglenkeid'] == neste['properties']['veglenkeid'] and \
+                        round( kandidat['properties']['veglenkeposisjon'], 8) == \
+                        round( neste['properties']['veglenkeposisjon'], 8): 
+                    return True
+                else: 
+                    return False 
+                
+        
+            else: 
+                return True
         
     else: 
     
@@ -156,11 +181,9 @@ def velgfremhev( A, B):
         return 'forrige' 
     else: 
         return 'gammalt' 
-    
-    
 
 
-def fjerndubletter( vegrefliste ): 
+def fjerndobbelt( vegrefliste ): 
     """
     Fjerner dubletter fra listen. Disse kommer sortert på dato i omvendt rekkefølge, 
     dvs nyeste først. 
@@ -235,8 +258,37 @@ def sorterdato( vegrefliste, valgtdato='' ):
         
     return resultat
 
+def reprojiser( gjcollection, crs1=25833, crs2=4326):
+    """
+    """ 
+
+    try: 
+        inProj = Proj(init= 'epsg:' + str(crs1))
+        outProj = Proj(init= 'epsg:' + str(crs2))
+    except RuntimeError: 
+        return gjcollection 
+    else: 
+    
+        retdata = deepcopy( gjcollection) 
+        retdata['features'] = []
+        for feat in gjcollection['features']: 
+            (x2,y2) = transform(inProj, outProj, feat['geometry']['coordinates'][0], feat['geometry']['coordinates'][1] )
+            nyfeat = deepcopy( feat) 
+            nyfeat['geometry']['coordinates'][0] = x2
+            nyfeat['geometry']['coordinates'][1] = y2
+            
+            retdata['features'].append( nyfeat) 
+        
+        if str( crs2 ) == '4326':
+            if 'crs' in retdata.keys(): 
+                junk = retdata.pop('crs') 
+        else: 
+            retdata['crs'] = { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::" + str( crs2 ) } } 
+            
+        return retdata 
+
 def henthistorikk( fylke=15, kommune=0, kat='E', stat='V', 
-                  vegnr=39, hp=29, meter=7618, valgtdato=''):
+                  vegnr=39, hp=29, meter=7618, valgtdato='', fjerndubletter=False, crs=25833):
  
     vegref = str(fylke).zfill(2) + str(kommune).zfill(2) + \
             kat.upper() + stat.upper() + \
@@ -280,4 +332,12 @@ def henthistorikk( fylke=15, kommune=0, kat='E', stat='V',
         # print( r.text)
         # pdb.set_trace()
         
+    if fjerndubletter: 
+        gjcollection = fjerndobbelt( gjcollection) 
+    
+    if str( crs ) == '25833':
+        gjcollection["crs"] = { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::25833" } } 
+    else: 
+        gjcollection = reprojiser( gjcollection, crs2=crs) 
+    
     return gjcollection
