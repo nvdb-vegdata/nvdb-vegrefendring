@@ -13,7 +13,7 @@
 </head>
 <body>
 
-
+<h1>Historiske vegreferanser - hvor har de vært?</h1>
 
 <p>Vegreferansen for et punkt på vegnettet kan endres flere ganger i vegens levetid. 
 Og en konkret vegreferanse - for eksempel 0800 Ev 18 hp1 m0 - kan finnes flere steder, til ulike tider.</p>
@@ -21,7 +21,8 @@ Og en konkret vegreferanse - for eksempel 0800 Ev 18 hp1 m0 - kan finnes flere s
 <p>Vi på NVDB- og Geodataseksjonen i Vegdirektoratet har laget <a href="./" >dette kartverktøyet</a> for å 
 vise hvordan vegreferansene har endret seg i tid og rom. Kartet er fremdeles noe eksperimentelt.</p>
 
-<h1 id="velgdatoh1">Velg dato</h1>
+<h1>Velg dato</h1>
+
 
 <div id="datovelger"><input type="text" id="dato"></div>
 
@@ -135,7 +136,7 @@ Vegstatus:
 Sky-Langangen åpnet i 2012</a>. Den gamle E18-traséen, markert med tallet 2 i kart og tabell, 
 er i dag blitt til Fv 2962.</p>
 
-<p>Merk at koordinatene er klikkbare! Når du klikker på en koordinat får du tidsutvikling av vegreferanse i dette punktet. Se avsnitt <a href="#kartklikk">Vis punktverdier</a>.
+<p>Koordinatene er klikkbare! Når du klikker på en koordinat får du tidsutvikling av vegreferanse i dette punktet, slik som beskrevet i avsnittet <a href="#kartklikk">Vis punktverdier</a>.
 
 <h3 id="komprimeringh3">Punkt nær hverandre slås sammen</h3>
 
@@ -178,8 +179,9 @@ Avstanden mellom punktene er ca 3.5 meter, for lite til at det blir lesbart om v
 </tbody>
 </table>
 
-<h1>Vis punktverdier - Klikk i kartet</h1>
 <a name="kartklikk"></a>
+<h1>Vis punktverdier - Klikk i kartet</h1>
+
 
 <p>Ved å klikke på en veg i kartet kan du se hvordan vegreferansen har endret seg i dette punktet.</p>
 
@@ -252,20 +254,49 @@ oppføringer for <em>Fv30 hp1 m0</em>. Det skjer en del vegnettsendringer
 som påvirker historikken uten at akkurat verdiene for hp, meter etc endres, så slike 
 dobbeltoppføringer er ganske vanlig.--></p> 
 
-<p>Fram til 2012-06-06 het vegen Ev18,, men det tok over ett 
+<p>Fram til 2012-06-06 het vegen Ev18, men det tok over ett 
 år (fram til 2013-10-28) før vegen fikk fylkesveg-nummeret Fv30. I mellomtiden het vegen <em>Et18</em>, 
 hvor bokstaven "t" betyr <em>midlertidig status bilveg</em>. Dette er vanlig praksis når 
 det drøyer ut i tid med tildeling av nye vegnummer.</p>
 </p>
 
-<h1>Vegreferanse i min posisjon</h1>
 <a name="minpos"></a>
+<h1>Vegreferanse i min posisjon</h1>
 
+
+<p>
+<button class="myButton" >Hent vegreferanse i min posisjon</button>
+</p>
 
 <p>For den som er ute på vegen er det kanskje greit å se hvilke vegreferanseverdier 
 som har vært i din posisjon? Knappen for dette ligger helt nederst på siden. Ellers 
 er visningen lik den du får når du klikker i kartflaten.</p>
 
+<h1>Mer om vegreferanser</h1>
+<a name="vegrefteori"></a>
+
+
+<p>Logikken bak vegreferansesystemet er beskrevet i detalj i <a href="https://www.vegvesen.no/_attachment/61505">Håndbok V830 Nasjonalt vegreferansesystem (.pdf)</a>.
+Ønsker du en lettvint oversikt over hva kodene betyr så er <a href="https://api.vegdata.no/verdi/vegreferanse.html">NVDB api-dokumentasjon</a> veldig grei.</p>
+
+<p>Vegreferansen er unik innafor hvert fylke - men denne logikken vil ikke overleve at de fleste fylkene slås sammen 1.1.2020.
+Vi har laget et nytt <a href="">referansesystem for NVDB</a> som fases inn høsten 2019. Du bør legge om til det nye 
+systemet fortest mulig. Frem til august 2021 kan du bruke dagens system <em>såfremt du bruker 2019-fylkesnummer</em> og 
+lever greit med en del forbehold om datakvalitet.</p>
+
+<h3>Dobbelt opp med vegreferanser i Trøndelag</h3>
+
+<p>Her er et eksempel på hva slags problemer sammenslåing av fylker byr på. Nord- og Sør-Trøndelag slo seg sammen i 2018. 
+Hvis du vil se tidsutvikling for en vegreferanse i  det nye fylke 50 - for eksempel <em>5000 Ev6 hp11 m0</em> - mener du 
+da den som fantes i Nord-Trøndelag <em>(1700 Ev6 hp11 m0)</em>, eller den i Sør-Trøndelag <em>(1600 Ev6 hp11 m0)</em>? Begge disse
+er nå blitt til fylke 50.</p>
+
+<p>For Trøndelag sin del klarte vi løse sammenslåingen ved å gi nye vegnummer eller hp-verdier der det var overlapp. 
+Men det er ikke mulig å gjøre det samme for Troms og Finnmark, Vestland, Agder, Vestfold og Telemark, Innlandet og Viken.</p>
+
+<p>
+<img src="img/fylke50dublett_ev6hp11.png" alt="Historiske verdier for vegreferansen 5000 Ev6 hp11 m0 finnes i både Sør- og Nord-Trøndelag." >
+</p>
 
 
 
