@@ -21,7 +21,7 @@ Og en konkret vegreferanse - for eksempel 0800 Ev 18 hp1 m0 - kan finnes flere s
 <p>Vi på NVDB- og Geodataseksjonen i Vegdirektoratet har laget <a href="./" >dette kartverktøyet</a> for å 
 vise hvordan vegreferansene har endret seg i tid og rom. Kartet er fremdeles noe eksperimentelt.</p>
 
-<h1>Velg dato</h1>
+<h1 id="velgdatoh1">Velg dato</h1>
 
 <div id="datovelger"><input type="text" id="dato"></div>
 
@@ -29,6 +29,8 @@ vise hvordan vegreferansene har endret seg i tid og rom. Kartet er fremdeles noe
 
 
 <h1>Velg en bestemt vegreferanse</h1>
+<a name="vegrefverdi"></a>
+
 
 <p>
 fylke:
@@ -113,16 +115,16 @@ Vegstatus:
       <td>1</td>
       <td>2012-06-06</td>
       <td>9999-12-31</td>
-      <td>205102.57</td>
-      <td>6560292.99</td>
+      <td><a href="/?kartvisning=posisjon&ost=205102.569152832&nord=6560292.99194336&dato=2012-06-06">205102.57</a></td>
+      <td><a href="/?kartvisning=posisjon&ost=205102.569152832&nord=6560292.99194336&dato=2012-06-06">6560292.99</a></td>
     </tr>
 
     <tr class="gammalt">
       <td>2</td>
       <td>1950-01-01</td>
       <td>2012-06-06</td>
-      <td>205060.17</td>
-      <td>6560102.44</td>
+      <td><a href="/?kartvisning=posisjon&ost=205060.17&nord=6560102.44&dato=1950-01-01">205060.17</a></td>
+      <td><a href="/?kartvisning=posisjon&ost=205060.17&nord=6560102.44&dato=1950-01-01">6560102.44</a></td>
     </tr>
 
 </tbody>
@@ -133,8 +135,12 @@ Vegstatus:
 Sky-Langangen åpnet i 2012</a>. Den gamle E18-traséen, markert med tallet 2 i kart og tabell, 
 er i dag blitt til Fv 2962.</p>
 
+<p>Merk at koordinatene er klikkbare! Når du klikker på en koordinat får du tidsutvikling av vegreferanse i dette punktet. Se avsnitt <a href="/tutorial.html#kartklikk">Vis punktverdier</a>.
+
+<h3 id="komprimeringh3">Punkt nær hverandre slås sammen</h3>
+
 <p>Kartløsningen slår sammen punkt som ligger veldig nærme hverandre. 
-P.t. er grensen for å slå sammen punkt satt lik 5 meter, men her må vi finjustere litt.</p>
+P.t. er grensen for å slå sammen punkt satt lik 5 meter.</p>
 
 <p>Her er eksempel på hvordan to punkter slås sammen til ett for  1800 Ev6 hp21 m350. 
 Avstanden mellom punktene er ca 3.5 meter, for lite til at det blir lesbart om vi viser begge i kartflaten.</p>
@@ -158,24 +164,24 @@ Avstanden mellom punktene er ca 3.5 meter, for lite til at det blir lesbart om v
       <td>1</td>
       <td>2019-01-16</td>
       <td>9999-12-31</td>
-      <td>518499.46</td>
-      <td>7459415.79</td>
+      <td><a href="/?kartvisning=posisjon&ost=518499.45903325704&nord=7459415.785204751&dato=2019-01-16">518499.46</a></td>
+      <td><a href="/?kartvisning=posisjon&ost=518499.45903325704&nord=7459415.785204751&dato=2019-01-16">7459415.79</a></td>
     </tr>
 
     <tr class="gammalt">
       <td>2</td>
       <td>1950-01-01</td>
       <td>2019-01-16</td>
-      <td>518501.16</td>
-      <td>7459418.83</td>
+      <td><a href="/?kartvisning=posisjon&ost=518501.1635514454&nord=7459418.833885954&dato=1950-01-01">518501.16</a></td>
+      <td><a href="/?kartvisning=posisjon&ost=518501.1635514454&nord=7459418.833885954&dato=1950-01-01">7459418.83</a></td>
     </tr>
-
 </tbody>
 </table>
 
-<h1>Klikk i kartet</h1>
+<h1>Vis punktverdier - Klikk i kartet</h1>
+<a name="kartklikk"></a>
 
-Ved å klikke på en veg i kartet kan du se hvordan vegreferansen har endret seg i dette punktet. 
+<p>Ved å klikke på en veg i kartet kan du se hvordan vegreferansen har endret seg i dette punktet.</p>
 
 <p>
 <img src="img/eks0800fv2962h2m0.png" alt="Tidsutvikling av vegreferanse for et punkt i vegnettet" >
@@ -246,13 +252,15 @@ oppføringer for <em>Fv30 hp1 m0</em>. Det skjer en del vegnettsendringer
 som påvirker historikken uten at akkurat verdiene for hp, meter etc endres, så slike 
 dobbeltoppføringer er ganske vanlig.--></p> 
 
-<p>Til sist ser vi at vegen var Ev18 fram til 2012-06-06, men det tok over ett 
+<p>Fram til 2012-06-06 het vegen Ev18,, men det tok over ett 
 år (fram til 2013-10-28) før vegen fikk fylkesveg-nummeret Fv30. I mellomtiden het vegen <em>Et18</em>, 
 hvor bokstaven "t" betyr <em>midlertidig status bilveg</em>. Dette er vanlig praksis når 
 det drøyer ut i tid med tildeling av nye vegnummer.</p>
 </p>
 
 <h1>Vegreferanse i min posisjon</h1>
+<a name="minpos"></a>
+
 
 <p>For den som er ute på vegen er det kanskje greit å se hvilke vegreferanseverdier 
 som har vært i din posisjon? Knappen for dette ligger helt nederst på siden. Ellers 

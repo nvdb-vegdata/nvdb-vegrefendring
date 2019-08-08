@@ -185,6 +185,8 @@ function hentVegreferanser(hvaslags) {
         dato        = getUrlParameter( myUrl, "dato");
 
        oppdaterUrlParams = false;
+       
+       
 
     }
     
@@ -289,13 +291,18 @@ function hentVegreferanser(hvaslags) {
                     }
 
                     
+                    var tekstX = laglenke_punktsok( coords[0], coords[1], x, props['fradato']) 
+                    var tekstY = laglenke_punktsok( coords[0], coords[1], y, props['fradato']) 
+                                
+                    
+                    
                     // Append product to the table
                     var myTableRow = "<tr " + 'class="'  + props['fremhev'] +  '">' +
                         "<td>" + props['visningsnummer'] + "</td>" +
                         "<td>" + props['fradato'] + "</td>" +
                         "<td>" + props['tildato'] + "</td>" +
-                        "<td>" + x.toString() + "</td>" +
-                        "<td>" + y.toString() + "</td>" +
+                        "<td>" + tekstX + "</td>" +
+                        "<td>" + tekstY + "</td>" +
                         
                       "</tr>"; 
                     $("#vegreferanseTabell tbody").append(myTableRow);
@@ -594,7 +601,7 @@ L.control.zoom({
      position:'topleft'
 }).addTo(map);
 
-function lagPunktHistorikkTabell( jsondata) {
+function lagPunktHistorikkTabell( jsondata, mindato) {
 
     $("#vegreferanseTabell").empty(); 
     $("#bruksanvisning1").empty();
@@ -693,7 +700,7 @@ sentrerKart : boolean. Sentrerer kartet i angitt posisjon.
     
          if (xhr.readyState == 4 && xhr.status == 200) {
             var respons = JSON.parse(xhr.responseText);
-            lagPunktHistorikkTabell( respons); 
+            lagPunktHistorikkTabell( respons, mindato); 
 
             if (respons['features'].length === 0) {
                 console.log( "Ingen veger her" + ost + " , ", + nord ); 
@@ -729,6 +736,28 @@ sentrerKart : boolean. Sentrerer kartet i angitt posisjon.
                         endreUrlParametre( { 'kartvisning' : 'posisjon', 
                                             'ost' : coords[0], 'nord' : coords[1] }); 
                     }
+                } else { 
+                    // Sjekker om vi har fornuftige URL-parametre for vegreferanseverdier. 
+                    // I så fall endrer vi valgene i "velg vegreferanseverdi" 
+                    // Unngår navnekollisjon med globale variabler
+                      var myUrl = window.location.href;
+                      var fylke2       = parseInt( getUrlParameter( myUrl, "fylke")); 
+                      var kommune2     = parseInt( getUrlParameter( myUrl, "kommune"));
+                      var vegkat2      = getUrlParameter( myUrl, "vegkat").toUpperCase();
+                      var vegstatus2   = getUrlParameter( myUrl, "vegstatus").toUpperCase();
+                      var vegnr2       = parseInt( getUrlParameter( myUrl, "vegnr"));
+                      var hp2          = parseInt( getUrlParameter( myUrl, "hp"));
+                      var meter2       = parseInt( getUrlParameter( myUrl, "meter"));
+                      
+                      if (!isNaN( fylke2        )) { $('#fylke').val(fylke2) } 
+                      if (!isNaN( kommune2      )) { $('#kommune').val(kommune2) } 
+                      if ( vegkat2.length == 1   ) { $('#vegkategori').val(vegkat2.toUpperCase()) }           
+                      if ( vegkat2.length == 1   ) { $('#vegstatus').val(vegstatus2.toUpperCase()) }           
+                      if (!isNaN( vegnr2        )) { $('#vegnr').val(vegnr2) } 
+                      if (!isNaN( hp2           )) { $('#hp').val(hp2) } 
+                      if (!isNaN( meter2        )) { $('#meter').val(meter2) } 
+                
+                
                 }
             } 
         }
@@ -746,7 +775,37 @@ function onMapClick(e) {
  
 }
 
+function laglenke_punktsok( X, Y, tekst, dato) {
+// Lager a href - element hvor lenkn til søk etter vegref-verdier i punkt X,Y og teksten "tekst"
+// hvor mindato fremheves 
+//
+// Syntaks er /?kartvisning=posisjon&ost=269288.300048828&nord=7039099.39990234&dato=2019-08-08 
+// I tillegg legger vi på URL parametre for vegreferanse-søk. 
 
+
+     var minlenke = '/?kartvisning=posisjon&ost=' + X + '&nord=' + Y + '&dato=' + dato;  
+     
+     // Legger på URL parametre brukt til vegreferanse-søk. Unngår navnekollisjon med de globale verdiene. 
+ 
+      var myUrl = window.location.href;
+      var fylke2       = parseInt( getUrlParameter( myUrl, "fylke")); 
+      var kommune2     = parseInt( getUrlParameter( myUrl, "kommune"));
+      var vegkat2      = getUrlParameter( myUrl, "vegkat").toUpperCase();
+      var vegstatus2   = getUrlParameter( myUrl, "vegstatus").toUpperCase();
+      var vegnr2       = parseInt( getUrlParameter( myUrl, "vegnr"));
+      var hp2          = parseInt( getUrlParameter( myUrl, "hp"));
+      var meter2       = parseInt( getUrlParameter( myUrl, "meter"));
+ 
+    //  fylke=18&kommune=0&vegkat=E&vegstatus=V&vegnr=6&hp=1&meter=0&dato=1950-01-01
+
+    var vegrefparams = '&fylke='+fylke2 + '&kommune='+kommune2 + '&vegkat=' + vegkat2 + '&vegstatus=' + vegstatus2 + 
+                '&vegnr=' + vegnr2 + '&hp=' + hp2 + '&meter=' + meter2 ;  
+ 
+    var minklikkbare = '<a href="' + minlenke + vegrefparams + '">' + tekst + '</a>' ; 
+
+    // console.log( minklikkbare) 
+    return minklikkbare; 
+}
 
 
 map.on( 'click', onMapClick); 
