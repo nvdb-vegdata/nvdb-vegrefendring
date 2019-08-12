@@ -290,11 +290,13 @@ function hentVegreferanser(hvaslags) {
                       "</tr></thead><tbody></tbody>");
                     }
 
-                    
-                    var tekstX = laglenke_punktsok( coords[0], coords[1], x, props['fradato']) 
-                    var tekstY = laglenke_punktsok( coords[0], coords[1], y, props['fradato']) 
-                                
-                    
+
+//  Funker bedre å konsekvent bruke den brukervalgte datoen.                   
+//                    var tekstX = laglenke_punktsok( coords[0], coords[1], x, props['fradato']) 
+//                    var tekstY = laglenke_punktsok( coords[0], coords[1], y, props['fradato']) 
+
+                    var tekstX = laglenke_punktsok( coords[0], coords[1], x, dato ) 
+                    var tekstY = laglenke_punktsok( coords[0], coords[1], y, dato ) 
                     
                     // Append product to the table
                     var myTableRow = "<tr " + 'class="'  + props['fremhev'] +  '">' +
