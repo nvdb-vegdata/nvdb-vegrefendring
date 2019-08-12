@@ -21,6 +21,7 @@ def sjekkvegreferanser():
     meter = request.args.get('meter', default=0)
     valgtdato = request.args.get('dato', default='')
     fjerndubletter = request.args.get('fjerndubletter', default='')
+    hentdagensverdi = request.args.get('hentdagensverdi', default='')
     crs = request.args.get('crs', default=25833)
 
     if fjerndubletter.lower() == 'true':
@@ -34,10 +35,17 @@ def sjekkvegreferanser():
     except ValueError: 
         fylke = None 
     
+    if hentdagensverdi.lower() == 'true':
+        hentdagensverdi = True
+    else: 
+        hentdagensverdi = False 
+    
+    
+    
     if fylke and kat and vegnr:
         vegref = hentvegref.henthistorikk( fylke=fylke, 
                 kommune=kommune, kat=kat, stat=stat, 
-                vegnr=vegnr, hp=hp, meter=meter, valgtdato=valgtdato, crs=crs, fjerndubletter=fjerndubletter) 
+                vegnr=vegnr, hp=hp, meter=meter, valgtdato=valgtdato, crs=crs, fjerndubletter=fjerndubletter, dagensverdi=hentdagensverdi) 
 
         return jsonify(**vegref)
 

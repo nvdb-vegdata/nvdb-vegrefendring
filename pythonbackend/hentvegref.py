@@ -41,18 +41,25 @@ def sjekkdatoer( fra, til, dato):
     else: 
         return False 
     
+def vvi2vegrefstring( vegref): 
+
+
+    vegrefstr = vegref['TextualRoadReference'][0:4] + ' ' + \
+             vegref['RoadCategory'] + vegref['RoadStatus'].lower() + \
+             vegref['RoadNumber'] + ' ' + \
+              'hp' + str( vegref['RoadNumberSegment'] ) + \
+              ' m' + str( vegref['RoadNumberSegmentDistance'])
+
+    return vegrefstr
     
-def vegref2geojson( vegref):
+def vegref2geojson( vegref, dagensverdi=False):
     """
     Konverterer et vegreferanse-element til geojson-struktur
     """ 
     
     
-    vegstr = vegref['TextualRoadReference'][0:4] + ' ' + \
-             vegref['RoadCategory'] + vegref['RoadStatus'].lower() + \
-             vegref['RoadNumber'] + ' ' + \
-              'hp' + str( vegref['RoadNumberSegment'] ) + \
-              ' m' + str( vegref['RoadNumberSegmentDistance'])
+    vegstr = vvi2vegrefstring( vegref) 
+            
         
     fradato = vegref['ValidFrom'][0:10]
     tildato = vegref['ValidTo'][0:10]
@@ -78,6 +85,22 @@ def vegref2geojson( vegref):
                 "veglenkeposisjon" : veglenkeposisjon
               }
             }
+            
+    if dagensverdi: 
+        params = { 'viewDate' : datetime.datetime.today().strftime('%Y-%m-%d'), 
+                    'reflinkoid' : veglenkeid, 
+                    'rellen'     : veglenkeposisjon } 
+        
+        url = 'http://visveginfo-static.opentns.org/RoadInfoService/GetRoadReferenceForNVDBReference' 
+        r = requests.get( url, params) 
+        if r.ok and 'RoadReference' in r.text: 
+            data = xmltodict.parse( r.text ) 
+            if 'RoadCategory' in data['RoadReference'].keys(): 
+                geoj['properties']['dagensvegref'] = vvi2vegrefstring( data['RoadReference'] ) 
+            else: 
+                geoj['properties']['dagensvegref'] = '' 
+        else: 
+            geoj['properties']['dagensvegref'] = '' 
     
     return geoj
     
@@ -290,7 +313,7 @@ def reprojiser( gjcollection, crs1=25833, crs2=4326):
         # return retdata 
 
 def henthistorikk( fylke=15, kommune=0, kat='E', stat='V', 
-                  vegnr=39, hp=29, meter=7618, valgtdato='', fjerndubletter=False, crs=25833):
+                  vegnr=39, hp=29, meter=7618, valgtdato='', fjerndubletter=False, crs=25833, dagensverdi=False):
  
     vegref = str(fylke).zfill(2) + str(kommune).zfill(2) + \
             kat.upper() + stat.upper() + \
@@ -317,15 +340,14 @@ def henthistorikk( fylke=15, kommune=0, kat='E', stat='V',
         
         if   isinstance( data[p1][p2], dict  ): 
             
-            resultatliste.append( vegref2geojson( data[p1][p2]  ))
+            resultatliste.append( vegref2geojson( data[p1][p2], dagensverdi=dagensverdi  ))
         
         elif isinstance( ['a', 'b'], list):
             
             for envegref in data[p1][p2]: 
                 
-                resultatliste.append( vegref2geojson( envegref  ))
+                resultatliste.append( vegref2geojson( envegref, dagensverdi=dagensverdi  ))
             
-
         resultatliste = sorterdato( resultatliste, valgtdato=valgtdato) 
         gjcollection['features'] = resultatliste
         
