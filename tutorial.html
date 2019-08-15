@@ -96,7 +96,12 @@ Vegstatus:
   <input id="meter" type="number" name="quantity" min="0" max="99999" value="0">
 </p>
 
-<p>Med disse valgene angir du den vegreferansen som er interessant for deg, og se hvordan den har flyttet seg i tid og rom.</p>
+<!--
+<p>
+    <button class="myButton" onClick="hentVegreferanser('knappeklikk')" >Hent denne vegreferansen</button> <input type="checkbox" id="hentdagens"> Vis også dagens vegreferanse
+</p> 
+-->
+<p>Med disse valgene angir du den vegreferansen som er interessant for deg, og se hvordan den har flyttet seg i tid og rom. Bruk knappen <em>"Hent denne vegreferansen</em> for å oppfriske kart og tabell.</p>
 
 <img src="img/eks0800ev18h1m0.png" alt="Tidsutvikling for vegreferansen 0800 Ev 18 hp1 m0" >
 
@@ -138,6 +143,49 @@ er i dag blitt til Fv 2962.</p>
 
 <p>Koordinatene er klikkbare! Når du klikker på en koordinat får du tidsutvikling av vegreferanse i dette punktet, slik som beskrevet i avsnittet <a href="#kartklikk">Vis punktverdier</a>.
 
+<p>
+Hvis du huker av valget <em>"Vis også dagens vegreferanse"</em> får du også vist dagens verdier i tabellen. 
+</p>
+<p>
+    <button class="myButton" >Hent denne vegreferansen</button> <input type="checkbox" id="hentdagens" checked> Vis også dagens vegreferanse
+</p> 
+<table>
+<thead>
+<tr>
+    <th><em>Nummer</em></th>
+    <th><em>Gyldig fra</em></th>
+    <th><em>Gyldig til</em></th>
+    <th><em>X</em></th>
+    <th><em>Y</em></th>
+    <th><em>Dagens v.ref</em></th>
+</tr>
+</thead>
+<tbody>
+
+    <tr class="fremhevidag">
+      <td>1</td>
+      <td>2012-06-06</td>
+      <td>9999-12-31</td>
+      <td><a href="./?kartvisning=posisjon&ost=205102.569152832&nord=6560292.99194336&dato=2012-06-06">205102.57</a></td>
+      <td><a href="./?kartvisning=posisjon&ost=205102.569152832&nord=6560292.99194336&dato=2012-06-06">6560292.99</a></td>
+    <td>0800 Ev18 hp1 m0</td>
+    </tr>
+
+    <tr class="gammalt">
+      <td>2</td>
+      <td>1950-01-01</td>
+      <td>2012-06-06</td>
+      <td><a href="./?kartvisning=posisjon&ost=205060.17&nord=6560102.44&dato=1950-01-01">205060.17</a></td>
+      <td><a href="./?kartvisning=posisjon&ost=205060.17&nord=6560102.44&dato=1950-01-01">6560102.44</a></td>
+      <td>0800 Fv2962 hp2 m0</td>
+    </tr>
+
+</tbody>
+</table>
+
+
+
+
 <h3 id="komprimeringh3">Punkt nær hverandre slås sammen</h3>
 
 <p>Kartløsningen slår sammen punkt som ligger veldig nærme hverandre. 
@@ -178,6 +226,8 @@ Avstanden mellom punktene er ca 3.5 meter, for lite til at det blir lesbart om v
     </tr>
 </tbody>
 </table>
+
+
 
 <a name="kartklikk"></a>
 <h1>Vis punktverdier - Klikk i kartet</h1>
@@ -316,18 +366,51 @@ Det er mange grunner til å at vegreferanser endres i vegens levetid:
 /* Datovelger */
 $(function(){
 
-   
-
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
-    dato = yyyy + '-' + mm + '-' + dd; 
-
-   
-    $('#dato').dropdownDatepicker({ 'defaultDate' : dato, maxYear: 2021, minYear: 1950 } );
+    var dato = yyyy + '-' + mm + '-' + dd; 
  
+    $('#dato').dropdownDatepicker({ 'defaultDate' : dato, 
+                                    maxYear: 2021, 
+                                    minYear: 1950, 
+                                    dayLabel: 'Dag',
+                                    monthLabel: 'Måned',
+                                    yearLabel: 'År',
+                                    monthLongValues: ['Januar', 'Februar', 'Mars', 
+                                        'April', 'Mai', 'Juni', 'Juli', 'August', 
+                                        'September', 'Oktober', 'November', 'Desember'],
+                                    monthShortValues: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 
+                                            'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
+//                                    initialDayMonthYearValues: ['Day', 'Month', 'Year'],
+                                    daySuffixValues: ['ste', 'de', 'dje', 'de']
+                                    } ); 
 });
+
+function oppdaterDropdownDatePicker( valgtdato) {
+
+    if (sjekkdato(valgtdato)) {
+        
+        var dsplit = valgtdato.split('-'); 
+        $('select[name="date_[year]').val(dsplit[0])
+        $('select[name="date_[month]').val(dsplit[1])
+        $('select[name="date_[day]').val(dsplit[2])
+        
+    }
+}
+
+
+/* Sjekker om vi har endret tekstfeltet */
+$("#dato").on("change", function(){
+     var mindato = document.getElementById("dato").value;
+     if (sjekkdato(mindato)) {
+
+        // console.log( "Dato-tekstfelt endret" + mindato);      
+        oppdaterDropdownDatePicker( mindato); 
+
+     } 
+})
 
 function sjekkdato( mystring) {
 // Sjekker om dato er på format 2018-12-30 
@@ -354,6 +437,9 @@ function sjekkdato( mystring) {
     return godkjent
 
 }
+
+
+
 
 </script>
 
