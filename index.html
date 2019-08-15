@@ -447,7 +447,7 @@ function oppdaterDropdownDatePicker( valgtdato) {
 }
 
 /* Sjekker om vi har endret tekstfeltet */
-$("#dato").on("change", function(){
+$("#dato").on("input", function(){
      var mindato = document.getElementById("dato").value;
      if (sjekkdato(mindato)) {
 
