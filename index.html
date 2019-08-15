@@ -97,7 +97,7 @@ Vegstatus:
   <input id="meter" type="number" name="quantity" min="0" max="99999" value="0">
 </p>
 <p>
-    <button class="myButton" onClick="hentVegreferanser('knappeklikk')" >Hent denne vegreferansen</button> 
+    <button class="myButton" onClick="hentVegreferanser('knappeklikk')" >Hent denne vegreferansen</button> <input type="checkbox" id="hentdagens"> Vis også dagens vegreferanse
 </p>  
 
 <!-- </form> -->
@@ -173,6 +173,7 @@ function hentVegreferanser(hvaslags) {
         dato       = document.getElementById("dato").value;
     
         oppdaterUrlParams = true;
+        
     } else if (hvaslags == 'urlparams') {
         var myUrl = window.location.href;
         fylke       = parseInt( getUrlParameter( myUrl, "fylke")); 
@@ -223,6 +224,11 @@ function hentVegreferanser(hvaslags) {
     var vegrefApi = 'https://python.ltglahn.no/vegreferanse?fylke='+fylke +
         '&kommune='+kommune + '&kat=' + vegkat + '&stat=' + vegstatus + 
         '&vegnr=' + vegnr + '&hp=' + hp + '&meter=' + meter + '&dato=' + dato + '&fjerndubletter=true';
+    
+    if (document.getElementById("hentdagens").checked == true ){
+        vegrefApi = vegrefApi.concat( "&hentdagensverdi=true"  ) ; 
+    }
+    
     
     console.log(vegrefApi); 
     var xhr = new XMLHttpRequest();
@@ -279,15 +285,25 @@ function hentVegreferanser(hvaslags) {
                     var y = Math.round( coords[1] * 100 ) / 100; 
 
                     // Legger resultatene i tabell 
-                    // Lag table header 
+                    // Lag table header. En ekstra kolonne hvis vi skal ha med dagens vegreferanse-verdier
+                    var thTekst = "<thead>" + 
+                                    "<tr><th><em>Nummer</em></th>" + 
+                                  "<th><em>Gyldig fra</em></th>" + 
+                                  "<th><em>Gyldig til</em></th>"  + 
+                                  "<th><em>X</em></th>"  + 
+                                  "<th><em>Y</em></th>" ;  //   + 
+                                 // "</tr></thead><tbody></tbody>"
+                                 
+                    
+                    if (document.getElementById("hentdagens").checked == true ){
+                        thTekst = thTekst.concat( "<th><em>Dagens v.ref</em></th> </tr></thead><tbody></tbody>" ) ; 
+                    } else {
+                       thTekst = thTekst.concat( "</tr></thead><tbody></tbody>" ) ; 
+                    }
+                    
+                    
                     if ($("#vegreferanseTabell tbody").length == 0) {
-                      $("#vegreferanseTabell").append("<thead>" + 
-                      "<tr><th><em>Nummer</em></th>" + 
-                          "<th><em>Gyldig fra</em></th>" + 
-                          "<th><em>Gyldig til</em></th>"  + 
-                          "<th><em>X</em></th>"  + 
-                          "<th><em>Y</em></th>"  + 
-                      "</tr></thead><tbody></tbody>");
+                      $("#vegreferanseTabell").append(thTekst );
                     }
 
 
@@ -304,10 +320,16 @@ function hentVegreferanser(hvaslags) {
                         "<td>" + props['fradato'] + "</td>" +
                         "<td>" + props['tildato'] + "</td>" +
                         "<td>" + tekstX + "</td>" +
-                        "<td>" + tekstY + "</td>" +
-                        
-                      "</tr>"; 
+                        "<td>" + tekstY + "</td>" ; 
+
+                    if (document.getElementById("hentdagens").checked == true ){
+                        myTableRow = myTableRow.concat( "<td>" + props['dagensvegref']  + "</td>  </tr>"  ) ; 
+                    } else {
+                       myTableRow = myTableRow.concat( "</tr>" ) ; 
+                    }
                     $("#vegreferanseTabell tbody").append(myTableRow);
+
+                    // console.log( myTableRow) 
 
                     // Unngår å modifisere det elementet vi itererer over. I stedet kopierer vi 
                     // over til tempGeo, med eller uten endringer 
@@ -378,6 +400,8 @@ function hentVegreferanser(hvaslags) {
      }
 }
 
+
+
 /* Datovelger */
 $(function(){
 
@@ -409,6 +433,31 @@ $(function(){
                                     daySuffixValues: ['ste', 'de', 'dje', 'de']
                                     } ); 
 });
+
+function oppdaterDropdownDatePicker( valgtdato) {
+
+    if (sjekkdato(valgtdato)) {
+        
+        var dsplit = valgtdato.split('-'); 
+        $('select[name="date_[year]').val(dsplit[0])
+        $('select[name="date_[month]').val(dsplit[1])
+        $('select[name="date_[day]').val(dsplit[2])
+        
+    }
+}
+
+/* Sjekker om vi har endret tekstfeltet */
+$("#dato").on("change", function(){
+     var mindato = document.getElementById("dato").value;
+     if (sjekkdato(mindato)) {
+
+        // console.log( "Dato-tekstfelt endret" + mindato);      
+        oppdaterDropdownDatePicker( mindato); 
+
+     } 
+})
+
+
 
 function sjekkdato( mystring) {
 // Sjekker om dato er på format 2018-12-30 
@@ -451,19 +500,15 @@ function sjekkUrlParams() {
         console.log( "Viser tidsutvikling vegreferanse i fast posisjon" ); 
         var ost  = parseFloat( getUrlParameter( myUrl, "ost")) ;
         var nord = parseFloat( getUrlParameter( myUrl, "nord")); 
-        var minDato = getUrlParameter( myUrl, "dato"); 
         
         if (!isNaN( ost) && !isNaN(nord)) {
-            console.log( "Viser tidsutvikling i posisjon" + ost + "ost " + nord + "nord" )
-            vispunktdata( ost, nord, false, true, minDato); 
+            
+            vispunktdata( ost, nord, false, true, dato); 
             
         } else {
             console.log( "ikke happy ned nord/ost parametre"); 
         }
         
-        if (sjekkdato(minDato)) {
-            console.log( "Fremhever dato: " + minDato);
-        }
         
     } else if (visningstype === "vegreferanse" ) {
         console.log( "Viser ulike posisjoner for en gitt vegreferanse") ;
@@ -754,7 +799,7 @@ sentrerKart : boolean. Sentrerer kartet i angitt posisjon.
                       if (!isNaN( fylke2        )) { $('#fylke').val(fylke2) } 
                       if (!isNaN( kommune2      )) { $('#kommune').val(kommune2) } 
                       if ( vegkat2.length == 1   ) { $('#vegkategori').val(vegkat2.toUpperCase()) }           
-                      if ( vegkat2.length == 1   ) { $('#vegstatus').val(vegstatus2.toUpperCase()) }           
+                      if ( vegstatus2.length == 1   ) { $('#vegstatus').val(vegstatus2.toUpperCase()) }           
                       if (!isNaN( vegnr2        )) { $('#vegnr').val(vegnr2) } 
                       if (!isNaN( hp2           )) { $('#hp').val(hp2) } 
                       if (!isNaN( meter2        )) { $('#meter').val(meter2) } 
