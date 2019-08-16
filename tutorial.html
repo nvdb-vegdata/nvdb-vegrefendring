@@ -23,10 +23,9 @@ vise hvordan vegreferansene har endret seg i tid og rom. Kartet er fremdeles noe
 
 <h1>Velg dato</h1>
 
+<div id="datovelger"><h3>Dato som skal fremheves:</h3><input type="text" id="dato"><span id="datostatus" class="datoOK">&#10004;</span> </div>
 
-<div id="datovelger"><input type="text" id="dato"></div>
-
-<p>Datovelgeren angir hvilken dato som skal <span class="fremhev">fremheves</span> spesielt, i kart og tabell.
+<p>Datovelgeren angir hvilken dato som skal <span class="fremhev">fremheves</span> spesielt, i kart og tabell. Dette kan gjøre det mer lettvint å lese verdier for en spesiell dag. Selve resultatene påvirkes ikke, kun presentasjonen.
 
 
 <h1>Velg en bestemt vegreferanse</h1>
@@ -362,86 +361,7 @@ Det er mange grunner til å at vegreferanser endres i vegens levetid:
   <li>Teknisk vedlikehold, f.eks. opprydding i hp-inndeling.</li>
 </ul>
 -->
-<script>
-/* Datovelger */
-$(function(){
-
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
-    var dato = yyyy + '-' + mm + '-' + dd; 
- 
-    $('#dato').dropdownDatepicker({ 'defaultDate' : dato, 
-                                    maxYear: 2021, 
-                                    minYear: 1950, 
-                                    dayLabel: 'Dag',
-                                    monthLabel: 'Måned',
-                                    yearLabel: 'År',
-                                    monthLongValues: ['Januar', 'Februar', 'Mars', 
-                                        'April', 'Mai', 'Juni', 'Juli', 'August', 
-                                        'September', 'Oktober', 'November', 'Desember'],
-                                    monthShortValues: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 
-                                            'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
-//                                    initialDayMonthYearValues: ['Day', 'Month', 'Year'],
-                                    daySuffixValues: ['ste', 'de', 'dje', 'de']
-                                    } ); 
-});
-
-function oppdaterDropdownDatePicker( valgtdato) {
-
-    if (sjekkdato(valgtdato)) {
-        
-        var dsplit = valgtdato.split('-'); 
-        $('select[name="date_[year]').val(dsplit[0])
-        $('select[name="date_[month]').val(dsplit[1])
-        $('select[name="date_[day]').val(dsplit[2])
-        
-    }
-}
-
-
-/* Sjekker om vi har endret tekstfeltet */
-$("#dato").on("input", function(){
-     var mindato = document.getElementById("dato").value;
-     if (sjekkdato(mindato)) {
-
-        // console.log( "Dato-tekstfelt endret" + mindato);      
-        oppdaterDropdownDatePicker( mindato); 
-
-     } 
-})
-
-function sjekkdato( mystring) {
-// Sjekker om dato er på format 2018-12-30 
-
-    var godkjent = false;     
-    if (mystring === undefined)  {
-        // Do nothing. Log to console? Nah... 
-    } else { 
-    
-
-        var myArr = mystring.split( '-'); 
-        if (myArr.length == 3) {
-            var yyyy = parseInt( myArr[0] ); 
-            var mm = parseInt( myArr[1] ); 
-            var dd = parseInt( myArr[2] ); 
-            
-            if (!isNaN( yyyy ) && !isNaN( mm ) && !isNaN( dd)  && 
-                yyyy > 1949 && yyyy < 1e4 && mm > 0 && mm < 13 && dd > 0 && dd < 32) {
-                    godkjent = true; 
-            }
-            
-        }
-    }
-    return godkjent
-
-}
-
-
-
-
-</script>
-
+ <script src="js/datofunksjoner.js"></script>
+<script>fylldatovelger()</script>
 </body>
 </html>

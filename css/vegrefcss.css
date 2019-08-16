@@ -11,6 +11,17 @@ td {
 }
 
 
+.datoOK {
+    color : green; 
+    font-size : 120%; 
+    font-weight : bold; 
+}
+
+.datoFeil {
+    color : red; 
+    font-size : 80%; 
+    font-weight : bold; 
+}
 
 
 tr.idag_FUBAR { 
