@@ -92,7 +92,7 @@ def vegref2geojson( vegref, dagensverdi=False):
                     'rellen'     : veglenkeposisjon } 
         
         url = 'http://visveginfo-static.opentns.org/RoadInfoService/GetRoadReferenceForNVDBReference' 
-        r = requests.get( url, params) 
+        r = requests.get( url, params=params) 
         if r.ok and 'RoadReference' in r.text: 
             data = xmltodict.parse( r.text ) 
             if 'RoadCategory' in data['RoadReference'].keys(): 
