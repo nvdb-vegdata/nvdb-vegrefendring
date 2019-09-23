@@ -157,7 +157,8 @@ function hentvegsystemref( props) {
     // Lager id for den cellen som skal holde verdien (når asynkront kall er ferdig) 
     var vrefid = 'vsysref'.concat( props['visningsnummer'] ) 
     
-    var veglenkeApi = "https://www.vegvesen.no/nvdb/api/v2/veg.json?veglenke=" + 
+    // var veglenkeApi = "https://www.vegvesen.no/nvdb/api/v2/veg.json?veglenke=" + 
+    var veglenkeApi = "https://www.test.vegvesen.no/nvdb/api/v3/veg.json?veglenkesekvens=" + 
                                 props['veglenkeposisjon'] + '@' + props['veglenkeid'] ; 
     
     var xhr2 = new XMLHttpRequest();
@@ -167,11 +168,11 @@ function hentvegsystemref( props) {
     
          if (xhr2.readyState == 4 && xhr2.status == 200) {
             var respons2 = JSON.parse(xhr2.responseText);
-            var tmp = respons2['vegreferanse']['kortform']; 
+            var tmp = respons2['vegsystemreferanse']['kortform']; 
             
             console.log( tmp); 
             
-            $('#'.concat( vrefid)).text( "Fiktiv".concat( tmp) ) ;  
+            $('#'.concat( vrefid)).text(  tmp ) ;  
             
          }
     }
