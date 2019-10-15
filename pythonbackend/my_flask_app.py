@@ -10,6 +10,21 @@ def bruksanvisning():
     
     return myTekst
 
+@app.route("/vvistatus")
+def vvistatus(): 
+    url = 'http://visveginfo-static.opentns.org/status' 
+    r = requests.get( url, params=params) 
+    mytext = 'Ikke sjekket dato!'
+    if r.ok and 'Datasets' in r.text: 
+        vvi = r.json() 
+        if 'Datasets' in vvi.keys(): 
+            ml =  [em for em in vvi['Datasets'] if em['Dataset'] == "tne_ft_vegreferanse_532_10" ] 
+            if len( ml) > 0 and 'LastNVDBTransaction' in ml[0].keys(): 
+                mytext = ml[0]['LastNVDBTransaction'] 
+        
+    return mytext
+
+
 @app.route("/vegreferanse")
 def sjekkvegreferanser(): 
     fylke = request.args.get('fylke', default='')
