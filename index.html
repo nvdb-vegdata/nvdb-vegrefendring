@@ -135,8 +135,9 @@ Vegstatus:
 <div>
 <h2><a href="tutorial.html">Brukerveiledning</a></h2>
 
-<p>Denne tjenesten henter data fra Visveginfo-tjenesten, som sist ble oppdatert fra NVDB: <div id id="sistoppdatert"></div>. 
-
+<!--
+<p>Denne tjenesten henter data fra Visveginfo-tjenesten, som sist ble oppdatert fra NVDB: <span id="sistoppdatert"><em>sjekker snart...</em></span>. 
+-->
 </div>
 <!--
 <p>Vi fremhever den vegreferansen gyldig i dag, og eventuelt for den datoen du har valgt.</p>
@@ -150,6 +151,9 @@ var posisjonToleranseY = 5 //
 
 var myMarkers = L.featureGroup(); 
 var myCircles = L.featureGroup(); 
+
+
+
 
 function hentvegsystemref( props) {
     /* Henter vegsystem-referanse. Kun TESTPROD foreløbig... */
@@ -222,8 +226,6 @@ function hentVegreferanser(hvaslags) {
         dato        = getUrlParameter( myUrl, "dato");
 
        oppdaterUrlParams = false;
-       
-       
 
     }
     

@@ -1,5 +1,6 @@
 ﻿from flask import Flask, request, jsonify
 import hentvegref
+import requests
 app = Flask(__name__)
 
 @app.route("/")
@@ -10,10 +11,10 @@ def bruksanvisning():
     
     return myTekst
 
-@app.route("/vvistatus")
+@app.route("/vviwrapper/status")
 def vvistatus(): 
     url = 'http://visveginfo-static.opentns.org/status' 
-    r = requests.get( url, params=params) 
+    r = requests.get( url) 
     mytext = 'Ikke sjekket dato!'
     if r.ok and 'Datasets' in r.text: 
         vvi = r.json() 
