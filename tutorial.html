@@ -21,6 +21,12 @@ Og en konkret vegreferanse - for eksempel 0800 Ev 18 hp1 m0 - kan finnes flere s
 <p>Vi på NVDB- og Geodataseksjonen i Vegdirektoratet har laget <a href="./" >dette kartverktøyet</a> for å 
 vise hvordan vegreferansene har endret seg i tid og rom. Kartet er fremdeles noe eksperimentelt.</p>
 
+<h3>Datagrunnlag og oppdatering</h3>
+
+<p>Kartet henter data fra Visveginfo-tjenesten, som normalt oppdateres med ferske data fra NVDB hver natt. Noen ganger, for eksempel ved oppdatering av datakatalog, kan det ta lengre tid. Siste oppdatering av Visveginfo-tjenesten var: <span id="sistoppdatert"><em>Henter straks data...</em></span></p>. 
+
+
+
 <h1>Velg dato</h1>
 
 <div id="datovelger"><h3>Dato som skal fremheves:</h3><input type="text" id="dato"><span id="datostatus" class="datoOK">&#10004;</span> </div>
@@ -362,6 +368,34 @@ Det er mange grunner til å at vegreferanser endres i vegens levetid:
 </ul>
 -->
  <script src="js/datofunksjoner.js"></script>
-<script>fylldatovelger()</script>
+<script>
+fylldatovelger();
+visveginfo_sistoppdatert();
+
+function visveginfo_sistoppdatert( ) {
+    /* Sjekker når visveginfo-tjenesten sist ble oppdatert  */
+    
+    
+    var vvistatuslenke = "http://jansimple.pythonanywhere.com/vviwrapper/status" ; 
+    
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open("GET", vvistatuslenke, true);
+    xhr2.send();
+    xhr2.onreadystatechange = function () {
+    
+         if (xhr2.readyState == 4 && xhr2.status == 200) {
+            var respons = xhr2.responseText;
+            
+            console.log( respons ); 
+            
+            $('#sistoppdatert').text(  respons ) ;  
+            
+         }
+    }
+        
+}
+
+
+</script>
 </body>
 </html>

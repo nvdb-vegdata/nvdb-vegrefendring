@@ -98,11 +98,10 @@ Vegstatus:
   <input id="meter" type="number" name="quantity" min="0" max="99999" value="0">
 </p>
 <p>
-    <button class="myButton" onClick="hentVegreferanser('knappeklikk')" >Hent denne vegreferansen</button> <input type="checkbox" id="hentdagens"> Vis også dagens vegreferanse
+    <button class="myButton" onClick="hentVegreferanser('knappeklikk')" >Hent denne vegreferansen</button> 
+    <div class="unbreakable"><input type="checkbox" id="hentdagens"> Vis også dagens vegreferanse</div> 
+    <div class="unbreakable"><input type="checkbox" id="vegsystem">Vis vegsystemreferanse</div>
 </p>  
-
-<!-- </form> -->
-
 
 </div>
 
@@ -135,6 +134,10 @@ Vegstatus:
 
 <div>
 <h2><a href="tutorial.html">Brukerveiledning</a></h2>
+
+<!--
+<p>Denne tjenesten henter data fra Visveginfo-tjenesten, som sist ble oppdatert fra NVDB: <span id="sistoppdatert"><em>sjekker snart...</em></span>. 
+-->
 </div>
 <!--
 <p>Vi fremhever den vegreferansen gyldig i dag, og eventuelt for den datoen du har valgt.</p>
@@ -148,6 +151,42 @@ var posisjonToleranseY = 5 //
 
 var myMarkers = L.featureGroup(); 
 var myCircles = L.featureGroup(); 
+
+
+
+
+function hentvegsystemref( props) {
+    /* Henter vegsystem-referanse. Kun TESTPROD foreløbig... */
+    
+    // Lager id for den cellen som skal holde verdien (når asynkront kall er ferdig) 
+    var vrefid = 'vsysref'.concat( props['visningsnummer'] ) 
+    
+    // var veglenkeApi = "https://www.vegvesen.no/nvdb/api/v2/veg.json?veglenke=" + 
+    var veglenkeApi = "https://www.test.vegvesen.no/nvdb/api/v3/veg.json?veglenkesekvens=" + 
+                                props['veglenkeposisjon'] + '@' + props['veglenkeid'] ; 
+    
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open("GET", veglenkeApi, true);
+    xhr2.send();
+    xhr2.onreadystatechange = function () {
+    
+         if (xhr2.readyState == 4 && xhr2.status == 200) {
+            var respons2 = JSON.parse(xhr2.responseText);
+            var tmp = respons2['vegsystemreferanse']['kortform']; 
+            
+            console.log( tmp); 
+            
+            $('#'.concat( vrefid)).text(  tmp ) ;  
+            
+         }
+    }
+
+    
+    console.log( props) ; 
+         
+    var vr = '<div id="' + vrefid + '"></div>'  ; 
+    return vr; 
+}
 
 function hentVegreferanser(hvaslags) {
     /* Hvaslags - er vi kalt opp via URL parametre når siden lastes, eller klikk på knappen?
@@ -187,8 +226,6 @@ function hentVegreferanser(hvaslags) {
         dato        = getUrlParameter( myUrl, "dato");
 
        oppdaterUrlParams = false;
-       
-       
 
     }
     
@@ -301,12 +338,15 @@ function hentVegreferanser(hvaslags) {
                                  
                     
                     if (document.getElementById("hentdagens").checked == true ){
-                        thTekst = thTekst.concat( "<th><em>Dagens v.ref</em></th> </tr></thead><tbody></tbody>" ) ; 
-                    } else {
-                       thTekst = thTekst.concat( "</tr></thead><tbody></tbody>" ) ; 
-                    }
+                        thTekst = thTekst.concat( "<th><em>Dagens v.ref</em></th>" ) ; 
+                    } 
                     
+                    if (document.getElementById("vegsystem").checked == true ){
+                        thTekst = thTekst.concat( "<th><em>Dagens Vegsystemreferanse</em></th>" ) ; 
+                    } 
                     
+                    thTekst = thTekst.concat( "</tr></thead><tbody></tbody>" ) ;
+                     
                     if ($("#vegreferanseTabell tbody").length == 0) {
                       $("#vegreferanseTabell").append(thTekst );
                     }
@@ -328,10 +368,16 @@ function hentVegreferanser(hvaslags) {
                         "<td>" + tekstY + "</td>" ; 
 
                     if (document.getElementById("hentdagens").checked == true ){
-                        myTableRow = myTableRow.concat( "<td>" + props['dagensvegref']  + "</td>  </tr>"  ) ; 
-                    } else {
-                       myTableRow = myTableRow.concat( "</tr>" ) ; 
+                        myTableRow = myTableRow.concat( "<td>" + props['dagensvegref']  + "</td>"  ) ; 
+                    } 
+                    if (document.getElementById("vegsystem").checked == true ){
+                        
+                        myTableRow = myTableRow.concat( "<td>" + hentvegsystemref( props)  + "</td>"  ) ;
+
                     }
+                    
+                    myTableRow = myTableRow.concat( "</tr>" ) ; 
+                    
                     $("#vegreferanseTabell tbody").append(myTableRow);
 
                     // console.log( myTableRow) 
@@ -412,8 +458,6 @@ Leser URL parametre ved oppstart
 */
 function sjekkUrlParams() {
 
-
-  
     var myUrl = window.location.href; 
     var visningstype = getUrlParameter(myUrl, "kartvisning"); 
     var dato = getUrlParameter(myUrl, "dato");
