@@ -100,7 +100,7 @@ Vegstatus:
 <p>
     <button class="myButton" onClick="hentVegreferanser('knappeklikk')" >Hent denne vegreferansen</button> 
     <div class="unbreakable"><input type="checkbox" id="hentdagens"> Vis også dagens vegreferanse</div> 
-    <div class="unbreakable"><input type="checkbox" id="vegsystem">Vis vegsystemreferanse <em>(Før 4.11 kun internt hos vegvesenets datanett)</em></div>
+    <div class="unbreakable"><input type="checkbox" id="vegsystem">Vis vegsystemreferanse/div>
 </p>  
 
 </div>
@@ -162,7 +162,7 @@ function hentvegsystemref( props) {
     var vrefid = 'vsysref'.concat( props['visningsnummer'] ) 
     
     // var veglenkeApi = "https://www.vegvesen.no/nvdb/api/v2/veg.json?veglenke=" + 
-    var veglenkeApi = "https://www.test.vegvesen.no/nvdb/api/v3/veg.json?veglenkesekvens=" + 
+    var veglenkeApi = "https://www.vegvesen.no/nvdb/api/v3/veg.json?veglenkesekvens=" + 
                                 props['veglenkeposisjon'] + '@' + props['veglenkeid'] ; 
     
     var xhr2 = new XMLHttpRequest();
