@@ -100,7 +100,7 @@ Vegstatus:
 <p>
     <button class="myButton" onClick="hentVegreferanser('knappeklikk')" >Hent denne vegreferansen</button> 
     <div class="unbreakable"><input type="checkbox" id="hentdagens"> Vis også dagens vegreferanse</div> 
-    <div class="unbreakable"><input type="checkbox" id="vegsystem">Vis vegsystemreferanse/div>
+    <div class="unbreakable"><input type="checkbox" id="vegsystem">Vis vegsystemreferanse</div>
 </p>  
 
 </div>
@@ -156,9 +156,11 @@ var myCircles = L.featureGroup();
 
 
 function hentvegsystemref( props) {
-    /* Henter vegsystem-referanse. Kun TESTPROD foreløbig... */
+    /* Henter vegsystem-referanse.  */
     
-    // Lager id for den cellen som skal holde verdien (når asynkront kall er ferdig) 
+    // Lager id for det div-elementet der verdien skal vises når asynkront kall er ferdig. 
+    // Her er det skreddersydd for å bygges inn i tabellen som bygges dynamisk når du klikker på 
+    // knappen "Hent denne vegreferansen", men det kan også tweakes til et hvilket som helst div-element. 
     var vrefid = 'vsysref'.concat( props['visningsnummer'] ) 
     
     // var veglenkeApi = "https://www.vegvesen.no/nvdb/api/v2/veg.json?veglenke=" + 
@@ -645,7 +647,17 @@ function lagPunktHistorikkTabell( jsondata, mindato) {
           "</tr>"; 
         $("#vegreferanseTabell tbody").append(myTableRow);
     }
-    $("#bruksanvisning1").append('<h2>Vegreferanseverdier i punkt ' + coordstring + '</h2>');
+    $("#bruksanvisning1").append('<h2>Vegreferanseverdier i punkt ' + coordstring + '</h2><h3><span id="vsysref99999"></span></h3>');
+
+    if (document.getElementById("vegsystem").checked == true ){
+        var temp = { "visningsnummer"   : 99999, 
+                    "veglenkeposisjon"  : jsondata['features'][0]['properties']['veglenkeposisjon'], 
+                    "veglenkeid"        :  jsondata['features'][0]['properties']['veglenkeid'] 
+                    }; 
+        hentvegsystemref( temp );  
+                        // thTekst = thTekst.concat( "<th><em>Dagens Vegsystemreferanse</em></th>" ) ; 
+    } 
+
 }    
 
 
