@@ -19,19 +19,24 @@
 Og en konkret vegreferanse - for eksempel 0800 Ev 18 hp1 m0 - kan finnes flere steder, til ulike tider.</p>
 
 <p>Vi på NVDB- og Geodataseksjonen i Vegdirektoratet har laget <a href="./" >dette kartverktøyet</a> for å 
-vise hvordan vegreferansene har endret seg i tid og rom. Kartet er fremdeles noe eksperimentelt.</p>
+vise hvordan vegreferansene har endret seg i tid og rom.</p>
+
+<h1>Den 31. oktober 2022 legger vi ned det gamle vegreferansesystemet</h1>
+
+Alle data er fremdeles tilgjengelig etter 2022-10-31, men da kun som  "historiske spørringer", med dato angitt før 2022-10-31. 
 
 <h3>Datagrunnlag og oppdatering</h3>
 
-<p>Kartet henter data fra Visveginfo-tjenesten, som normalt oppdateres med ferske data fra NVDB hver natt. Noen ganger, for eksempel ved oppdatering av datakatalog, kan det ta lengre tid. Siste oppdatering av Visveginfo-tjenesten var: <span id="sistoppdatert"><em>Henter straks data...</em></span></p>. 
-
+<p>Kartet henter data fra Visveginfo-tjenesten. Siste oppdatering av Visveginfo-tjenesten var: <span id="sistoppdatert"><em>Henter straks data...</em></span></p>. 
 
 
 <h1>Velg dato</h1>
 
 <div id="datovelger"><h3>Dato som skal fremheves:</h3><input type="text" id="dato"><span id="datostatus" class="datoOK">&#10004;</span> </div>
 
-<p>Datovelgeren angir hvilken dato som skal <span class="fremhev">fremheves</span> spesielt, i kart og tabell. Dette kan gjøre det mer lettvint å lese verdier for en spesiell dag. Selve resultatene påvirkes ikke, kun presentasjonen.
+<p>Datovelgeren angir hvilken dato som skal <span class="fremhev">fremheves</span> spesielt, i kart og tabell. Dette kan gjøre det mer lettvint å lese verdier for en spesiell dag. Selve resultatene påvirkes ikke, kun presentasjonen.</p>
+
+<p>Det gamle vegreferansesystemet blir ikke lenger oppdatert etter 31.10.2022, så det gir ikke mening å bruke nyere datoer enn dette.</p>
 
 
 <h1>Velg en bestemt vegreferanse</h1>
@@ -144,12 +149,12 @@ Vegstatus:
 <p>I eksemplet over ser vi hvordan <em>hp1 meter 0</em> på E18 i Telemark flyttet seg da 
 <a href="https://www.vegvesen.no/Europaveg/e18skylangangen" target="blank">E18 motorvegen 
 Sky-Langangen åpnet i 2012</a>. Den gamle E18-traséen, markert med tallet 2 i kart og tabell, 
-er i dag blitt til Fv 2962.</p>
+byttet da vegnummer til Fv 2962.</p>
 
 <p>Koordinatene er klikkbare! Når du klikker på en koordinat får du tidsutvikling av vegreferanse i dette punktet, slik som beskrevet i avsnittet <a href="#kartklikk">Vis punktverdier</a>.
 
 <p>
-Hvis du huker av valget <em>"Vis også dagens vegreferanse"</em> får du også vist dagens verdier i tabellen. 
+Hvis du huker av valget <em>"Vis kolonne for 31.10.2022"</em> får du også vist de nyeste vegreferanseverdiene -  <em>datoen 31.10.2022</em> -  i tabellen. 
 </p>
 <p>
     <button class="myButton" >Hent denne vegreferansen</button> <input type="checkbox" id="hentdagens" checked> Vis også dagens vegreferanse
@@ -162,7 +167,7 @@ Hvis du huker av valget <em>"Vis også dagens vegreferanse"</em> får du også v
     <th><em>Gyldig til</em></th>
     <th><em>X</em></th>
     <th><em>Y</em></th>
-    <th><em>Dagens v.ref</em></th>
+    <th><em>Verdi for 31.10.2022</em></th>
 </tr>
 </thead>
 <tbody>
@@ -260,7 +265,7 @@ Avstanden mellom punktene er ca 3.5 meter, for lite til at det blir lesbart om v
       <td>0800 Fv2962 hp2 m0</td>
       <td>2019-05-08</td>
       <td>9999-12-31</td>
-      <td ><span class="kommentar">Dagens verdi</span></td>
+      <td ><span class="kommentar">Nyeste verdi (31.10.2022)</span></td>
     </tr>
     
     <tr class="gammalt">
@@ -311,13 +316,12 @@ dobbeltoppføringer er ganske vanlig.--></p>
 
 <p>Fram til 2012-06-06 het vegen Ev18, men det tok over ett 
 år (fram til 2013-10-28) før vegen fikk fylkesveg-nummeret Fv30. I mellomtiden het vegen <em>Et18</em>, 
-hvor bokstaven "t" betyr <em>midlertidig status bilveg</em>. Dette er vanlig praksis når 
-det drøyer ut i tid med tildeling av nye vegnummer.</p>
+hvor bokstaven "t" betyr <em>midlertidig status bilveg</em>. I det nye systemet finnes ikke lenger vegstatus "T", men det er fremdeles slik 
+at det kan gå måneder og år før vi får tildelt nye vegnummer til de gamle riks- og europavegene som skal leve videre som kommunal eller fylkesveg.</p>
 </p>
 
 <a name="minpos"></a>
 <h1>Vegreferanse i min posisjon</h1>
-
 
 <p>
 <button class="myButton" >Hent vegreferanse i min posisjon</button>
@@ -330,24 +334,27 @@ er visningen lik den du får når du klikker i kartflaten.</p>
 <h1>Mer om vegreferanser</h1>
 <a name="vegrefteori"></a>
 
+<p>I det gamle vegreferansesystemet var første element fylkesnummer. Denne logikken overlevde ikke at de fleste fylkene slås sammen 1.1.2020 - det ville blitt 
+  alt for mange veger innafor Viken eller Vestland til den nummerserie-logikken som var i bruk på vegnummer, hovedparsell og meter. </p>
 
-<p>Logikken bak vegreferansesystemet er beskrevet i detalj i <a href="https://www.vegvesen.no/_attachment/61505">Håndbok V830 Nasjonalt vegreferansesystem (.pdf)</a>.
-Ønsker du en lettvint oversikt over hva kodene betyr så er <a href="https://api.vegdata.no/verdi/vegreferanse.html">NVDB api-dokumentasjon</a> veldig grei.</p>
+<p>
+Det nye <a href="">referansesystem for NVDB</a> ble operativt november 2019, og er beskrevet i detalj i 
+ <a href="https://www.vegvesen.no/globalassets/fag/handboker/hb-v830-nasjonalt-vegreferansesystem.pdf">Håndbok V830 Nasjonalt vegreferansesystem (.pdf)</a>.
+Ønsker du en lettvint oversikt over hva kodene betyr så er <a href="https://nvdbapiles-v3.atlas.vegvesen.no/dokumentasjon/#tid">dokumentasjonen til NVDB api LES</a> et greit sted å starte, 
+eller <a href="https://www.vegdata.no/ofte-stilte-sporsmal/hva-ma-jeg-vite-om-vegsystemreferanse/">artikkelen på vegdata.no</a>.</p>
 
-<p>Vegreferansen er unik innafor hvert fylke - men denne logikken vil ikke overleve at de fleste fylkene slås sammen 1.1.2020.
-Vi har laget et nytt <a href="">referansesystem for NVDB</a> som fases inn høsten 2019. Du bør legge om til det nye 
-systemet fortest mulig. Frem til august 2021 kan du bruke dagens system <em>såfremt du bruker 2019-fylkesnummer</em> og 
-lever greit med en del forbehold om datakvalitet.</p>
+<p>Vi har ikke kastet data for det gamle vegreferansesystemet - data for <a href="https://datakatalogen.vegdata.no/532-Vegreferanse">objekttypen 532 Vegreferanse</a> ligger fremdeles i NVDB, men nå med sluttdatoen 31.10.2022. 
+  Og så har vi fremdeles et par lure tricks for å <a href="https://www.vegdata.no/ofte-stilte-sporsmal/oversette-mellom-ny-og-gammel-vegreferanse/">oversette fra gammelt til nytt system.</a> </p>
 
 <h3>Dobbelt opp med vegreferanser i Trøndelag</h3>
 
 <p>Her er et eksempel på hva slags problemer sammenslåing av fylker byr på. Nord- og Sør-Trøndelag slo seg sammen i 2018. 
 Hvis du vil se tidsutvikling for en vegreferanse i  det nye fylke 50 - for eksempel <em>5000 Ev6 hp11 m0</em> - mener du 
 da den som fantes i Nord-Trøndelag <em>(1700 Ev6 hp11 m0)</em>, eller den i Sør-Trøndelag <em>(1600 Ev6 hp11 m0)</em>? Begge disse
-er nå blitt til fylke 50.</p>
+fylkene er nå blitt til fylke 50. Før 2018 kunne vi skille på dem, for da var Nord-Trøndelag fylke 17 og Sør-Trøndelag fylke 16.</p>
 
 <p>For Trøndelag sin del klarte vi løse sammenslåingen ved å gi nye vegnummer eller hp-verdier der det var overlapp. 
-Men det er ikke mulig å gjøre det samme for Troms og Finnmark, Vestland, Agder, Vestfold og Telemark, Innlandet og Viken.</p>
+Men det var ikke mulig å gjøre det samme for Troms og Finnmark, Vestland, Agder, Vestfold og Telemark, Innlandet og Viken.</p>
 
 <p>
 <img src="img/fylke50dublett_ev6hp11.png" alt="Historiske verdier for vegreferansen 5000 Ev6 hp11 m0 finnes i både Sør- og Nord-Trøndelag." >

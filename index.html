@@ -22,12 +22,20 @@
  <script src="lib/leaflet/leaflet.js" ></script>
  <script src="lib/proj4-compressed.js"></script>
  <script src="lib/proj4leaflet.js"></script>
+ <!--  
+    OBS! Du importerer også js/datofunksjoner helt nederst i fila
+     <script src="js/datofunksjoner.js"></script>
+
+     Antar det er gode grunner til at dette scriptet importeres ETTER den øvrige javascriptkoden, 
+     men har ikke feilsøkt på dette. 
+ -->
 
 </head>
 <body onload="sjekkUrlParams()" >
 
 <div id="datovelger"><h3>Dato som skal fremheves:</h3><input type="text" id="dato"><span id="datostatus" class="datoOK">&#10004;</span> </div>
 
+Det gamle vegreferansesystemet ble deaktivert 31.10.20222, så det gir ikke mening å bruke nyere datoer enn 31. oktober 2022. 
 
 <div id="vegreferansevelger">
 
@@ -99,8 +107,8 @@ Vegstatus:
 </p>
 <p>
     <button class="myButton" onClick="hentVegreferanser('knappeklikk')" >Hent denne vegreferansen</button> 
-    <div class="unbreakable"><input type="checkbox" id="hentdagens"> Vis også dagens vegreferanse</div> 
-    <div class="unbreakable"><input type="checkbox" id="vegsystem">Vis vegsystemreferanse</div>
+    <div class="unbreakable"><input type="checkbox" id="hentdagens"> Vis kolonne for 31.10 2022</div> 
+    <div class="unbreakable"><input type="checkbox" id="vegsystem"> Vis kolonne for dagens vegsystemreferanse</div>
 </p>  
 
 </div>
@@ -340,7 +348,7 @@ function hentVegreferanser(hvaslags) {
                                  
                     
                     if (document.getElementById("hentdagens").checked == true ){
-                        thTekst = thTekst.concat( "<th><em>Dagens v.ref</em></th>" ) ; 
+                        thTekst = thTekst.concat( "<th><em>Verdi for 31.10.2022</em></th>" ) ; 
                     } 
                     
                     if (document.getElementById("vegsystem").checked == true ){

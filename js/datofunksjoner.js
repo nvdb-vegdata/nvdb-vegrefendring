@@ -15,7 +15,7 @@ function fylldatovelger(valgtdato) {
 
     if (!sjekkdato( valgtdato)) { 
 
-        var today = new Date();
+        var today = new Date(2022, 9, 31);
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         var yyyy = today.getFullYear();

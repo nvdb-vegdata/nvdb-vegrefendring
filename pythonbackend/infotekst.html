@@ -27,11 +27,17 @@ tr:nth-child(even) {background-color: #f2f2f2;}
 </head>
 <body>
 
+<h1>Den 31. oktober 2022 legger vi ned det gamle vegreferansesystemet</h1>
+
+Alle data er fremdeles tilgjengelig etter 2022-10-31, men da kun som  "historiske spørringer". Samtlige vegreferanseobjekter (objekttype 532 Vegreferanse) får en sluttdato denne dagen. 
+
+
 <h1>Hent historiske vegreferanser som geojson</h1>
 
 <p>Wrapper rundt <a href="http://visveginfo-static.opentns.org/help.htm" >visveginfo</a>-tjenesten. Returnere tidsutvikling for vegreferanse som geojson featureCollection. Hvis det du ber om ikke finnes så er listen over features tom. Merk at koordinatene er UTM-koordinater for sone 33 (EPSG:25833). Dette er strengt tatt ikke gyldig geojson (som skal ha lengde/breddegrad), men vi ser gjennom fingrene med det akkurat nå.</p> 
 
 <p>Om du er interessert i vegreferansen som var gyldig på en gitt dato kan du angi det i spørringen. Svaret vil da utheve den verdien som var gyldig på det tidspunktet med egenskapverdien <em>fremhev=fremhev</em>, alternativt <em>fremhev=fremhevidag</em> hvis vegreferansen for angitt dato fremdeles er gyldig i dag. 
+
 
 <h1>Endepunkt <a href="./posisjon?ost=259491.89&nord=7030393" >/posisjon</a></h1>
 
@@ -49,7 +55,7 @@ tr:nth-child(even) {background-color: #f2f2f2;}
   </tr>
   <tr>
     <td>dato</td>
-    <td>Valgfri, kan sløyfes. Uthever den vegreferanse-verdien som er på den datoen som er mest interessant for deg. Syntaks=2015-01-31</td>
+    <td>Valgfri, kan sløyfes. Uthever den vegreferanse-verdien som er på den datoen som er mest interessant for deg - men merk at denne datoen er FØR 31. oktober 2022. Syntaks=2015-01-31</td>
   </tr>
 
 
@@ -130,7 +136,7 @@ Slår opp på angitt vegreferanse og finner tidsutvikling.
   <tr>
     <td>dato</td>
     <td></td> 
-    <td>Valgfri. Uthever den vegreferanse-verdien som er på den datoen som er mest interessant for deg. Syntaks=2015-12-31.</td>
+    <td>Valgfri. Uthever den vegreferanse-verdien som er på den datoen som er mest interessant for deg - vel og merke FØR 31. oktober 2022. Syntaks=2015-12-31. </td>
   </tr>
 
 <!--

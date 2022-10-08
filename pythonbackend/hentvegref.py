@@ -87,7 +87,7 @@ def vegref2geojson( vegref, dagensverdi=False):
             }
             
     if dagensverdi: 
-        params = { 'viewDate' : datetime.datetime.today().strftime('%Y-%m-%d'), 
+        params = { 'viewDate' : '2022-10-31', 
                     'reflinkoid' : veglenkeid, 
                     'rellen'     : veglenkeposisjon } 
         
