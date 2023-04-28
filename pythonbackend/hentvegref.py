@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Henter historikk for vegreferanser fra visveginfo-tjenesten 
 
@@ -332,7 +333,8 @@ def henthistorikk( fylke=15, kommune=0, kat='E', stat='V',
     if r.ok and '<RoadPointReferenceWithTimePeriod>' in r.text: 
 
         data = r.text
-        raise ValueError( f"{r.url} status {r.status_code} {data[0:500]} ")
+        minFeil = ' '.join( [ r.url, "status", str(r.status_code), data[0:500]  ] )
+        raise ValueError(  minFeil)
         data = xmltodict.parse( data)    
         p1 = 'ArrayOfRoadPointReferenceWithTimePeriod'
         p2 = 'RoadPointReferenceWithTimePeriod'
