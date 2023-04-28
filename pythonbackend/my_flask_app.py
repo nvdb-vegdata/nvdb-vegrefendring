@@ -13,7 +13,7 @@ def bruksanvisning():
 
 @app.route("/vviwrapper/status")
 def vvistatus(): 
-    url = 'http://visveginfo-static.opentns.org/status' 
+    url = 'https://visveginfo-static.opentns.org/status' 
     r = requests.get( url) 
     mytext = 'Ikke sjekket dato!'
     if r.ok and 'Datasets' in r.text: 

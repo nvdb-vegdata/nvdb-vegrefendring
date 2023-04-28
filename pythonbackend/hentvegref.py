@@ -91,7 +91,7 @@ def vegref2geojson( vegref, dagensverdi=False):
                     'reflinkoid' : veglenkeid, 
                     'rellen'     : veglenkeposisjon } 
         
-        url = 'http://visveginfo-static.opentns.org/RoadInfoService/GetRoadReferenceForNVDBReference' 
+        url = 'https://visveginfo-static.opentns.org/RoadInfoService/GetRoadReferenceForNVDBReference' 
         r = requests.get( url, params=params) 
         if r.ok and 'RoadReference' in r.text: 
             data = xmltodict.parse( r.text ) 
@@ -110,7 +110,7 @@ def vegrefkoordinat( easting=214858, northing=6687762, valgtdato='', crs=25833, 
                         "features": []
                     }
 
-    url = 'http://visveginfo-static.opentns.org/RoadInfoService3d/GetRoadReferenceHistoryForLocation'
+    url = 'https://visveginfo-static.opentns.org/RoadInfoService3d/GetRoadReferenceHistoryForLocation'
     params = { 'easting' : easting, 'northing' : northing, 
                 'TopologyLevel' : 'Overview', 
                 'searchRoadStatus' : 'V,W,T,G,A,B,H,S,M,P,X,E,U,Q' }
@@ -326,7 +326,7 @@ def henthistorikk( fylke=15, kommune=0, kat='E', stat='V',
 
 
 
-    url = 'http://visveginfo-static.opentns.org/RoadInfoService3d/GetRoadReferenceHistoryForReference'
+    url = 'https://visveginfo-static.opentns.org/RoadInfoService3d/GetRoadReferenceHistoryForReference'
     params = { 'roadReference' : vegref }
     r = requests.get( url, params=params)
     if r.ok and '<RoadPointReferenceWithTimePeriod>' in r.text: 
