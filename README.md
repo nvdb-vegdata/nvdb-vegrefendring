@@ -1,4 +1,5 @@
 # vegrefendring
 Viser tidsutvikling av en vegreferanse-verdi i tid og rom. 
 
-# UFERDIG, work in progress 
+Denne nås på URL-en:  
+https://github.com/nvdb-vegdata/nvdb-vegrefendring
