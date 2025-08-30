@@ -261,8 +261,9 @@ function hentVegreferanser(hvaslags) {
     $("#vegreferanseTabell").empty();
     
     //var vegrefApi = 'https://python.ltglahn.no/vegreferanse?fylke='+fylke +
-    var vegrefApi = 'https://jansimple.pythonanywhere.com/vviwrapper/vegreferanse?fylke='+fylke +
-        '&kommune='+kommune + '&kat=' + vegkat + '&stat=' + vegstatus + 
+    // var vegrefApi = 'https://jansimple.pythonanywhere.com/vviwrapper/vegreferanse?fylke='+fylke +
+    var vegrefApi = 'http://localhost:5000/vegreferanse?fylke='+fylke +
+        '&kommune='+kommune + '&kat=' + vegkat + '&stat=' + vegstatus +
         '&vegnr=' + vegnr + '&hp=' + hp + '&meter=' + meter + '&dato=' + dato + '&fjerndubletter=true';
     
     if (document.getElementById("hentdagens").checked == true ){

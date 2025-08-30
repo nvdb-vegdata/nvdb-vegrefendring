@@ -1,0 +1,99 @@
+class VegreferanseApp {
+    constructor() {
+        this.initEventListeners();
+        this.hentvegref = new HentVegref();
+    }
+
+    initEventListeners() {
+        document.getElementById('vegrefForm').addEventListener('submit', this.handleVegrefSearch.bind(this));
+        document.getElementById('posForm').addEventListener('submit', this.handlePosSearch.bind(this));
+    }
+
+    async handleVegrefSearch(event) {
+        event.preventDefault();
+
+        const fylke = parseInt(document.getElementById('fylke').value);
+        const kat = document.getElementById('kat').value;
+        const vegnr = parseInt(document.getElementById('vegnr').value);
+        const hp = parseInt(document.getElementById('hp').value) || 1;
+        const meter = parseInt(document.getElementById('meter').value) || 0;
+
+        if (fylke && kat && vegnr) {
+            try {
+                this.showLoading();
+                const result = await this.hentvegref.henthistorikk({
+                    fylke,
+                    kommune: '00',
+                    kat,
+                    stat: 'V',
+                    vegnr,
+                    hp,
+                    meter,
+                    valgtdato: '',
+                    crs: 25833,
+                    fjerndubletter: false,
+                    dagensverdi: false
+                });
+                this.displayResults(result);
+            } catch (error) {
+                this.displayError('Feil ved søk på vegreferanse: ' + error.message);
+            }
+        }
+    }
+
+    async handlePosSearch(event) {
+        event.preventDefault();
+
+        const easting = parseFloat(document.getElementById('easting').value);
+        const northing = parseFloat(document.getElementById('northing').value);
+
+        if (easting && northing) {
+            try {
+                this.showLoading();
+                const result = await this.hentvegref.vegrefkoordinat({
+                    easting,
+                    northing,
+                    valgtdato: '',
+                    crs: 25833,
+                    fjerndubletter: false
+                });
+                this.displayResults(result);
+            } catch (error) {
+                this.displayError('Feil ved søk på posisjon: ' + error.message);
+            }
+        }
+    }
+
+    showLoading() {
+        document.getElementById('results').innerHTML = '<p>Søker...</p>';
+    }
+
+    displayResults(data) {
+        const resultsDiv = document.getElementById('results');
+        if (data.features && data.features.length > 0) {
+            let html = '<h3>Resultater:</h3><ul>';
+            data.features.forEach(feature => {
+                const props = feature.properties;
+                html += `<li>
+                    <strong>Vegreferanse:</strong> ${props.vegref || 'N/A'} <br>
+                    <strong>Fra dato:</strong> ${props.fradato || 'N/A'} <br>
+                    <strong>Til dato:</strong> ${props.tildato || 'N/A'} <br>
+                    <strong>Koordinater:</strong> ${feature.geometry.coordinates.join(', ')}
+                </li>`;
+            });
+            html += '</ul>';
+            resultsDiv.innerHTML = html;
+        } else {
+            resultsDiv.innerHTML = '<p>Ingen resultater funnet.</p>';
+        }
+    }
+
+    displayError(message) {
+        document.getElementById('results').innerHTML = `<p style="color: red;">${message}</p>`;
+    }
+}
+
+// Start appen når siden er lastet
+document.addEventListener('DOMContentLoaded', () => {
+    new VegreferanseApp();
+});
