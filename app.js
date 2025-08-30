@@ -71,17 +71,17 @@ class VegreferanseApp {
     displayResults(data) {
         const resultsDiv = document.getElementById('results');
         if (data.features && data.features.length > 0) {
-            let html = '<h3>Resultater:</h3><ul>';
+            let html = '<h3>Resultater:</h3><table class="results-table" border="1"><thead><tr><th>Vegreferanse</th><th>Fra dato</th><th>Til dato</th><th>Koordinater</th></tr></thead><tbody>';
             data.features.forEach(feature => {
                 const props = feature.properties;
-                html += `<li>
-                    <strong>Vegreferanse:</strong> ${props.vegref || 'N/A'} <br>
-                    <strong>Fra dato:</strong> ${props.fradato || 'N/A'} <br>
-                    <strong>Til dato:</strong> ${props.tildato || 'N/A'} <br>
-                    <strong>Koordinater:</strong> ${feature.geometry.coordinates.join(', ')}
-                </li>`;
+                html += `<tr>
+                    <td>${props.vegref || 'N/A'}</td>
+                    <td>${props.fradato || 'N/A'}</td>
+                    <td>${props.tildato || 'N/A'}</td>
+                    <td>${feature.geometry.coordinates.join(', ')}</td>
+                </tr>`;
             });
-            html += '</ul>';
+            html += '</tbody></table>';
             resultsDiv.innerHTML = html;
         } else {
             resultsDiv.innerHTML = '<p>Ingen resultater funnet.</p>';
