@@ -7,6 +7,7 @@ class VegreferanseApp {
     initEventListeners() {
         document.getElementById('vegrefForm').addEventListener('submit', this.handleVegrefSearch.bind(this));
         document.getElementById('posForm').addEventListener('submit', this.handlePosSearch.bind(this));
+        document.getElementById('lenkeForm').addEventListener('submit', this.handleLenkesekvensSearch.bind(this));
     }
 
     async handleVegrefSearch(event) {
@@ -41,6 +42,27 @@ class VegreferanseApp {
         }
     }
 
+
+    async handleLenkesekvensSearch(event) {
+        event.preventDefault();
+
+        const linkid = parseFloat(document.getElementById('lenkesekvensId').value);
+        const position = parseFloat(document.getElementById('posisjon').value);
+
+        if (easting && northing) {
+            try {
+                this.showLoading();
+                const result = await this.hentvegref.veglenkesekvens({
+                    linkid,
+                    position: position || 0,
+                });
+                this.displayResults(result);
+            } catch (error) {
+                this.displayError('Feil ved søk på posisjon: ' + error.message);
+            }
+        }
+    }
+
     async handlePosSearch(event) {
         event.preventDefault();
 
@@ -71,13 +93,15 @@ class VegreferanseApp {
     displayResults(data) {
         const resultsDiv = document.getElementById('results');
         if (data.features && data.features.length > 0) {
-            let html = '<h3>Resultater:</h3><table class="results-table" border="1"><thead><tr><th>Vegreferanse</th><th>Fra dato</th><th>Til dato</th><th>Koordinater</th></tr></thead><tbody>';
+            let html = '<h3>Resultater:</h3><table class="results-table" border="1">' +
+                '<thead><tr><th>Vegreferanse</th><th>Fra dato</th><th>Til dato</th><th>Veglenkeposisjon</th><th>Koordinater</th></tr></thead><tbody>';
             data.features.forEach(feature => {
                 const props = feature.properties;
                 html += `<tr>
                     <td>${props.vegref || 'N/A'}</td>
                     <td>${props.fradato || 'N/A'}</td>
                     <td>${props.tildato || 'N/A'}</td>
+                    <td>${props.veglenkeposisjon}@${props.veglenkeid}</td>
                     <td>${feature.geometry.coordinates.join(', ')}</td>
                 </tr>`;
             });

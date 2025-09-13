@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vegreferanse Historikk</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 
 </head>
@@ -19,7 +19,7 @@
     <main>
 
         <!-- Add this in your <body>, where you want the map -->
-<!--        <div id="map" style="height: 200px;"></div>-->
+        <!--        <div id="map" style="height: 200px;"></div>-->
 
 
         <div class="search-sections">
@@ -71,7 +71,7 @@
                         </div>
                         <div class="form-group">
                             <label for="vegnr">Vegnummer *</label>
-                            <input type="number" id="vegnr" name="vegnr"  value="18" min="1" max="99999" required>
+                            <input type="number" id="vegnr" name="vegnr" value="18" min="1" max="99999" required>
                         </div>
                         <div class="form-group">
                             <label for="hp">Hovedparsell</label>
@@ -121,11 +121,13 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="easting">Øst-koordinat *</label>
-                            <input type="number" id="easting" name="easting" step="any" required placeholder="f.eks. 262650">
+                            <input type="number" id="easting" name="easting" step="any" required
+                                   placeholder="f.eks. 262650">
                         </div>
                         <div class="form-group">
                             <label for="northing">Nord-koordinat *</label>
-                            <input type="number" id="northing" name="northing" step="any" required placeholder="f.eks. 6651180">
+                            <input type="number" id="northing" name="northing" step="any" required
+                                   placeholder="f.eks. 6651180">
                         </div>
                     </div>
 
@@ -155,11 +157,48 @@
                     <button type="submit" class="btn-primary">Søk på koordinater</button>
                 </form>
             </section>
+
+            <div class="search-row">
+                <section class="search-section">
+                    <h2>Søk på lenkesekvensId og posisjon</h2>
+                    <form id="lenkeForm" class="search-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="lenkesekvensId">LenkesekvensId *</label>
+                                <input type="number" id="lenkesekvensId" name="lenkesekvensId" value="1060716" required
+                                       placeholder="f.eks. 123456">
+                            </div>
+                            <div class="form-group">
+                                <label for="posisjon">Posisjon *</label>
+                                <input type="number" id="posisjon" name="posisjon" min="0" max="1" value="0.97171054113006394" step="any" required placeholder="f.eks. 0.3">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="lenke-dato">Dato (YYYY-MM-DD)</label>
+                                <input type="date" id="lenke-dato" name="dato">
+                            </div>
+                            <div class="form-group">
+                                <label for="lenke-crs">Koordinatsystem</label>
+                                <select id="lenke-crs" name="crs">
+                                    <option value="25833">EPSG:25833 (UTM 33N)</option>
+                                    <option value="4326">EPSG:4326 (WGS84)</option>
+                                    <option value="25832">EPSG:25832 (UTM 32N)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group checkbox-group">
+                                <label>
+                                    <input type="checkbox" name="fjerndubletter"> Fjern dubletter
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">Søk på lenkesekvensId og posisjon</button>
+                    </form>
+                </section>
+            </div>
         </div>
-
-
-
-
 
 
         <section id="results" class="results-section">
@@ -173,7 +212,7 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var map = L.map('map').setView([60.472, 8.4689], 5); // Centered on Norway
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
