@@ -51,6 +51,19 @@ class HentVegref {
         }
     }
 
+    async veglenkesekvens(params) {
+        const { linkid, position } = params;
+        const url = `${this.baseUrl}/RoadInfoService/GetRoadReferenceHistoryForNVDBReference?reflinkOID=${linkid}&relLen=${position}`;
+
+        try {
+            const xmlDoc = await this.fetchXML(url);
+            return this.parseXMLToGeoJSON(xmlDoc, false);
+        } catch (error) {
+            console.error('Error in veglenkesekvens:', error);
+            return { type: 'FeatureCollection', features: [] };
+        }
+    }
+
     parseXMLToGeoJSON(xmlDoc, dagensverdi) {
         const features = [];
         const roadPointRefs = xmlDoc.getElementsByTagName('RoadPointReferenceWithTimePeriod');
@@ -62,6 +75,8 @@ class HentVegref {
                 features.push(feature);
             }
         }
+
+        features.sort((a, b) => new Date(a.properties.fradato) - new Date(b.properties.fradato));
 
         return {
             type: 'FeatureCollection',
