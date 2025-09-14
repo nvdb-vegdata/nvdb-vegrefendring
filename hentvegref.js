@@ -53,7 +53,7 @@ class HentVegref {
 
     async veglenkesekvens(params) {
         const { linkid, position } = params;
-        const url = `${this.baseUrl}/RoadInfoService/GetRoadReferenceHistoryForNVDBReference?reflinkOID=${linkid}&relLen=${position}`;
+        const url = `${this.baseUrl}/RoadInfoService3d/GetRoadReferenceHistoryForNVDBReference?reflinkOID=${linkid}&relLen=${position}`;
 
         try {
             const xmlDoc = await this.fetchXML(url);
