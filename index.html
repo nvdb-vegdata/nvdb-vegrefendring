@@ -82,35 +82,6 @@
                             <input type="number" id="meter" name="meter" value="0" min="0" max="99999">
                         </div>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="dato">Dato (YYYY-MM-DD)</label>
-                            <input type="date" id="dato" name="dato">
-                        </div>
-                        <div class="form-group">
-                            <label for="crs">Koordinatsystem</label>
-                            <select id="crs" name="crs">
-                                <option value="25833">EPSG:25833 (UTM 33N)</option>
-                                <option value="4326">EPSG:4326 (WGS84)</option>
-                                <option value="25832">EPSG:25832 (UTM 32N)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group checkbox-group">
-                            <label>
-                                <input type="checkbox" name="fjerndubletter"> Fjern dubletter
-                            </label>
-                        </div>
-                        <div class="form-group checkbox-group">
-                            <label>
-                                <input type="checkbox" name="dagensverdi"> Hent dagens verdi
-                            </label>
-                        </div>
-                    </div>
-
                     <button type="submit" class="btn-primary">Søk vegreferanse</button>
                 </form>
             </section>
@@ -130,30 +101,6 @@
                                    placeholder="f.eks. 6651180">
                         </div>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="pos-dato">Dato (YYYY-MM-DD)</label>
-                            <input type="date" id="pos-dato" name="dato">
-                        </div>
-                        <div class="form-group">
-                            <label for="pos-crs">Koordinatsystem</label>
-                            <select id="pos-crs" name="crs">
-                                <option value="25833">EPSG:25833 (UTM 33N)</option>
-                                <option value="4326">EPSG:4326 (WGS84)</option>
-                                <option value="25832">EPSG:25832 (UTM 32N)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group checkbox-group">
-                            <label>
-                                <input type="checkbox" name="fjerndubletter"> Fjern dubletter
-                            </label>
-                        </div>
-                    </div>
-
                     <button type="submit" class="btn-primary">Søk på koordinater</button>
                 </form>
             </section>
@@ -171,27 +118,6 @@
                             <div class="form-group">
                                 <label for="posisjon">Posisjon *</label>
                                 <input type="number" id="posisjon" name="posisjon" min="0" max="1" value="0.97171054113006394" step="any" required placeholder="f.eks. 0.3">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="lenke-dato">Dato (YYYY-MM-DD)</label>
-                                <input type="date" id="lenke-dato" name="dato">
-                            </div>
-                            <div class="form-group">
-                                <label for="lenke-crs">Koordinatsystem</label>
-                                <select id="lenke-crs" name="crs">
-                                    <option value="25833">EPSG:25833 (UTM 33N)</option>
-                                    <option value="4326">EPSG:4326 (WGS84)</option>
-                                    <option value="25832">EPSG:25832 (UTM 32N)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group checkbox-group">
-                                <label>
-                                    <input type="checkbox" name="fjerndubletter"> Fjern dubletter
-                                </label>
                             </div>
                         </div>
                         <button type="submit" class="btn-primary">Søk på lenkesekvensId og posisjon</button>
