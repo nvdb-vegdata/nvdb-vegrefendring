@@ -76,6 +76,8 @@ class HentVegref {
             }
         }
 
+        features.sort((a, b) => new Date(a.properties.fradato) - new Date(b.properties.fradato));
+
         return {
             type: 'FeatureCollection',
             features: features

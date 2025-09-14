@@ -35,7 +35,17 @@ class VegreferanseApp {
                     fjerndubletter: false,
                     dagensverdi: false
                 });
-                this.displayResults(result);
+
+                // Do a position@roadref search to get all roadrefs for that road
+                if (result.features.length === 0) {
+                    this.displayResults(result);
+                } else {
+                    const firstFeature = result.features[0];
+                    const linkid = firstFeature.properties.veglenkeid;
+                    const position = firstFeature.properties.veglenkeposisjon;
+                    this.displayResults(await this.hentvegref.veglenkesekvens({linkid, position: 0}));
+                }
+
             } catch (error) {
                 this.displayError('Feil ved søk på vegreferanse: ' + error.message);
             }
@@ -79,7 +89,16 @@ class VegreferanseApp {
                     crs: 25833,
                     fjerndubletter: false
                 });
-                this.displayResults(result);
+
+                // Do a position@roadref search to get all roadrefs for that road
+                if (result.features.length === 0) {
+                    this.displayResults(result);
+                } else {
+                    const firstFeature = result.features[0];
+                    const linkid = firstFeature.properties.veglenkeid;
+                    const position = firstFeature.properties.veglenkeposisjon;
+                    this.displayResults(await this.hentvegref.veglenkesekvens({linkid, position: 0}));
+                }
             } catch (error) {
                 this.displayError('Feil ved søk på posisjon: ' + error.message);
             }
