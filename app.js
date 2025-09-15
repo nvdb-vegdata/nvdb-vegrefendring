@@ -8,6 +8,15 @@ class VegreferanseApp {
         document.getElementById('vegrefForm').addEventListener('submit', this.handleVegrefSearch.bind(this));
         document.getElementById('posForm').addEventListener('submit', this.handlePosSearch.bind(this));
         document.getElementById('lenkeForm').addEventListener('submit', this.handleLenkesekvensSearch.bind(this));
+
+        ['vegrefForm', 'posForm', 'lenkeForm'].forEach(formId => {
+            document.getElementById(formId).addEventListener('reset', function (e) {
+                e.preventDefault();
+                this.querySelectorAll('input').forEach(input => input.value = '');
+                this.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+            });
+        });
+
     }
 
     async handleVegrefSearch(event) {
