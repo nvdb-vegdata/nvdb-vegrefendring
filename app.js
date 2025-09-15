@@ -49,12 +49,30 @@ class VegreferanseApp {
                 if (result.features.length === 0) {
                     this.displayResults(result);
                 } else {
-                    const firstFeature = result.features[0];
-                    const linkid = firstFeature.properties.veglenkeid;
-                    const position = firstFeature.properties.veglenkeposisjon;
-                    this.displayResults(await this.hentvegref.veglenkesekvens({linkid, position: 0}));
+                    const promises = result.features.map(feature => {
+                        const linkid = feature.properties.veglenkeid;
+                        const position = feature.properties.veglenkeposisjon;
+                        return this.hentvegref.veglenkesekvens({
+                            linkid: linkid,
+                            position: position
+                        });
+                    });
+                    const data = (await Promise.all([...new Set(promises)]))
+                        .sort((a, b) => {
+                            const dateA = a.features[0]?.properties.fradato || '';
+                            const dateB = b.features[0]?.properties.fradato || '';
+                            if (dateA !== dateB) {
+                                return dateA.localeCompare(dateB);
+                            }
+                            const veglenkeA = a.features[0]?.properties.veglenkeid || '';
+                            const veglenkeB = b.features[0]?.properties.veglenkeid || '';
+                            return veglenkeA.localeCompare(veglenkeB);
+                        });
+                    this.displayResults({
+                        type: 'FeatureCollection',
+                        features: data.map(d => d.features).flat()
+                    });
                 }
-
             } catch (error) {
                 this.displayError('Feil ved søk på vegreferanse: ' + error.message);
             }
@@ -68,12 +86,12 @@ class VegreferanseApp {
         const linkid = parseFloat(document.getElementById('lenkesekvensId').value);
         const position = parseFloat(document.getElementById('posisjon').value);
 
-        if (easting && northing) {
+        if (linkid && position) {
             try {
                 this.showLoading();
                 const result = await this.hentvegref.veglenkesekvens({
-                    linkid,
-                    position: position || 0,
+                    linkid: linkid,
+                    position: position,
                 });
                 this.displayResults(result);
             } catch (error) {
@@ -106,7 +124,10 @@ class VegreferanseApp {
                     const firstFeature = result.features[0];
                     const linkid = firstFeature.properties.veglenkeid;
                     const position = firstFeature.properties.veglenkeposisjon;
-                    this.displayResults(await this.hentvegref.veglenkesekvens({linkid, position: 0}));
+                    this.displayResults(await this.hentvegref.veglenkesekvens({
+                        linkid: linkid,
+                        position: position
+                    }));
                 }
             } catch (error) {
                 this.displayError('Feil ved søk på posisjon: ' + error.message);
@@ -123,9 +144,21 @@ class VegreferanseApp {
         if (data.features && data.features.length > 0) {
             let html = '<h3>Resultater:</h3><table class="results-table" border="1">' +
                 '<thead><tr><th>Vegreferanse</th><th>Fra dato</th><th>Til dato</th><th>Veglenkeposisjon</th><th>Koordinater</th></tr></thead><tbody>';
+
+            let lastVeglenkeid = null;
+            let rowClass = '';
+
+
             data.features.forEach(feature => {
                 const props = feature.properties;
-                html += `<tr>
+
+                if (props.veglenkeid !== lastVeglenkeid) {
+                    // Alternate row color when veglenkeid changes
+                    rowClass = rowClass === 'grey1' ? 'grey2' : 'grey1';
+                    lastVeglenkeid = props.veglenkeid;
+                }
+
+                html += `<tr class="${rowClass}">
                     <td>${props.vegref || 'N/A'}</td>
                     <td>${props.fradato || 'N/A'}</td>
                     <td>${props.tildato || 'N/A'}</td>
