@@ -74,6 +74,7 @@ class VegreferanseApp {
                     this.displayResults({
                         type: 'FeatureCollection',
                         features: data,
+                        fromdate: document.getElementById('vegrefForm_dato').value
                     });
                 }
             } catch (error) {
@@ -97,11 +98,15 @@ class VegreferanseApp {
         if (linkid && position) {
             try {
                 this.showLoading();
-                const result = await this.hentvegref.veglenkesekvens({
+                const data = await this.hentvegref.veglenkesekvens({
                     linkid: linkid,
                     position: position,
                 });
-                this.displayResults(result);
+                this.displayResults({
+                    type: 'FeatureCollection',
+                    features: data.features,
+                    fromdate: document.getElementById('lenkeForm_dato').value
+                });
             } catch (error) {
                 this.displayError('Feil ved søk på posisjon: ' + error.message);
             }
@@ -132,10 +137,14 @@ class VegreferanseApp {
                     const firstFeature = result.features[0];
                     const linkid = firstFeature.properties.veglenkeid;
                     const position = firstFeature.properties.veglenkeposisjon;
-                    this.displayResults(await this.hentvegref.veglenkesekvens({
-                        linkid: linkid,
-                        position: position
-                    }));
+
+                    const data = await this.hentvegref.veglenkesekvens({
+                        linkid: linkid, position: position});
+                    await this.displayResults({
+                        type: 'FeatureCollection',
+                        features: data.features,
+                        fromdate: document.getElementById('posForm_dato').value
+                    });
                 }
             } catch (error) {
                 this.displayError('Feil ved søk på posisjon: ' + error.message);
@@ -193,14 +202,16 @@ class VegreferanseApp {
                     lastVeglenkeid = feature.properties.veglenkeid;
                 }
 
-                html += `<tr class="${rowClass}">
+                if (feature.properties.tildato > result.fromdate || !result.fromdate) {
+                    html += `<tr class="${rowClass}">
                     <td>${feature.properties.vegref || 'N/A'}</td>
                     <td>${feature.properties.fradato || 'N/A'}</td>
                     <td>${feature.properties.tildato || 'N/A'}</td>
                     <td>${feature.properties.veglenkeposisjon}@${feature.properties.veglenkeid}</td>
                     <td>${feature.geometry.coordinates.join(', ')}</td>
                     <td>${feature.vegsystemreferanse?.kortform}</td>
-                </tr>`;
+                    </tr>`;
+                }
             });
             html += '</tbody></table>';
             resultsDiv.innerHTML = html;
