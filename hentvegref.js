@@ -1,6 +1,7 @@
 class HentVegref {
     constructor() {
         this.baseUrl = 'https://visveginfo-static.opentns.org';
+        this.baseUrlV4 = 'https://nvdbapiles.atlas.vegvesen.no';
     }
 
     async fetchXML(url) {
@@ -22,6 +23,28 @@ class HentVegref {
             throw error;
         }
     }
+
+    async fetchJSON(url) {
+        try {
+            const response = await fetch(url, {
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Client': 'vegkart'
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const json = await response.json();
+            return this.toRoadlinkCollection(json);
+
+        } catch (error) {
+            console.error('Fetch error:', error);
+            throw error;
+        }
+    }
+
 
     async henthistorikk(params) {
         const { fylke, kommune, kat, stat, vegnr, hp, meter } = params;
@@ -58,6 +81,43 @@ class HentVegref {
         try {
             const xmlDoc = await this.fetchXML(url);
             return this.parseXMLToGeoJSON(xmlDoc, false);
+        } catch (error) {
+            console.error('Error in veglenkesekvens:', error);
+            return { type: 'FeatureCollection', features: [] };
+        }
+    }
+
+
+    toRoadlinkCollection(jsonDoc) {
+        const features = [];
+
+        for (const [key, value] of Object.entries(jsonDoc)) {
+            features.push({
+                type: 'Roadlink',
+                properties: {
+                    vegsystemreferanse: value.vegsystemreferanse,
+                    veglenkesekvens: value.veglenkesekvens,
+                    geometri: value.geometri,
+                    kommune: value.kommune,
+                }
+            })
+        }
+
+        return {
+            type: 'RoadlinksCollection  ',
+            features: features,
+        };
+    }
+
+
+    async veglenkesekvensLesV4(params) {
+        const { linkIds } = params;
+        const url = `${this.baseUrlV4}/vegnett/api/v4/veg/batch?veglenkesekvenser=${linkIds.join(',')}`;
+
+        console.log(url);
+        try {
+            let json = await this.fetchJSON(url);
+            return json;
         } catch (error) {
             console.error('Error in veglenkesekvens:', error);
             return { type: 'FeatureCollection', features: [] };
