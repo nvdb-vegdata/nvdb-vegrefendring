@@ -16,7 +16,6 @@ class VegreferanseApp {
                 this.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
             });
         });
-
     }
 
     async handleVegrefSearch(event) {
@@ -59,6 +58,7 @@ class VegreferanseApp {
                     });
                     const data = (await Promise.all([...new Set(promises)]))
                         .sort((a, b) => {
+                            // Sort by fradato, then by veglenkeid
                             const dateA = a.features[0]?.properties.fradato || '';
                             const dateB = b.features[0]?.properties.fradato || '';
                             if (dateA !== dateB) {
@@ -67,10 +67,13 @@ class VegreferanseApp {
                             const veglenkeA = a.features[0]?.properties.veglenkeid || '';
                             const veglenkeB = b.features[0]?.properties.veglenkeid || '';
                             return veglenkeA.localeCompare(veglenkeB);
-                        });
+                        })
+                        // Extract features from each result and flatten into a single array
+                        .map(d => d.features).flat()
+
                     this.displayResults({
                         type: 'FeatureCollection',
-                        features: data.map(d => d.features).flat()
+                        features: data,
                     });
                 }
             } catch (error) {
@@ -79,6 +82,11 @@ class VegreferanseApp {
         }
     }
 
+
+    async getLinksFromV4(result) {
+        let linkIds = result.features.map(feature => feature.properties.veglenkeposisjon + "@" + feature.properties.veglenkeid);
+        return await this.hentvegref.veglenkesekvensLesV4({linkIds: linkIds});
+    }
 
     async handleLenkesekvensSearch(event) {
         event.preventDefault();
@@ -139,37 +147,63 @@ class VegreferanseApp {
         document.getElementById('results').innerHTML = '<p>Søker...</p>';
     }
 
-    displayResults(data) {
+    async displayResults(result) {
         const resultsDiv = document.getElementById('results');
-        if (data.features && data.features.length > 0) {
-            let html = '<h3>Resultater:</h3><table class="results-table" border="1">' +
-                '<thead><tr><th>Vegreferanse</th><th>Fra dato</th><th>Til dato</th><th>Veglenkeposisjon</th><th>Koordinater</th></tr></thead><tbody>';
+        if (result.features && result.features.length === 0) {
+            resultsDiv.innerHTML = '<p>Ingen resultater funnet.</p>';
+        } else {
+
+            // Fetch lenke data to get vegsystemreferanse
+            const lenkeData = await this.getLinksFromV4(result)
+            result.features = result.features
+                .map(feature => {
+                    let findLast = lenkeData.features.findLast(lenkeData =>
+                        Number(feature.properties.veglenkeid) === lenkeData.properties.veglenkesekvens.veglenkesekvensid  &&
+                        Number(feature.properties.veglenkeposisjon) === lenkeData.properties.veglenkesekvens.relativPosisjon);
+                    return {
+                        "geometry": feature.geometry,
+                        "properties": feature.properties,
+                        "vegsystemreferanse": findLast?.properties.vegsystemreferanse,
+                        "type": "Feature",
+                    }
+                })
+
+            let html = '<h3>Resultater:</h3>' +
+                '<table class="results-table" border="1">' +
+                '<thead>' +
+                '<tr>' +
+                '<th>Vegreferanse</th>' +
+                '<th>Fra dato</th>' +
+                '<th>Til dato</th>' +
+                '<th>Veglenkeposisjon</th>' +
+                '<th>Koordinater</th>' +
+                '<th>Dagens vegsystemreferanse</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody>';
 
             let lastVeglenkeid = null;
             let rowClass = '';
 
 
-            data.features.forEach(feature => {
-                const props = feature.properties;
-
-                if (props.veglenkeid !== lastVeglenkeid) {
+            result.features.forEach(feature => {
+                if (feature.properties.veglenkeid !== lastVeglenkeid) {
                     // Alternate row color when veglenkeid changes
                     rowClass = rowClass === 'grey1' ? 'grey2' : 'grey1';
-                    lastVeglenkeid = props.veglenkeid;
+                    lastVeglenkeid = feature.properties.veglenkeid;
                 }
 
                 html += `<tr class="${rowClass}">
-                    <td>${props.vegref || 'N/A'}</td>
-                    <td>${props.fradato || 'N/A'}</td>
-                    <td>${props.tildato || 'N/A'}</td>
-                    <td>${props.veglenkeposisjon}@${props.veglenkeid}</td>
+                    <td>${feature.properties.vegref || 'N/A'}</td>
+                    <td>${feature.properties.fradato || 'N/A'}</td>
+                    <td>${feature.properties.tildato || 'N/A'}</td>
+                    <td>${feature.properties.veglenkeposisjon}@${feature.properties.veglenkeid}</td>
                     <td>${feature.geometry.coordinates.join(', ')}</td>
+                    <td>${feature.vegsystemreferanse?.kortform}</td>
                 </tr>`;
             });
             html += '</tbody></table>';
             resultsDiv.innerHTML = html;
-        } else {
-            resultsDiv.innerHTML = '<p>Ingen resultater funnet.</p>';
         }
     }
 
