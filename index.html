@@ -87,6 +87,12 @@
                             <input type="number" id="meter" name="meter" value="0" min="0" max="99999">
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="vegrefForm_dato">Dato (YYYY-MM-DD)</label>
+                            <input type="text" id="vegrefForm_dato" name="dato" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}">
+                        </div>
+                    </div>
                     <button type="submit" class="btn-primary">Søk vegreferanse</button>
                     <button type="reset" class="btn-secondary">Nullstill skjema</button>
                 </form>
@@ -98,13 +104,19 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="easting">Øst-koordinat *</label>
-                            <input type="number" id="easting" name="easting" step="any" required
+                            <input type="number" id="easting" value="205060.17" name="easting" step="any" required
                                    placeholder="f.eks. 262650">
                         </div>
                         <div class="form-group">
                             <label for="northing">Nord-koordinat *</label>
-                            <input type="number" id="northing" name="northing" step="any" required
+                            <input type="number" id="northing" value="6560102.44" name="northing" step="any" required
                                    placeholder="f.eks. 6651180">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="posForm_dato">Dato (YYYY-MM-DD)</label>
+                            <input type="text" id="posForm_dato" name="dato" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}">
                         </div>
                     </div>
                     <button type="submit" class="btn-primary">Søk på koordinater</button>
@@ -125,6 +137,12 @@
                             <div class="form-group">
                                 <label for="posisjon">Posisjon *</label>
                                 <input type="number" id="posisjon" name="posisjon" min="0" max="1" value="0.97171054113006394" step="any" required placeholder="f.eks. 0.3">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="lenkeForm_dato">Dato (YYYY-MM-DD)</label>
+                                <input type="text" id="lenkeForm_dato" name="dato" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}">
                             </div>
                         </div>
                         <button type="submit" class="btn-primary">Søk på lenkesekvensId og posisjon</button>
