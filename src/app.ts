@@ -1,11 +1,13 @@
-import type {FeatureCollectionWithDate} from "./interfaces.ts";
 import {VegreferanseService} from "./vegrefService.js";
-import {UtilClass} from "./utilClass.js";
 import {Vegreferanse} from "./vegreferanse.js";
-import type {Vegobjekt, HistoricVegobjektResponse} from "./nvdbTypes.js";
+import type {VegrefAndVegsystemreferanse} from "./nvdbTypes.js";
+import {VegrefController} from "./vegrefController.js";
 
 
-const service = new VegreferanseService();
+// TODO: Remove API Les V4 on localhost:8080
+new VegreferanseService().setBaseUrl("http://localhost:8080");
+
+var vegrefController = new VegrefController();
 
 document.getElementById('vegrefForm')?.addEventListener('submit', handleVegrefSearch);
 document.getElementById('posForm')?.addEventListener('submit', handlePosSearch);
@@ -31,30 +33,10 @@ async function handleVegrefSearch(event: Event) {
 
     if (fylke && kat && vegnr) {
         showLoading();
-
-        service.setBaseUrl("http://localhost:8080");
-        service.findVegreferanse(Vegreferanse.createFromString("" + "0800" + kat + stat + vegnr + "hp" + hp + "m" + meter))
-            .then(async response => {
-
-                displayResults(response);
-
-                response.objekter?.forEach(objekt => {
-                    let vegref = UtilClass.toVegreferanse(objekt);
-
-                    var stedfesting = objekt.lokasjon.stedfestinger[0];
-                    console.log(`Objekt id: ${objekt.id},`
-                        + ` versjon:  ${objekt.metadata.versjon}, `
-                        + ` startdato: ${objekt.metadata.startdato}, `
-                        + ` sluttdato: ${objekt.metadata.sluttdato}, `
-                        + ` stedfesting: ${stedfesting ? `${stedfesting.startposisjon}-${stedfesting.sluttposisjon}@${stedfesting.veglenkesekvensid}` : 'N/A'}, `
-                        + ` Vegreferanse: ${vegref}, `
-                        // + ` geometri: ${objekt.lokasjon.geometri.wkt}`
-                    );
-                });
-            });
+        var vegreferanse = Vegreferanse.createFromString("" + "0800" + kat + stat + vegnr + "hp" + hp + "m" + meter);
+        displayResults(await vegrefController.findPosisjoner(vegreferanse));
     }
 }
-
 
 async function handleLenkesekvensSearch(event: Event) {
     event.preventDefault();
@@ -65,25 +47,7 @@ async function handleLenkesekvensSearch(event: Event) {
     if (linkid && position) {
         try {
             showLoading();
-
-            service.findHistoricVegreferanseByLenkeposisjon(linkid, position)
-                .then(async posisjoner => {
-
-                    displayResults(posisjoner);
-
-                    posisjoner.objekter?.forEach(objekt => {
-                        const vegref = UtilClass.toVegreferanse(objekt);
-                        var stedfesting = objekt.lokasjon.stedfestinger[0];
-                        console.log(`Objekt id: ${objekt.id},`
-                            + ` versjon:  ${objekt.metadata.versjon}, `
-                            + ` startdato: ${objekt.metadata.startdato}, `
-                            + ` sluttdato: ${objekt.metadata.sluttdato}, `
-                            + ` stedfesting: ${stedfesting ? `${stedfesting.startposisjon}-${stedfesting.sluttposisjon}@${stedfesting.veglenkesekvensid}` : 'N/A'}, `
-                            + ` Vegreferanse: ${vegref} `
-                            + ` geometri: ${objekt.lokasjon.geometri.wkt}`);
-                    });
-                });
-
+            displayResults(await vegrefController.findPosisjonerByLenkesekvens(linkid, position));
         } catch (error: unknown) {
             if (error instanceof Error) {
                 displayError('Feil ved søk på posisjon: ' + error.message);
@@ -102,49 +66,9 @@ async function handlePosSearch(event: Event) {
     const northing = parseFloat((document.getElementById('northing') as HTMLInputElement)?.value || '0');
 
     if (easting && northing) {
-
         showLoading();
-
-        var vegobjekter: Vegobjekt[] = [];
-
-        service.findPosisjonByNordOst(northing, easting).then(async posisjoner => {
-            posisjoner.forEach((posisjon) => {
-                service.findHistoricVegreferanseByLenkeposisjon(posisjon.veglenkesekvens.veglenkesekvensid, posisjon.veglenkesekvens.relativPosisjon)
-                    .then(vegobjektResponse => {
-                        vegobjektResponse.objekter?.forEach(objekt => {
-
-                            vegobjekter.push(objekt);
-
-                            const vegref = UtilClass.toVegreferanse(objekt);
-                            var stedfesting = objekt.lokasjon.stedfestinger[0];
-                            console.log(`Objekt id: ${objekt.id},`
-                                + ` versjon:  ${objekt.metadata.versjon}, `
-                                + ` startdato: ${objekt.metadata.startdato}, `
-                                + ` sluttdato: ${objekt.metadata.sluttdato}, `
-                                + ` stedfesting: ${stedfesting ? `${stedfesting.startposisjon}-${stedfesting.sluttposisjon}@${stedfesting.veglenkesekvensid}` : 'N/A'}, `
-                                + ` Vegreferanse: ${vegref} `
-                                + ` geometri: ${objekt.lokasjon.geometri.wkt}`
-                            );
-
-                            displayResults({
-                                objekter: vegobjekter,
-                                metadata: {
-                                    antallTreffTotalt: 0,
-                                    antallTreffPerSide: 0,
-                                    side: 0,
-                                    antallSider: 0
-                                },
-                            });
-                        });
-                    });
-            });
-        });
+        displayResults(await vegrefController.findPosisjonerByCoordinates(northing, easting));
     }
-}
-
-async function getLinksFromV4(result: FeatureCollectionWithDate) {
-    let linkIds = result.features.map(feature => feature.properties.veglenkeposisjon + "@" + feature.properties.veglenkeid);
-    // return await hentvegref.veglenkesekvensLesV4({linkIds: linkIds});
 }
 
 function showLoading() {
@@ -152,7 +76,7 @@ function showLoading() {
     if (elementById) elementById.innerHTML = '<p>Søker...</p>';
 }
 
-async function displayResults(result: HistoricVegobjektResponse) {
+async function displayResults(result: VegrefAndVegsystemreferanse[]) {
     const resultsDiv = (document.getElementById('results') as HTMLDivElement);
     // if (result.objekter.length == 0) {
     //     if (resultsDiv) resultsDiv.innerHTML = '<p>Ingen resultater funnet.</p>';
@@ -170,7 +94,8 @@ async function displayResults(result: HistoricVegobjektResponse) {
             '<th>Fra dato</th>' +
             '<th>Til dato</th>' +
             '<th>Veglenkeposisjon</th>' +
-            '<th>Koordinater</th>' +
+            '<th>Relativ posisjon</th>' +
+            '<th>Koordinat</th>' +
             '<th>Dagens vegsystemreferanse</th>' +
             '</tr>' +
             '</thead>' +
@@ -179,31 +104,16 @@ async function displayResults(result: HistoricVegobjektResponse) {
         let lastVeglenkeid: number = -1;
         let rowClass = '';
 
-        result.objekter.forEach(feature => {
-
-            let veglenkeid = feature.lokasjon.stedfestinger[0]?.veglenkesekvensid || -1;
-
-            if (veglenkeid !== lastVeglenkeid) {
-                // Alternate row color when veglenkeid changes
-                rowClass = rowClass === 'grey1' ? 'grey2' : 'grey1';
-                lastVeglenkeid = veglenkeid;
-            }
-
-
-            const vegref = UtilClass.toVegreferanse(feature);
-            var stedfesting = feature.lokasjon.stedfestinger[0];
-
+        result.forEach(feature => {
             html += `<tr class="${rowClass}">
-            <td>${vegref || 'N/A'}</td>
-            <td>${feature.metadata.startdato || 'N/A'}</td>
-            <td>${feature.metadata.sluttdato || 'N/A'}</td>
-            <td>${stedfesting ? `${stedfesting.startposisjon}-${stedfesting.sluttposisjon}@${stedfesting.veglenkesekvensid}` : 'N/A'}</td>
-            <td>
-            
-</td>
-            <td>${feature.lokasjon.vegsystemreferanser.at(0)?.kortform}</td>
+            <td>${feature.vegreferanse}</td>
+            <td>${feature.fraDato}</td>
+            <td>${feature.tilDato}</td>
+            <td>${feature.veglenkeposisjon}</td>
+            <td>${feature.relativPosisjon}</td>
+            <td>${feature.koordinat}</td>
+            <td>${feature.vegsystemreferanse}</td>
             </tr>`;
-
         });
         html += '</tbody></table>';
         resultsDiv.innerHTML = html;

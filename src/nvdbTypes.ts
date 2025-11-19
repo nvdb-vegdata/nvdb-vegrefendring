@@ -88,4 +88,14 @@ export type HistoricVegobjektResponse = {
     metadata?: Metadata;
 };
 
+export type VegrefAndVegsystemreferanse = {
+    vegreferanse: string;
+    fraDato: string;
+    tilDato: string | null;
+    veglenkeposisjon: string;
+    relativPosisjon: string;
+    koordinat: string;
+    vegsystemreferanse?: string;
+};
+
 
