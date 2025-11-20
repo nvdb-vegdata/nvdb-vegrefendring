@@ -35,7 +35,7 @@ export class VegrefController {
         }
         const veglenkeid = posisjon1.veglenkesekvens.veglenkesekvensid;
         const startPos = posisjon1.veglenkesekvens.relativPosisjon;
-        const posisjon = await service.findHistoricVegreferanseByLenkeposisjon(veglenkeid, startPos);
+        const posisjon = await service.findHistoricVegreferanseByLenkeposisjon(veglenkeid, startPos, tidspunkt);
 
 
         const promises = posisjon.objekter.map(feature => {
@@ -56,11 +56,11 @@ export class VegrefController {
         return Promise.all(promises);
     }
 
-    async findPosisjonerByLenkesekvens(linkid: number, position: number): Promise<VegrefAndVegsystemreferanse[]> {
-        const promises = (await service.findHistoricVegreferanseByLenkeposisjon(linkid, position)).objekter.map(async feature => {
+    async findPosisjonerByLenkesekvens(linkid: number, position: number, tidspunkt?: Date): Promise<VegrefAndVegsystemreferanse[]> {
+        const promises = (await service.findHistoricVegreferanseByLenkeposisjon(linkid, position, tidspunkt)).objekter.map(async feature => {
             const vegref = UtilClass.toVegreferanse(feature);
             var stedfesting = feature.lokasjon.stedfestinger[0];
-            const posisjon = await service.findVegsystemReferanseByLenkeposisjon(linkid, position);
+            const posisjon = await service.findVegsystemReferanseByLenkeposisjon(linkid, position, tidspunkt);
 
             if (!posisjon.veglenkesekvens) {
                 throw new Error("Veglenkesekvens ikke funnet for lenkeposisjon");

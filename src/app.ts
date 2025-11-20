@@ -33,6 +33,9 @@ async function handleVegrefSearch(event: Event) {
     const vegnr = parseInt((document.getElementById('vegnr') as HTMLInputElement)?.value || '0');
     const hp = parseInt((document.getElementById('hp') as HTMLInputElement)?.value || '1');
     const meter = parseInt((document.getElementById('meter') as HTMLInputElement)?.value || '0');
+    const tidspunkt = (document.getElementById('vegrefForm_dato') as HTMLInputElement)?.value
+        ? new Date((document.getElementById('vegrefForm_dato') as HTMLInputElement).value)
+        : undefined;
 
     if (fylke && kat && vegnr) {
         showLoading();
@@ -44,7 +47,7 @@ async function handleVegrefSearch(event: Event) {
             + vegnr
             + "hp" + hp
             + "m" + meter);
-        displayResults(await vegrefController.findPosisjonerByVegreferanse(vegreferanse));
+        displayResults(await vegrefController.findPosisjonerByVegreferanse(vegreferanse, tidspunkt));
     }
 }
 
@@ -54,11 +57,14 @@ async function handleLenkesekvensSearch(event: Event) {
 
     const linkid = parseFloat((document.getElementById('lenkesekvensId') as HTMLInputElement).value || '0');
     const position = parseFloat((document.getElementById('posisjon') as HTMLInputElement).value);
+    const tidspunkt = (document.getElementById('lenkeForm_dato') as HTMLInputElement)?.value
+        ? new Date((document.getElementById('lenkeForm_dato') as HTMLInputElement).value)
+        : undefined;
 
     if (linkid && position) {
         try {
             showLoading();
-            displayResults(await vegrefController.findPosisjonerByLenkesekvens(linkid, position));
+            displayResults(await vegrefController.findPosisjonerByLenkesekvens(linkid, position, tidspunkt));
         } catch (error: unknown) {
             if (error instanceof Error) {
                 displayError('Feil ved søk på posisjon: ' + error.message);
@@ -80,6 +86,10 @@ async function handleVegsysrefSearch(event: Event) {
     const strekning = parseInt((document.getElementById('strekning') as HTMLInputElement)?.value || '1');
     const delstrekning = parseInt((document.getElementById('delstrekning') as HTMLInputElement)?.value || '1');
     const meter = parseInt((document.getElementById('meter2') as HTMLInputElement)?.value || '0');
+    const tidspunkt = (document.getElementById('vegsysrefForm_dato') as HTMLInputElement)?.value
+        ? new Date((document.getElementById('vegsysrefForm_dato') as HTMLInputElement).value)
+        : undefined;
+
 
     showLoading();
     var vegsystemreferanse = ""
@@ -94,7 +104,7 @@ async function handleVegsysrefSearch(event: Event) {
         + delstrekning.toString()
         + "m"
         + meter.toString();
-    displayResults(await vegrefController.findPosisjonerByVegsystemreferanse(vegsystemreferanse));
+    displayResults(await vegrefController.findPosisjonerByVegsystemreferanse(vegsystemreferanse, tidspunkt));
 }
 
 
@@ -103,10 +113,14 @@ async function handlePosSearch(event: Event) {
 
     const easting = parseFloat((document.getElementById('easting') as HTMLInputElement)?.value || '0');
     const northing = parseFloat((document.getElementById('northing') as HTMLInputElement)?.value || '0');
+    const tidspunkt = (document.getElementById('posForm_dato') as HTMLInputElement)?.value
+        ? new Date((document.getElementById('posForm_dato') as HTMLInputElement).value)
+        : undefined;
+
 
     if (easting && northing) {
         showLoading();
-        displayResults(await vegrefController.findPosisjonerByCoordinates(northing, easting));
+        displayResults(await vegrefController.findPosisjonerByCoordinates(northing, easting, tidspunkt));
     }
 }
 
