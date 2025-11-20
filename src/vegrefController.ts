@@ -20,8 +20,8 @@ export class VegrefController {
                 veglenkeposisjon: "" + startPos + "-" + sluttPos + "@" + veglenkeid,
                 relativPosisjon: "" + (relativPosisjon || 0),
                 beregnetVegreferanse: "" + UtilClass.toVegreferanseWithMeter(feature, UtilClass.finnRelativMeter(feature, relativPosisjon || 0) || 0),
-                koordinat: "" + posisjon?.geometri?.wkt,
-                vegsystemreferanse: "" + posisjon?.vegsystemreferanse?.kortform
+                koordinat: "" + posisjon.geometri.wkt,
+                vegsystemreferanse: "" + posisjon.vegsystemreferanse.kortform
             };
         });
         return Promise.all(promises);
@@ -29,10 +29,6 @@ export class VegrefController {
 
     async findPosisjonerByVegsystemreferanse(vegreferanse: String, tidspunkt?: Date): Promise<VegrefAndVegsystemreferanse[]> {
         var posisjon1 = await service.findPosisjonForVegsystemreferanse(vegreferanse, tidspunkt);
-
-        if (!posisjon1.veglenkesekvens) {
-            return []; // Returner en tom liste hvis veglenkesekvens ikke er tilgjengelig
-        }
         const veglenkeid = posisjon1.veglenkesekvens.veglenkesekvensid;
         const startPos = posisjon1.veglenkesekvens.relativPosisjon;
         const posisjon = await service.findHistoricVegreferanseByLenkeposisjon(veglenkeid, startPos);
@@ -61,10 +57,6 @@ export class VegrefController {
             const vegref = UtilClass.toVegreferanse(feature);
             var stedfesting = feature.lokasjon.stedfestinger[0];
             const posisjon = await service.findVegsystemReferanseByLenkeposisjon(linkid, position);
-
-            if (!posisjon.veglenkesekvens) {
-                throw new Error("Veglenkesekvens ikke funnet for lenkeposisjon");
-            }
             return {
                 vegreferanse: "" + vegref,
                 fraDato: "" + feature.metadata.startdato,
@@ -90,9 +82,6 @@ export class VegrefController {
                 const vegref = UtilClass.toVegreferanse(objekt);
                 var stedfesting = objekt.lokasjon.stedfestinger[0];
                 const posisjonResult = await service.findVegsystemReferanseByLenkeposisjon(veglenkeid, relativPosisjon);
-                if (!posisjonResult.veglenkesekvens) {
-                    throw new Error("Veglenkesekvens ikke funnet for lenkeposisjon");
-                }
                 const myResult = {
                     vegreferanse: "" + vegref,
                     fraDato: "" + objekt.metadata.startdato,
