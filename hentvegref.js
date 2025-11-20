@@ -1,16 +1,10 @@
-import type {Feature, FeatureCollectionPoints} from "./interfaces.ts";
-
-
-export class HentVegref {
-
-    baseUrl = 'https://visveginfo-static.opentns.org';
-    baseUrlV4 = 'https://nvdbapiles.atlas.vegvesen.no';
-
+class HentVegref {
     constructor() {
-
+        this.baseUrl = 'https://visveginfo-static.opentns.org';
+        this.baseUrlV4 = 'https://nvdbapiles.atlas.vegvesen.no';
     }
 
-    async fetchXML(url: string) {
+    async fetchXML(url) {
         try {
             const response = await fetch(url, {
                 mode: 'cors',
@@ -30,7 +24,7 @@ export class HentVegref {
         }
     }
 
-    async fetchJSON(url: string) {
+    async fetchJSON(url) {
         try {
             const response = await fetch(url, {
                 mode: 'cors',
@@ -52,13 +46,41 @@ export class HentVegref {
     }
 
 
+    async henthistorikk(params) {
+        const { fylke, kommune, kat, stat, vegnr, hp, meter } = params;
+        const vegref = `${fylke.toString().padStart(2, '0')}${kommune.padStart(2, '0')}${kat.toUpperCase()}${stat.toUpperCase()}${vegnr.toString().padStart(5, '0')}${hp.toString().padStart(3, '0')}${meter.toString().padStart(5, '0')}`;
 
-    async veglenkesekvens(linkid: number, position: number)  {
+        const url = `${this.baseUrl}/RoadInfoService3d/GetRoadReferenceHistoryForReference?roadReference=${vegref}`;
+
+        try {
+            const xmlDoc = await this.fetchXML(url);
+            return this.parseXMLToGeoJSON(xmlDoc, false);
+        } catch (error) {
+            console.error('Error in henthistorikk:', error);
+            return { type: 'FeatureCollection', features: [] };
+        }
+    }
+
+    async vegrefkoordinat(params) {
+        const { easting, northing } = params;
+        const url = `${this.baseUrl}/RoadInfoService3d/GetRoadReferenceHistoryForLocation?easting=${easting}&northing=${northing}&TopologyLevel=Overview&searchRoadStatus=V,W,T,G,A,B,H,S,M,P,X,E,U,Q`;
+
+        try {
+            const xmlDoc = await this.fetchXML(url);
+            return this.parseXMLToGeoJSON(xmlDoc, false);
+        } catch (error) {
+            console.error('Error in vegrefkoordinat:', error);
+            return { type: 'FeatureCollection', features: [] };
+        }
+    }
+
+    async veglenkesekvens(params) {
+        const { linkid, position } = params;
         const url = `${this.baseUrl}/RoadInfoService3d/GetRoadReferenceHistoryForNVDBReference?reflinkOID=${linkid}&relLen=${position}`;
 
         try {
             const xmlDoc = await this.fetchXML(url);
-            return { type: 'FeatureCollection', features: [] };
+            return this.parseXMLToGeoJSON(xmlDoc, false);
         } catch (error) {
             console.error('Error in veglenkesekvens:', error);
             return { type: 'FeatureCollection', features: [] };
@@ -66,7 +88,7 @@ export class HentVegref {
     }
 
 
-    toRoadlinkCollection(jsonDoc: Record<string, any>) {
+    toRoadlinkCollection(jsonDoc) {
         const features = [];
 
         for (const [key, value] of Object.entries(jsonDoc)) {
@@ -88,7 +110,7 @@ export class HentVegref {
     }
 
 
-    async veglenkesekvensLesV4(params: { linkIds: string[] })  {
+    async veglenkesekvensLesV4(params) {
         const { linkIds } = params;
         const url = `${this.baseUrlV4}/vegnett/api/v4/veg/batch?veglenkesekvenser=${linkIds.join(',')}`;
 
@@ -102,10 +124,29 @@ export class HentVegref {
         }
     }
 
+    parseXMLToGeoJSON(xmlDoc, dagensverdi) {
+        const features = [];
+        const roadPointRefs = xmlDoc.getElementsByTagName('RoadPointReferenceWithTimePeriod');
 
-    xmlElementToGeoJSON(element: Element, dagensverdi: boolean) : FeatureCollectionPoints | undefined {
+        for (let i = 0; i < roadPointRefs.length; i++) {
+            const roadPointRef = roadPointRefs[i];
+            const feature = this.xmlElementToGeoJSON(roadPointRef, dagensverdi);
+            if (feature) {
+                features.push(feature);
+            }
+        }
+
+        features.sort((a, b) => new Date(a.properties.fradato) - new Date(b.properties.fradato));
+
+        return {
+            type: 'FeatureCollection',
+            features: features
+        };
+    }
+
+    xmlElementToGeoJSON(element, dagensverdi) {
         try {
-            const getElementText = (tagName: string) => {
+            const getElementText = (tagName) => {
                 const el = element.getElementsByTagName(tagName)[0];
                 return el ? el.textContent : '';
             };
@@ -117,12 +158,10 @@ export class HentVegref {
             const veglenkeposisjon = Math.round(parseFloat(getElementText('Measure')) * 100000000) / 100000000;
 
             const positionEl = element.getElementsByTagName('RoadNetPosition')[0];
-            if (positionEl == undefined) return undefined;
+            if (!positionEl) return null;
 
-            var elementsByTagName = positionEl.getElementsByTagName('X');
-            const x = elementsByTagName[0] ? parseFloat(elementsByTagName[0].textContent) : 0;
-            var elementsByTagName1 = positionEl.getElementsByTagName('Y');
-            const y = elementsByTagName1[0] ? parseFloat(elementsByTagName1[0].textContent) : 0;
+            const x = parseFloat(positionEl.getElementsByTagName('X')[0].textContent);
+            const y = parseFloat(positionEl.getElementsByTagName('Y')[0].textContent);
             const coordinates = [x, y];
 
             const zEl = positionEl.getElementsByTagName('Z')[0];
@@ -146,12 +185,12 @@ export class HentVegref {
             };
         } catch (error) {
             console.error('Error parsing XML element:', error);
-            return undefined;
+            return null;
         }
     }
 
-    createVegrefString(element: Element) {
-        const getElementText = (tagName: any) => {
+    createVegrefString(element) {
+        const getElementText = (tagName) => {
             const el = element.getElementsByTagName(tagName)[0];
             return el ? el.textContent : '';
         };
