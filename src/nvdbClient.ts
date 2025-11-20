@@ -78,13 +78,12 @@ export const fetchVegsystemReferanse = async (veglenkesekvensid: number, positio
 };
 
 
-export const fetchPosisjonByVegsystemreferanse = async (vegsystemreferanse: String, tidspunkt?: Date) : Promise<Posisjon> => {
+export const fetchPosisjonByVegsystemreferanse = async (vegsystemreferanse: String) : Promise<Posisjon> => {
 
     const url = baseUrl + "/veg";
 
     const params = new URLSearchParams({
-        vegsystemreferanse: `${vegsystemreferanse}`,
-        ...(tidspunkt ? {tidspunkt: tidspunkt.toISOString().slice(0, 10)} : {})
+        vegsystemreferanse: `${vegsystemreferanse}`
     });
 
     console.log(`Fetching current road position (vegsystemreferanse) from: ${url}?${params}`);
