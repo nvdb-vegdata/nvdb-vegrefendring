@@ -93,6 +93,7 @@ export type VegrefAndVegsystemreferanse = {
     fraDato: string;
     tilDato: string | null;
     veglenkeposisjon: string;
+    veglenkeid: number;
     relativPosisjon: string;
     beregnetVegreferanse: string;
     koordinat: string;

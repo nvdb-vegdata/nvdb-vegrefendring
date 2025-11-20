@@ -11,7 +11,7 @@ export class UtilClass {
      * @param vegobjekt The `Vegobjekt` to convert.
      * @returns A formatted vegreferanse string.
      */
-    static toVegreferanse(vegobjekt: HistoricVegobjekt) : String {
+    static toVegreferanse(vegobjekt: HistoricVegobjekt): String {
         const vegkategori = vegobjekt.egenskaper.find(e => e.id === 4566);
         const vegstatus = vegobjekt.egenskaper.find(e => e.id === 4567);
         const vegnummer = vegobjekt.egenskaper.find(e => e.id === 4568);
@@ -41,7 +41,7 @@ export class UtilClass {
      * @param meter
      * @returns A formatted vegreferanse string.
      */
-    static toVegreferanseWithMeter(vegobjekt: HistoricVegobjekt, meter: number) : String {
+    static toVegreferanseWithMeter(vegobjekt: HistoricVegobjekt, meter: number): String {
         const vegkategori = vegobjekt.egenskaper.find(e => e.id === 4566);
         const vegstatus = vegobjekt.egenskaper.find(e => e.id === 4567);
         const vegnummer = vegobjekt.egenskaper.find(e => e.id === 4568);
@@ -132,7 +132,7 @@ export class UtilClass {
         }
 
         // Formel for omskalering av currentMeter til det nye relative området
-        const customPosition =  Math.abs(relativeStart + (currentMeter - startMeter) * (relativeEnd - relativeStart) / (endMeter - startMeter));
+        const customPosition = Math.abs(relativeStart + (currentMeter - startMeter) * (relativeEnd - relativeStart) / (endMeter - startMeter));
 
         if (customPosition < relativeStart) return relativeStart;
         if (customPosition > relativeEnd) return relativeEnd;
@@ -142,5 +142,20 @@ export class UtilClass {
 
     static padNumber(number: number, maxlength: number) {
         return number.toString().padStart(maxlength, '0');
+    }
+
+
+    static formatNumber(num: number, decimals: number = 8) {
+        if (num === 0) return "0.0";
+
+        // Round to specified decimals
+        let str = num.toFixed(decimals)
+            .replace(/0+$/, "")   // remove trailing zeros
+            .replace(/\.$/, "");  // remove trailing dot if any
+
+        // If no decimal point remains, add ".0"
+        if (!str.includes(".")) str += ".0";
+
+        return str;
     }
 }

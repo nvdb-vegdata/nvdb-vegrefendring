@@ -5,8 +5,8 @@ import {VegrefController} from "./vegrefController.js";
 import {UtilClass} from "./utilClass.js";
 
 
-// TODO: Remove API Les V4 on localhost:8080
-new VegreferanseService().setBaseUrl("http://localhost:8080");
+// TODO: Set API Les V4 to NVDB API URL for TEST environment
+new VegreferanseService().setBaseUrl("https://nvdbapiles.test.atlas.vegvesen.no");
 
 var vegrefController = new VegrefController();
 
@@ -134,8 +134,6 @@ async function displayResults(result: VegrefAndVegsystemreferanse[]) {
     if (result.length == 0) {
         if (resultsDiv) resultsDiv.innerHTML = '<p>Ingen resultater funnet.</p>';
     } else {
-        // Fetch lenke data to get vegsystemreferanse
-        ///const lenkeData = await getLinksFromV4(result)
         let html = '<h3>Resultater:</h3>' +
             '<table class="results-table" border="1">' +
             '<thead>' +
@@ -158,12 +156,19 @@ async function displayResults(result: VegrefAndVegsystemreferanse[]) {
         result
             .slice()
             .sort((a, b) => {
+                if (a.veglenkeid !== b.veglenkeid) {
+                    return a.veglenkeid - b.veglenkeid;
+                }
                 const dateA = new Date(a.fraDato).getTime();
                 const dateB = new Date(b.fraDato).getTime();
                 return dateA - dateB;
             })
             .forEach(feature => {
-            html += `<tr class="${rowClass}">
+                if (feature.veglenkeid !== lastVeglenkeid) {
+                    lastVeglenkeid = feature.veglenkeid;
+                    rowClass = rowClass === 'grey1' ? 'grey2' : 'grey1';
+                }
+                html += `<tr class="${rowClass}">
             <td>${feature.vegreferanse}</td>
             <td>${feature.veglenkeposisjon}</td>
             <td>${feature.fraDato}</td>
@@ -173,7 +178,7 @@ async function displayResults(result: VegrefAndVegsystemreferanse[]) {
             <td>${feature.koordinat}</td>
             <td>${feature.vegsystemreferanse}</td>
             </tr>`;
-        });
+            });
         html += '</tbody></table>';
         resultsDiv.innerHTML = html;
     }
