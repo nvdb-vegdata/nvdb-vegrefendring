@@ -126,10 +126,10 @@ async function displayResults(result: VegrefAndVegsystemreferanse[]) {
             '<table class="results-table" border="1">' +
             '<thead>' +
             '<tr>' +
-            '<th>Vegreferanse lagret i 532</th>' +
-            '<th>532 Veglenkeposisjon</th>' +
-            '<th>532 fra dato</th>' +
-            '<th>532 Til dato</th>' +
+            '<th>Vegreferanse <br>(Objekttype 532)</th>' +
+            '<th>Veglenkeposisjon <br>( 532 )</th>' +
+            '<th>Fa dato <br>( 532 )</th>' +
+            '<th>Til dato <br>( 532 )</th>' +
             '<th>Relativ posisjon</th>' +
             '<th>Beregnet vegreferanse</th>' +
             '<th>Koordinat</th>' +
