@@ -17,7 +17,7 @@ export class VegreferanseService {
         return fetchHistoricVegreferanse(vegreferanse, tidspunkt);
     }
 
-    async findPosisjonForVegsystemreferanse(vegsystemreferanse: string): Promise<Posisjon> {
+    async findPosisjonForVegsystemreferanse(vegsystemreferanse: String, tidspunkt?: Date): Promise<Posisjon> {
         return fetchPosisjonByVegsystemreferanse(vegsystemreferanse)
     }
 
