@@ -1,11 +1,10 @@
-import type {Posisjon, HistoricVegobjektResponse, VegrefAndVegsystemreferanse, Stedfesting} from './nvdbTypes.ts';
+import type {Posisjon, HistoricVegobjektResponse} from './nvdbTypes.ts';
 import type {Vegreferanse} from "./vegreferanse.js";
 import {
     fetchHistoricVegreferanse,
     fetchHistoricVegreferanseByPosition,
     fetchPosisjonByVegsystemreferanse, fetchPositionByLenkeposisjon, fetchPositionByNordOst, setNvdbBaseUrl
 } from "./nvdbClient.js";
-import {UtilClass} from "./utilClass.js";
 
 
 export class VegreferanseService {
@@ -14,7 +13,7 @@ export class VegreferanseService {
      * Service class for handling operations related to Vegreferanse.
      */
     async findVegreferanse(vegreferanse: Vegreferanse, tidspunkt?: Date): Promise<HistoricVegobjektResponse> {
-        return fetchHistoricVegreferanse(vegreferanse, tidspunkt);
+        return await fetchHistoricVegreferanse(vegreferanse, tidspunkt);
     }
 
     async findPosisjonForVegsystemreferanse(vegsystemreferanse: string): Promise<Posisjon> {
@@ -25,7 +24,7 @@ export class VegreferanseService {
         return fetchHistoricVegreferanseByPosition(veglenkeskvensid, posisjon, tidspunkt);
     }
 
-    findVegsystemReferanseByLenkeposisjon(veglenkesekvensid: number, position: number): Promise<Posisjon> {
+    async findVegsystemReferanseByLenkeposisjon(veglenkesekvensid: number, position: number): Promise<Posisjon> {
         return fetchPositionByLenkeposisjon(veglenkesekvensid, position);
     }
 
