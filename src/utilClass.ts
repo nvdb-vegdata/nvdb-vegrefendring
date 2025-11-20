@@ -1,4 +1,4 @@
-import type {HistoricVegobjekt} from "./nvdbTypes.ts";
+import type {Vegobjekt} from "./nvdbTypes.ts";
 import {Vegkategori, Vegstatus} from "./vegreferanse.js";
 
 export class UtilClass {
@@ -11,7 +11,7 @@ export class UtilClass {
      * @param vegobjekt The `Vegobjekt` to convert.
      * @returns A formatted vegreferanse string.
      */
-    static toVegreferanse(vegobjekt: HistoricVegobjekt) : String {
+    static toVegreferanse(vegobjekt: Vegobjekt) : String {
         const vegkategori = vegobjekt.egenskaper.find(e => e.id === 4566);
         const vegstatus = vegobjekt.egenskaper.find(e => e.id === 4567);
         const vegnummer = vegobjekt.egenskaper.find(e => e.id === 4568);
@@ -33,34 +33,6 @@ export class UtilClass {
 
 
     /**
-     * Converts a `Vegobjekt` to a formatted vegreferanse string.
-     * Extracts properties such as vegkategori, vegstatus, vegnummer, parsell, fylke, kommune, and meter values.
-     * Returns a string representation combining these values.
-     *
-     * @param vegobjekt The `Vegobjekt` to convert.
-     * @param meter
-     * @returns A formatted vegreferanse string.
-     */
-    static toVegreferanseWithMeter(vegobjekt: HistoricVegobjekt, meter: number) : String {
-        const vegkategori = vegobjekt.egenskaper.find(e => e.id === 4566);
-        const vegstatus = vegobjekt.egenskaper.find(e => e.id === 4567);
-        const vegnummer = vegobjekt.egenskaper.find(e => e.id === 4568);
-        const parsell = vegobjekt.egenskaper.find(e => e.id === 4569);
-        const fylke = vegobjekt.egenskaper.find(e => e.id === 4591);
-        const kommune = vegobjekt.egenskaper.find(e => e.id === 4592);
-
-
-        return ""
-            + fylke?.verdi?.toString().padStart(2, "0")
-            + kommune?.verdi?.toString().padStart(2, "0")
-            + (vegkategori?.enum_id === undefined ? "" : Vegkategori[vegkategori.enum_id])
-            + (vegstatus?.enum_id === undefined ? "" : Vegstatus[vegstatus.enum_id])
-            + vegnummer?.verdi
-            + " hp" + parsell?.verdi + " m" + meter;
-    }
-
-
-    /**
      * Beregner relativ posisjon for et `Vegobjekt` basert på en gitt meterverdi.
      * Finner start- og sluttmeter-egenskapene (id 4571 og 4572) og bruker første stedfesting.
      * Returnerer `undefined` hvis nødvendig data mangler, ellers returneres relativ posisjon og lokasjon.
@@ -69,7 +41,7 @@ export class UtilClass {
      * @param currentMeter Meterverdien det skal beregnes relativ posisjon for.
      * @returns Et objekt med `position` og `lokasjon`, eller `undefined` hvis data mangler.
      */
-    static finnRelativPosisjon(vegobjekt: HistoricVegobjekt, currentMeter: number) {
+    static finnRelativPosisjon(vegobjekt: Vegobjekt, currentMeter: number) {
 
         const fra = vegobjekt.egenskaper.find(e => e.id === 4571);
         const til = vegobjekt.egenskaper.find(e => e.id === 4572);
@@ -86,24 +58,6 @@ export class UtilClass {
                 currentMeter);
 
             return {position, lokasjon: stedfesting};
-        }
-    }
-
-    static finnRelativMeter(vegobjekt: HistoricVegobjekt, relativePosition: number) {
-        const fra = vegobjekt.egenskaper.find(e => e.id === 4571);
-        const til = vegobjekt.egenskaper.find(e => e.id === 4572);
-        const stedfesting = vegobjekt.lokasjon.stedfestinger[0];
-
-        if (!stedfesting || !fra || !til) {
-            return 0;
-        } else {
-            const startMeter = typeof fra.verdi === "number" ? fra.verdi : 0;
-            const endMeter = typeof til.verdi === "number" ? til.verdi : 0;
-
-            // Formel for å konvertere relativ posisjon tilbake til meterverdi
-            const meterValue = startMeter + (relativePosition - stedfesting.startposisjon) * (endMeter - startMeter) / (stedfesting.sluttposisjon - stedfesting.startposisjon);
-
-            return Number(meterValue.toFixed(2));
         }
     }
 
@@ -138,9 +92,5 @@ export class UtilClass {
         if (customPosition > relativeEnd) return relativeEnd;
 
         return customPosition;
-    }
-
-    static padNumber(number: number, maxlength: number) {
-        return number.toString().padStart(maxlength, '0');
     }
 }
