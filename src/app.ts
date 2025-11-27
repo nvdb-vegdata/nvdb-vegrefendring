@@ -1,12 +1,8 @@
-import {VegreferanseService} from "./vegrefService.js";
 import {Vegreferanse} from "./vegreferanse.js";
 import type {VegrefAndVegsystemreferanse} from "./nvdbTypes.js";
 import {VegrefController} from "./vegrefController.js";
 import {UtilClass} from "./utilClass.js";
 
-
-// TODO: Set API Les V4 to NVDB API URL for TEST environment
-new VegreferanseService().setBaseUrl("https://nvdbapiles.test.atlas.vegvesen.no");
 
 var vegrefController = new VegrefController();
 
@@ -138,12 +134,12 @@ async function displayResults(result: VegrefAndVegsystemreferanse[]) {
             '<table class="results-table" border="1">' +
             '<thead>' +
             '<tr>' +
+            '<th>Vegreferanse</th>' +
             '<th>Vegreferanse <br>(Objekttype 532)</th>' +
             '<th>Veglenkeposisjon <br>( 532 )</th>' +
             '<th>Fa dato <br>( 532 )</th>' +
             '<th>Til dato <br>( 532 )</th>' +
-            '<th>Relativ posisjon</th>' +
-            '<th>Beregnet vegreferanse</th>' +
+            '<th>Veglenkeposisjon</th>' +
             '<th>Koordinat</th>' +
             '<th>Dagens vegsystemreferanse</th>' +
             '</tr>' +
@@ -169,12 +165,12 @@ async function displayResults(result: VegrefAndVegsystemreferanse[]) {
                     rowClass = rowClass === 'grey1' ? 'grey2' : 'grey1';
                 }
                 html += `<tr class="${rowClass}">
+            <td>${feature.beregnetVegreferanse}</td>
             <td>${feature.vegreferanse}</td>
             <td>${feature.veglenkeposisjon}</td>
             <td>${feature.fraDato}</td>
             <td>${feature.tilDato}</td>
-            <td>${feature.relativPosisjon}</td>
-            <td>${feature.beregnetVegreferanse}</td>
+            <td>${UtilClass.formatNumber(feature.relativPosisjon,6)}@${feature.veglenkeid}</td>
             <td>${feature.koordinat}</td>
             <td>${feature.vegsystemreferanse}</td>
             </tr>`;

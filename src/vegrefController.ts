@@ -21,25 +21,24 @@ export class VegrefController {
 
         const promises = (await service.findVegreferanse(vegreferanse, tidspunkt)).objekter.map(async objekt => {
             const lenkeid = objekt.lokasjon.stedfestinger[0]?.veglenkesekvensid || -1;
-            const pos = UtilClass.finnRelativPosisjon(objekt, vegreferanse.meter)?.position || 0;
+            const pos = UtilClass.finnRelativPosisjon(objekt, vegreferanse.meter, false)?.position || 0;
             const historicVegobjektResponse = await service.findHistoricVegreferanseByLenkeposisjon(lenkeid, pos, tidspunkt);
             return await Promise.all(historicVegobjektResponse.objekter.map(async feature => {
                 const stedfesting = feature.lokasjon.stedfestinger[0];
                 const veglenkeid = stedfesting?.veglenkesekvensid || -1;
                 const startPos = stedfesting?.startposisjon || 0;
                 const sluttPos = stedfesting?.sluttposisjon || 0;
-                const relativPosisjon = UtilClass.finnRelativPosisjon(feature, vegreferanse.meter)?.position;
-                const posisjon = await service.findVegsystemReferanseByLenkeposisjon(veglenkeid, relativPosisjon || 0);
+                const vegsystemreferanse = await service.findVegsystemReferanseByLenkeposisjon(veglenkeid, pos);
                 return {
                     vegreferanse: "" + UtilClass.toVegreferanse(feature),
                     fraDato: "" + feature.metadata.startdato,
                     tilDato: "" + feature.metadata.sluttdato,
                     veglenkeposisjon: "" + startPos + "-" + sluttPos + "@" + veglenkeid,
                     veglenkeid : veglenkeid,
-                    relativPosisjon: "" + UtilClass.formatNumber(relativPosisjon || 0) + "@" + veglenkeid,
-                    beregnetVegreferanse: "" + UtilClass.toVegreferanseWithMeter(feature, UtilClass.finnRelativMeter(feature, relativPosisjon || 0) || 0),
-                    koordinat: "" + posisjon?.geometri?.wkt,
-                    vegsystemreferanse: "" + posisjon?.vegsystemreferanse?.kortform
+                    relativPosisjon: pos,
+                    beregnetVegreferanse: "" + UtilClass.toVegreferanseWithMeter(feature, UtilClass.finnRelativMeter(feature, pos || 0) || 0),
+                    koordinat: "" + vegsystemreferanse?.geometri?.wkt,
+                    vegsystemreferanse: "" + vegsystemreferanse?.vegsystemreferanse?.kortform
                 };
             }));
         });
@@ -75,7 +74,7 @@ export class VegrefController {
                 tilDato: "" + feature.metadata.sluttdato,
                 veglenkeposisjon: "" + startPos + "-" + sluttPos + "@" + veglenkeid,
                 veglenkeid: veglenkeid,
-                relativPosisjon: "" + UtilClass.formatNumber(startPos) + "@" + veglenkeid,
+                relativPosisjon: startPos,
                 beregnetVegreferanse: "" + UtilClass.toVegreferanseWithMeter(feature, UtilClass.finnRelativMeter(feature, relativPosisjon || 0) || 0),
                 koordinat: "" + posisjon.geometri.wkt,
                 vegsystemreferanse: "" + posisjon.vegsystemreferanse.kortform
@@ -107,7 +106,7 @@ export class VegrefController {
                 tilDato: "" + feature.metadata.sluttdato,
                 veglenkeposisjon: "" + stedfesting?.startposisjon + "-" + stedfesting?.sluttposisjon + "@" + stedfesting?.veglenkesekvensid,
                 veglenkeid: linkid,
-                relativPosisjon: "" + UtilClass.formatNumber(position) + "@" + linkid,
+                relativPosisjon: position,
                 beregnetVegreferanse: "" + UtilClass.toVegreferanseWithMeter(feature, UtilClass.finnRelativMeter(feature, position || 0) || 0),
                 koordinat: "" + posisjon.geometri.wkt,
                 vegsystemreferanse: "" + posisjon.vegsystemreferanse.kortform
@@ -144,7 +143,7 @@ export class VegrefController {
                     tilDato: "" + objekt.metadata.sluttdato,
                     veglenkeposisjon: "" + stedfesting?.startposisjon + "-" + stedfesting?.sluttposisjon + "@" + stedfesting?.veglenkesekvensid,
                     veglenkeid: veglenkeid,
-                    relativPosisjon: "" + UtilClass.formatNumber(relativPosisjon) + "@" + veglenkeid,
+                    relativPosisjon: relativPosisjon,
                     beregnetVegreferanse: "" + UtilClass.toVegreferanseWithMeter(objekt, UtilClass.finnRelativMeter(objekt, relativPosisjon || 0) || 0),
                     koordinat: "" + posisjonResult.geometri.wkt,
                     vegsystemreferanse: "" + posisjonResult.vegsystemreferanse.kortform
