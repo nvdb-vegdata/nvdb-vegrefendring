@@ -195,7 +195,13 @@ class VegreferanseApp {
             let rowClass = '';
 
 
+            // Filter out duplicates by creating a Set of unique veglenkeid@veglenkeposisjon
+            const seen = new Set();
             result.features.forEach(feature => {
+                const uniqueKey = `${feature.properties.fradato}${feature.properties.tildato}${feature.properties.veglenkeid}@${feature.properties.veglenkeposisjon}`;
+                if (seen.has(uniqueKey)) return;
+                seen.add(uniqueKey);
+
                 if (feature.properties.veglenkeid !== lastVeglenkeid) {
                     // Alternate row color when veglenkeid changes
                     rowClass = rowClass === 'grey1' ? 'grey2' : 'grey1';
