@@ -100,6 +100,27 @@ async function handleVegsysrefSearch(event: Event) {
         + delstrekning.toString()
         + "m"
         + meter.toString();
+
+
+    // Ekstra type
+    const extraType = (document.getElementById('extraType') as HTMLSelectElement)?.value;
+
+    // Sideanlegg
+    const sideanleggsdel = parseInt((document.getElementById('sideanleggsdel') as HTMLInputElement)?.value || '0');
+    const sideanleggsdel_meter = parseInt((document.getElementById('sideanleggsdel_meter') as HTMLInputElement)?.value || '0');
+
+    // Kryssdel
+    const kryssdel = parseInt((document.getElementById('kryssdel') as HTMLInputElement)?.value || '0');
+    const kryssdel_meter = parseInt((document.getElementById('kryssdel_meter') as HTMLInputElement)?.value || '0');
+
+    if (extraType !== "Ingen") {
+        if (extraType == "sideanlegg" && sideanleggsdel > 0) {
+            vegsystemreferanse += "sd" + sideanleggsdel.toString() + "m" + sideanleggsdel_meter.toString();
+        } else if (kryssdel > 0) {
+            vegsystemreferanse += "kd" + kryssdel.toString() + "m" + kryssdel_meter.toString();
+        }
+    }
+
     displayResults(await vegrefController.findPosisjonerByVegsystemreferanse(vegsystemreferanse, tidspunkt));
 }
 
