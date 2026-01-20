@@ -58,15 +58,15 @@ class VegreferanseApp {
                     });
                     const data = (await Promise.all([...new Set(promises)]))
                         .sort((a, b) => {
-                            // Sort by fradato, then by veglenkeid
-                            const dateA = a.features[0]?.properties.fradato || '';
-                            const dateB = b.features[0]?.properties.fradato || '';
-                            if (dateA !== dateB) {
-                                return dateA.localeCompare(dateB);
-                            }
+                            // Sort by veglenkeid, then by fradato
                             const veglenkeA = a.features[0]?.properties.veglenkeid || '';
                             const veglenkeB = b.features[0]?.properties.veglenkeid || '';
-                            return veglenkeA.localeCompare(veglenkeB);
+                            if (veglenkeA !== veglenkeB) {
+                            return veglenkeA.veglenkeid - veglenkeB.veglenkeid;
+                            }
+                            const dateA = a.features[0]?.properties.fradato || '';
+                            const dateB = b.features[0]?.properties.fradato || '';
+                            return dateA.localeCompare(dateB);
                         })
                         // Extract features from each result and flatten into a single array
                         .map(d => d.features).flat()
